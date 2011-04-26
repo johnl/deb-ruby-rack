@@ -16,6 +16,9 @@ Package: ruby-rack
 Architecture: all
 XB-Ruby-Versions: ${ruby:Versions}
 Depends: ${shlibs:Depends}, ${misc:Depends}, ruby1.8 | ruby-interpreter
+Replaces: librack-ruby1.9.1 (<< 1.2.2-1~), librack-ruby1.8 (<< 1.2.2-1~), librack-ruby (<< 1.2.2-1~)
+Conflicts: librack-ruby1.9.1 (<< 1.2.2-1~), librack-ruby1.8 (<< 1.2.2-1~), librack-ruby (<< 1.2.2-1~)
+Provides: librack-ruby1.9.1, librack-ruby1.8, librack-ruby
 Description: a modular Ruby webserver interface
  Rack provides a minimal, modular and adaptable interface for
  developing web applications in Ruby.  By wrapping HTTP requests and
@@ -25,3 +28,27 @@ Description: a modular Ruby webserver interface
  .
  The exact details of this are described in the Rack specification,
  which all Rack applications should conform to.
+
+Package: librack-ruby1.9.1
+Section: oldlibs
+Architecture: all
+Depends: ${misc:Depends}, ruby-rack
+Description: Transitional package for ruby-rack
+ This is a transitional package to ease upgrades to the ruby-rack
+ package. It can safely be removed.
+
+Package: librack-ruby1.8
+Section: oldlibs
+Architecture: all
+Depends: ${misc:Depends}, ruby-rack
+Description: Transitional package for ruby-rack
+ This is a transitional package to ease upgrades to the ruby-rack
+ package. It can safely be removed.
+
+Package: librack-ruby
+Section: oldlibs
+Architecture: all
+Depends: ${misc:Depends}, ruby-rack
+Description: Transitional package for ruby-rack
+ This is a transitional package to ease upgrades to the ruby-rack
+ package. It can safely be removed.

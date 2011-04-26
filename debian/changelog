@@ -1,3 +1,9 @@
+ruby-rack (1.2.2-2) unstable; urgency=low
+
+  * Add transitional packages from librack-ruby.
+
+ -- Lucas Nussbaum <lucas@lucas-nussbaum.net>  Tue, 26 Apr 2011 16:34:08 +0200
+
 ruby-rack (1.2.2-1) unstable; urgency=low
 
   * Switch to gem2deb-based packaging. Rename source and binary package.
