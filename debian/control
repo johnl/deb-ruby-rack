@@ -1,0 +1,27 @@
+Source: ruby-rack
+Section: ruby
+Priority: optional
+Maintainer: Debian Ruby Extras Maintainers <pkg-ruby-extras-maintainers@lists.alioth.debian.org>
+Uploaders: Lucas Nussbaum <lucas@lucas-nussbaum.net>
+DM-Upload-Allowed: yes
+Build-Depends: debhelper (>= 7.0.50~), gem2deb (>= 0.2.1)
+# bacon (>= 0, development), rake (>= 0, development), fcgi (>= 0, development), memcache-client (>= 0, development), mongrel (>= 0, development), thin (>= 0, development)
+Standards-Version: 3.9.1
+Vcs-Git: git://git.debian.org/pkg-ruby-extras/ruby-rack.git
+Vcs-Browser: http://git.debian.org/?p=pkg-ruby-extras/ruby-rack.git;a=summary
+Homepage: http://rack.rubyforge.org
+XS-Ruby-Versions: all
+
+Package: ruby-rack
+Architecture: all
+XB-Ruby-Versions: ${ruby:Versions}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ruby1.8 | ruby-interpreter
+Description: a modular Ruby webserver interface
+ Rack provides a minimal, modular and adaptable interface for
+ developing web applications in Ruby.  By wrapping HTTP requests and
+ responses in the simplest way possible, it unifies and distills the
+ API for web servers, web frameworks, and software in between (the
+ so-called middleware) into a single method call.
+ .
+ The exact details of this are described in the Rack specification,
+ which all Rack applications should conform to.
