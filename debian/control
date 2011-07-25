@@ -2,11 +2,12 @@ Source: ruby-rack
 Section: ruby
 Priority: optional
 Maintainer: Debian Ruby Extras Maintainers <pkg-ruby-extras-maintainers@lists.alioth.debian.org>
-Uploaders: Lucas Nussbaum <lucas@lucas-nussbaum.net>
+Uploaders: Lucas Nussbaum <lucas@lucas-nussbaum.net>, Youhei SASAKI <uwabami@gfd-dennou.org>
 DM-Upload-Allowed: yes
 Build-Depends: debhelper (>= 7.0.50~), gem2deb (>= 0.2.1)
+#Build-Depends: debhelper (>= 7.0.50~), gem2deb (>= 0.2.1), ruby-bacon
 # bacon (>= 0, development), rake (>= 0, development), fcgi (>= 0, development), memcache-client (>= 0, development), mongrel (>= 0, development), thin (>= 0, development)
-Standards-Version: 3.9.1
+Standards-Version: 3.9.2
 Vcs-Git: git://git.debian.org/pkg-ruby-extras/ruby-rack.git
 Vcs-Browser: http://git.debian.org/?p=pkg-ruby-extras/ruby-rack.git;a=summary
 Homepage: http://rack.rubyforge.org
@@ -15,11 +16,11 @@ XS-Ruby-Versions: all
 Package: ruby-rack
 Architecture: all
 XB-Ruby-Versions: ${ruby:Versions}
-Depends: ${shlibs:Depends}, ${misc:Depends}, ruby1.8 | ruby-interpreter
+Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter
 Replaces: librack-ruby1.9.1 (<< 1.2.2-1~), librack-ruby1.8 (<< 1.2.2-1~), librack-ruby (<< 1.2.2-1~)
 Conflicts: librack-ruby1.9.1 (<< 1.2.2-1~), librack-ruby1.8 (<< 1.2.2-1~), librack-ruby (<< 1.2.2-1~)
 Provides: librack-ruby1.9.1, librack-ruby1.8, librack-ruby
-Description: a modular Ruby webserver interface
+Description: Modular Ruby webserver interface
  Rack provides a minimal, modular and adaptable interface for
  developing web applications in Ruby.  By wrapping HTTP requests and
  responses in the simplest way possible, it unifies and distills the
