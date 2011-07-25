@@ -1,29 +1,39 @@
 # -*- encoding: binary -*-
-
 require 'fileutils'
 require 'set'
 require 'tempfile'
+require 'rack/multipart'
+
+major, minor, patch = RUBY_VERSION.split('.').map { |v| v.to_i }
+
+if (major == 1 && minor < 9) || (major == 1 && minor == 9 && patch < 2)
+  # pull in backports
+  require 'rack/backports/uri/common'
+else
+  require 'uri/common'
+end
 
 module Rack
   # Rack::Utils contains a grab-bag of useful methods for writing web
   # applications adopted from all kinds of Ruby libraries.
 
   module Utils
-    # Performs URI escaping so that you can construct proper
-    # query strings faster.  Use this rather than the cgi.rb
-    # version since it's faster.  (Stolen from Camping).
+    # URI escapes a string. (CGI style space to +)
     def escape(s)
-      s.to_s.gsub(/([^ a-zA-Z0-9_.-]+)/n) {
-        '%'+$1.unpack('H2'*bytesize($1)).join('%').upcase
-      }.tr(' ', '+')
+      URI.encode_www_form_component(s)
     end
     module_function :escape
 
-    # Unescapes a URI escaped string. (Stolen from Camping).
+    # Like URI escaping, but with %20 instead of +. Strictly speaking this is
+    # true URI escaping.
+    def escape_path(s)
+      escape(s).gsub('+', '%20')
+    end
+    module_function :escape_path
+
+    # Unescapes a URI escaped string.
     def unescape(s)
-      s.tr('+', ' ').gsub(/((?:%[0-9a-fA-F]{2})+)/n){
-        [$1.delete('%')].pack('H*')
-      }
+      URI.decode_www_form_component(s)
     end
     module_function :unescape
 
@@ -58,7 +68,7 @@ module Rack
       params = {}
 
       (qs || '').split(d ? /[#{d}] */n : DEFAULT_SEP).each do |p|
-        k, v = unescape(p).split('=', 2)
+        k, v = p.split('=', 2).map { |s| unescape(s) }
         normalize_params(params, k, v)
       end
 
@@ -132,10 +142,11 @@ module Rack
       "&" => "&amp;",
       "<" => "&lt;",
       ">" => "&gt;",
-      "'" => "&#39;",
+      "'" => "&#x27;",
       '"' => "&quot;",
+      "/" => "&#x2F;"
     }
-    ESCAPE_HTML_PATTERN = Regexp.union(ESCAPE_HTML.keys)
+    ESCAPE_HTML_PATTERN = Regexp.union(*ESCAPE_HTML.keys)
 
     # Escape ampersands, brackets and quotes to their HTML/XML entities.
     def escape_html(string)
@@ -232,7 +243,7 @@ module Rack
     end
     module_function :delete_cookie_header!
 
-    # Return the bytesize of String; uses String#length under Ruby 1.8 and
+    # Return the bytesize of String; uses String#size under Ruby 1.8 and
     # String#bytesize under 1.9.
     if ''.respond_to?(:bytesize)
       def bytesize(string)
@@ -257,9 +268,42 @@ module Rack
     def rfc2822(time)
       wday = Time::RFC2822_DAY_NAME[time.wday]
       mon = Time::RFC2822_MONTH_NAME[time.mon - 1]
-      time.strftime("#{wday}, %d-#{mon}-%Y %T GMT")
+      time.strftime("#{wday}, %d-#{mon}-%Y %H:%M:%S GMT")
     end
     module_function :rfc2822
+
+    # Parses the "Range:" header, if present, into an array of Range objects.
+    # Returns nil if the header is missing or syntactically invalid.
+    # Returns an empty array if none of the ranges are satisfiable.
+    def byte_ranges(env, size)
+      # See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35>
+      http_range = env['HTTP_RANGE']
+      return nil unless http_range
+      ranges = []
+      http_range.split(/,\s*/).each do |range_spec|
+        matches = range_spec.match(/bytes=(\d*)-(\d*)/)
+        return nil  unless matches
+        r0,r1 = matches[1], matches[2]
+        if r0.empty?
+          return nil  if r1.empty?
+          # suffix-byte-range-spec, represents trailing suffix of file
+          r0 = [size - r1.to_i, 0].max
+          r1 = size - 1
+        else
+          r0 = r0.to_i
+          if r1.empty?
+            r1 = size - 1
+          else
+            r1 = r1.to_i
+            return nil  if r1 < r0  # backwards range is syntactically invalid
+            r1 = size-1  if r1 >= size
+          end
+        end
+        ranges << (r0..r1)  if r0 <= r1
+      end
+      ranges
+    end
+    module_function :byte_ranges
 
     # Context allows the use of a compatible middleware at different points
     # in a request handling stack. A compatible middleware must define
@@ -307,24 +351,19 @@ module Rack
       end
 
       def to_hash
-        inject({}) do |hash, (k,v)|
-          if v.respond_to? :to_ary
-            hash[k] = v.to_ary.join("\n")
-          else
-            hash[k] = v
-          end
-          hash
-        end
+        hash = {}
+        each { |k,v| hash[k] = v }
+        hash
       end
 
       def [](k)
-        super(@names[k]) if @names[k]
-        super(@names[k.downcase])
+        super(k) || super(@names[k.downcase])
       end
 
       def []=(k, v)
-        delete k
-        @names[k] = @names[k.downcase] = k
+        canonical = k.downcase
+        delete k if @names[canonical] && @names[canonical] != k # .delete is expensive, don't invoke it unless necessary
+        @names[k] = @names[canonical] = k
         super k, v
       end
 
@@ -422,10 +461,9 @@ module Rack
     # Responses with HTTP status codes that should not have an entity body
     STATUS_WITH_NO_ENTITY_BODY = Set.new((100..199).to_a << 204 << 304)
 
-    SYMBOL_TO_STATUS_CODE = HTTP_STATUS_CODES.inject({}) { |hash, (code, message)|
-      hash[message.downcase.gsub(/\s|-/, '_').to_sym] = code
-      hash
-    }
+    SYMBOL_TO_STATUS_CODE = Hash[*HTTP_STATUS_CODES.map { |code, message|
+      [message.downcase.gsub(/\s|-/, '_').to_sym, code]
+    }.flatten]
 
     def status_code(status)
       if status.is_a?(Symbol)
@@ -436,232 +474,7 @@ module Rack
     end
     module_function :status_code
 
-    # A multipart form data parser, adapted from IOWA.
-    #
-    # Usually, Rack::Request#POST takes care of calling this.
+    Multipart = Rack::Multipart
 
-    module Multipart
-      class UploadedFile
-        # The filename, *not* including the path, of the "uploaded" file
-        attr_reader :original_filename
-
-        # The content type of the "uploaded" file
-        attr_accessor :content_type
-
-        def initialize(path, content_type = "text/plain", binary = false)
-          raise "#{path} file does not exist" unless ::File.exist?(path)
-          @content_type = content_type
-          @original_filename = ::File.basename(path)
-          @tempfile = Tempfile.new(@original_filename)
-          @tempfile.set_encoding(Encoding::BINARY) if @tempfile.respond_to?(:set_encoding)
-          @tempfile.binmode if binary
-          FileUtils.copy_file(path, @tempfile.path)
-        end
-
-        def path
-          @tempfile.path
-        end
-        alias_method :local_path, :path
-
-        def method_missing(method_name, *args, &block) #:nodoc:
-          @tempfile.__send__(method_name, *args, &block)
-        end
-      end
-
-      EOL = "\r\n"
-      MULTIPART_BOUNDARY = "AaB03x"
-
-      def self.parse_multipart(env)
-        unless env['CONTENT_TYPE'] =~
-            %r|\Amultipart/.*boundary=\"?([^\";,]+)\"?|n
-          nil
-        else
-          boundary = "--#{$1}"
-
-          params = {}
-          buf = ""
-          content_length = env['CONTENT_LENGTH'].to_i
-          input = env['rack.input']
-          input.rewind
-
-          boundary_size = Utils.bytesize(boundary) + EOL.size
-          bufsize = 16384
-
-          content_length -= boundary_size
-
-          read_buffer = ''
-
-          status = input.read(boundary_size, read_buffer)
-          raise EOFError, "bad content body"  unless status == boundary + EOL
-
-          rx = /(?:#{EOL})?#{Regexp.quote boundary}(#{EOL}|--)/n
-
-          loop {
-            head = nil
-            body = ''
-            filename = content_type = name = nil
-
-            until head && buf =~ rx
-              if !head && i = buf.index(EOL+EOL)
-                head = buf.slice!(0, i+2) # First \r\n
-                buf.slice!(0, 2)          # Second \r\n
-
-                token = /[^\s()<>,;:\\"\/\[\]?=]+/
-                condisp = /Content-Disposition:\s*#{token}\s*/i
-                dispparm = /;\s*(#{token})=("(?:\\"|[^"])*"|#{token})*/
-
-                rfc2183 = /^#{condisp}(#{dispparm})+$/i
-                broken_quoted = /^#{condisp}.*;\sfilename="(.*?)"(?:\s*$|\s*;\s*#{token}=)/i
-                broken_unquoted = /^#{condisp}.*;\sfilename=(#{token})/i
-
-                if head =~ rfc2183
-                  filename = Hash[head.scan(dispparm)]['filename']
-                  filename = $1 if filename and filename =~ /^"(.*)"$/
-                elsif head =~ broken_quoted
-                  filename = $1
-                elsif head =~ broken_unquoted
-                  filename = $1
-                end
-
-                if filename && filename !~ /\\[^\\"]/
-                  filename = Utils.unescape(filename).gsub(/\\(.)/, '\1')
-                end
-
-                content_type = head[/Content-Type: (.*)#{EOL}/ni, 1]
-                name = head[/Content-Disposition:.*\s+name="?([^\";]*)"?/ni, 1] || head[/Content-ID:\s*([^#{EOL}]*)/ni, 1]
-
-                if filename
-                  body = Tempfile.new("RackMultipart")
-                  body.binmode  if body.respond_to?(:binmode)
-                end
-
-                next
-              end
-
-              # Save the read body part.
-              if head && (boundary_size+4 < buf.size)
-                body << buf.slice!(0, buf.size - (boundary_size+4))
-              end
-
-              c = input.read(bufsize < content_length ? bufsize : content_length, read_buffer)
-              raise EOFError, "bad content body"  if c.nil? || c.empty?
-              buf << c
-              content_length -= c.size
-            end
-
-            # Save the rest.
-            if i = buf.index(rx)
-              body << buf.slice!(0, i)
-              buf.slice!(0, boundary_size+2)
-
-              content_length = -1  if $1 == "--"
-            end
-
-            if filename == ""
-              # filename is blank which means no file has been selected
-              data = nil
-            elsif filename
-              body.rewind
-
-              # Take the basename of the upload's original filename.
-              # This handles the full Windows paths given by Internet Explorer
-              # (and perhaps other broken user agents) without affecting
-              # those which give the lone filename.
-              filename = filename.split(/[\/\\]/).last
-
-              data = {:filename => filename, :type => content_type,
-                      :name => name, :tempfile => body, :head => head}
-            elsif !filename && content_type
-              body.rewind
-
-              # Generic multipart cases, not coming from a form
-              data = {:type => content_type,
-                      :name => name, :tempfile => body, :head => head}
-            else
-              data = body
-            end
-
-            Utils.normalize_params(params, name, data) unless data.nil?
-
-            # break if we're at the end of a buffer, but not if it is the end of a field
-            break if (buf.empty? && $1 != EOL) || content_length == -1
-          }
-
-          input.rewind
-
-          params
-        end
-      end
-
-      def self.build_multipart(params, first = true)
-        if first
-          unless params.is_a?(Hash)
-            raise ArgumentError, "value must be a Hash"
-          end
-
-          multipart = false
-          query = lambda { |value|
-            case value
-            when Array
-              value.each(&query)
-            when Hash
-              value.values.each(&query)
-            when UploadedFile
-              multipart = true
-            end
-          }
-          params.values.each(&query)
-          return nil unless multipart
-        end
-
-        flattened_params = Hash.new
-
-        params.each do |key, value|
-          k = first ? key.to_s : "[#{key}]"
-
-          case value
-          when Array
-            value.map { |v|
-              build_multipart(v, false).each { |subkey, subvalue|
-                flattened_params["#{k}[]#{subkey}"] = subvalue
-              }
-            }
-          when Hash
-            build_multipart(value, false).each { |subkey, subvalue|
-              flattened_params[k + subkey] = subvalue
-            }
-          else
-            flattened_params[k] = value
-          end
-        end
-
-        if first
-          flattened_params.map { |name, file|
-            if file.respond_to?(:original_filename)
-              ::File.open(file.path, "rb") do |f|
-                f.set_encoding(Encoding::BINARY) if f.respond_to?(:set_encoding)
-<<-EOF
---#{MULTIPART_BOUNDARY}\r
-Content-Disposition: form-data; name="#{name}"; filename="#{Utils.escape(file.original_filename)}"\r
-Content-Type: #{file.content_type}\r
-Content-Length: #{::File.stat(file.path).size}\r
-\r
-#{f.read}\r
-EOF
-              end
-            else
-<<-EOF
---#{MULTIPART_BOUNDARY}\r
-Content-Disposition: form-data; name="#{name}"\r
-\r
-#{file}\r
-EOF
-            end
-          }.join + "--#{MULTIPART_BOUNDARY}--\r"
-        else
-          flattened_params
-        end
-      end
-    end
   end
 end

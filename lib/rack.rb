@@ -20,10 +20,11 @@ module Rack
 
   # Return the Rack release as a dotted string.
   def self.release
-    "1.2"
+    "1.3"
   end
 
   autoload :Builder, "rack/builder"
+  autoload :BodyProxy, "rack/body_proxy"
   autoload :Cascade, "rack/cascade"
   autoload :Chunked, "rack/chunked"
   autoload :CommonLogger, "rack/commonlogger"
@@ -54,6 +55,7 @@ module Rack
   autoload :Static, "rack/static"
   autoload :URLMap, "rack/urlmap"
   autoload :Utils, "rack/utils"
+  autoload :Multipart, "rack/multipart"
 
   autoload :MockRequest, "rack/mock"
   autoload :MockResponse, "rack/mock"

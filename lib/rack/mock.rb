@@ -68,7 +68,10 @@ module Rack
       end
 
       errors = env["rack.errors"]
-      MockResponse.new(*(app.call(env) + [errors]))
+      status, headers, body  = app.call(env)
+      MockResponse.new(status, headers, body, errors)
+    ensure
+      body.close if body.respond_to?(:close)
     end
 
     # Return the Rack environment used for a request to +uri+.
@@ -141,50 +144,45 @@ module Rack
   # Usually, you don't create the MockResponse on your own, but use
   # MockRequest.
 
-  class MockResponse
-    def initialize(status, headers, body, errors=StringIO.new(""))
-      @status = status.to_i
-
-      @original_headers = headers
-      @headers = Rack::Utils::HeaderHash.new
-      headers.each { |field, values|
-        @headers[field] = values
-        @headers[field] = ""  if values.empty?
-      }
-
-      @body = ""
-      body.each { |part| @body << part }
-
-      @errors = errors.string if errors.respond_to?(:string)
-    end
-
-    # Status
-    attr_reader :status
-
+  class MockResponse < Rack::Response
     # Headers
-    attr_reader :headers, :original_headers
-
-    def [](field)
-      headers[field]
-    end
-
-
-    # Body
-    attr_reader :body
-
-    def =~(other)
-      @body =~ other
-    end
-
-    def match(other)
-      @body.match other
-    end
-
+    attr_reader :original_headers
 
     # Errors
     attr_accessor :errors
 
+    def initialize(status, headers, body, errors=StringIO.new(""))
+      @original_headers = headers
+      @errors           = errors.string if errors.respond_to?(:string)
+      @body_string      = nil
 
-    include Response::Helpers
+      super(body, status, headers)
+    end
+
+    def =~(other)
+      body =~ other
+    end
+
+    def match(other)
+      body.match other
+    end
+
+    def body
+      # FIXME: apparently users of MockResponse expect the return value of
+      # MockResponse#body to be a string.  However, the real response object
+      # returns the body as a list.
+      #
+      # See spec_showstatus.rb:
+      #
+      #   should "not replace existing messages" do
+      #     ...
+      #     res.body.should == "foo!"
+      #   end
+      super.join
+    end
+
+    def empty?
+      [201, 204, 304].include? status
+    end
   end
 end

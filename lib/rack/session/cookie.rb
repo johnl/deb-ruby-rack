@@ -1,14 +1,18 @@
 require 'openssl'
 require 'rack/request'
 require 'rack/response'
+require 'rack/session/abstract/id'
 
 module Rack
 
   module Session
 
     # Rack::Session::Cookie provides simple cookie based session management.
-    # The session is a Ruby Hash stored as base64 encoded marshalled data
-    # set to :key (default: rack.session).
+    # By default, the session is a Ruby Hash stored as base64 encoded marshalled
+    # data set to :key (default: rack.session).  The object that encodes the
+    # session data is configurable and must respond to +encode+ and +decode+.
+    # Both methods must take a string and return a string.
+    #
     # When the secret key is set, cookie data is checked for data integrity.
     #
     # Example:
@@ -20,65 +24,123 @@ module Rack
     #                                :secret => 'change_me'
     #
     #     All parameters are optional.
+    #
+    # Example of a cookie with no encoding:
+    #
+    #   Rack::Session::Cookie.new(application, {
+    #     :coder => Racke::Session::Cookie::Identity.new
+    #   })
+    #
+    # Example of a cookie with custom encoding:
+    #
+    #   Rack::Session::Cookie.new(application, {
+    #     :coder => Class.new {
+    #       def encode(str); str.reverse; end
+    #       def decode(str); str.reverse; end
+    #     }.new
+    #   })
+    #
 
-    class Cookie
+    class Cookie < Abstract::ID
+      # Encode session cookies as Base64
+      class Base64
+        def encode(str)
+          [str].pack('m')
+        end
 
-      def initialize(app, options={})
-        @app = app
-        @key = options[:key] || "rack.session"
-        @secret = options[:secret]
-        @default_options = {:domain => nil,
-          :path => "/",
-          :expire_after => nil}.merge(options)
+        def decode(str)
+          str.unpack('m').first
+        end
+
+        # Encode session cookies as Marshaled Base64 data
+        class Marshal < Base64
+          def encode(str)
+            super(::Marshal.dump(str))
+          end
+
+          def decode(str)
+            ::Marshal.load(super(str)) rescue nil
+          end
+        end
       end
 
-      def call(env)
-        load_session(env)
-        status, headers, body = @app.call(env)
-        commit_session(env, status, headers, body)
+      # Use no encoding for session cookies
+      class Identity
+        def encode(str); str; end
+        def decode(str); str; end
+      end
+
+      # Reverse string encoding. (trollface)
+      class Reverse
+        def encode(str); str.reverse; end
+        def decode(str); str.reverse; end
+      end
+
+      attr_reader :coder
+
+      def initialize(app, options={})
+        @secret = options[:secret]
+        @coder  = options[:coder] ||= Base64::Marshal.new
+        super(app, options.merge!(:cookie_only => true))
       end
 
       private
 
       def load_session(env)
-        request = Rack::Request.new(env)
-        session_data = request.cookies[@key]
-
-        if @secret && session_data
-          session_data, digest = session_data.split("--")
-          session_data = nil  unless digest == generate_hmac(session_data)
-        end
-
-        begin
-          session_data = session_data.unpack("m*").first
-          session_data = Marshal.load(session_data)
-          env["rack.session"] = session_data
-        rescue
-          env["rack.session"] = Hash.new
-        end
-
-        env["rack.session.options"] = @default_options.dup
+        data = unpacked_cookie_data(env)
+        data = persistent_session_id!(data)
+        [data["session_id"], data]
       end
 
-      def commit_session(env, status, headers, body)
-        session_data = Marshal.dump(env["rack.session"])
-        session_data = [session_data].pack("m*")
+      def extract_session_id(env)
+        unpacked_cookie_data(env)["session_id"]
+      end
+
+      def unpacked_cookie_data(env)
+        env["rack.session.unpacked_cookie_data"] ||= begin
+          request = Rack::Request.new(env)
+          session_data = request.cookies[@key]
+
+          if @secret && session_data
+            session_data, digest = session_data.split("--")
+            session_data = nil  unless digest == generate_hmac(session_data)
+          end
+
+          coder.decode(session_data) || {}
+        end
+      end
+
+      def persistent_session_id!(data, sid=nil)
+        data ||= {}
+        data["session_id"] ||= sid || generate_sid
+        data
+      end
+
+      # Overwrite set cookie to bypass content equality and always stream the cookie.
+
+      def set_cookie(env, headers, cookie)
+        Utils.set_cookie_header!(headers, @key, cookie)
+      end
+
+      def set_session(env, session_id, session, options)
+        session = session.merge("session_id" => session_id)
+        session_data = coder.encode(session)
 
         if @secret
           session_data = "#{session_data}--#{generate_hmac(session_data)}"
         end
 
         if session_data.size > (4096 - @key.size)
-          env["rack.errors"].puts("Warning! Rack::Session::Cookie data size exceeds 4K. Content dropped.")
+          env["rack.errors"].puts("Warning! Rack::Session::Cookie data size exceeds 4K.")
+          nil
         else
-          options = env["rack.session.options"]
-          cookie = Hash.new
-          cookie[:value] = session_data
-          cookie[:expires] = Time.now + options[:expire_after] unless options[:expire_after].nil?
-          Utils.set_cookie_header!(headers, @key, cookie.merge(options))
+          session_data
         end
+      end
 
-        [status, headers, body]
+      def destroy_session(env, session_id, options)
+        # Nothing to do here, data is in the client
+        generate_sid unless options[:drop]
       end
 
       def generate_hmac(data)

@@ -19,16 +19,25 @@ module Rack
   module Handler
     class FastCGI
       def self.run(app, options={})
-        file = options[:File] and STDIN.reopen(UNIXServer.new(file))
-        port = options[:Port] and STDIN.reopen(TCPServer.new(port))
+        if options[:File]
+          STDIN.reopen(UNIXServer.new(options[:File]))
+        elsif options[:Port]
+          STDIN.reopen(TCPServer.new(options[:Host], options[:Port]))
+        end
         FCGI.each { |request|
           serve request, app
         }
       end
 
-      def self.serve(request, app)
-        app = Rack::ContentLength.new(app)
+      def self.valid_options
+        {
+          "Host=HOST" => "Hostname to listen on (default: localhost)",
+          "Port=PORT" => "Port to listen on (default: 8080)",
+          "File=PATH" => "Creates a Domain socket at PATH instead of a TCP socket. Ignores Host and Port if set.",
+        }
+      end
 
+      def self.serve(request, app)
         env = request.env
         env.delete "HTTP_CONTENT_LENGTH"
 

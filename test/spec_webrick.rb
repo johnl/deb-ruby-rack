@@ -43,7 +43,7 @@ describe Rack::Handler::WEBrick do
     GET("/test")
     response["REQUEST_METHOD"].should.equal "GET"
     response["SCRIPT_NAME"].should.equal "/test"
-    response["REQUEST_PATH"].should.equal "/"
+    response["REQUEST_PATH"].should.equal "/test"
     response["PATH_INFO"].should.be.equal ""
     response["QUERY_STRING"].should.equal ""
     response["test.postdata"].should.equal ""
@@ -51,14 +51,14 @@ describe Rack::Handler::WEBrick do
     GET("/test/foo?quux=1")
     response["REQUEST_METHOD"].should.equal "GET"
     response["SCRIPT_NAME"].should.equal "/test"
-    response["REQUEST_PATH"].should.equal "/"
+    response["REQUEST_PATH"].should.equal "/test/foo"
     response["PATH_INFO"].should.equal "/foo"
     response["QUERY_STRING"].should.equal "quux=1"
 
     GET("/test/foo%25encoding?quux=1")
     response["REQUEST_METHOD"].should.equal "GET"
     response["SCRIPT_NAME"].should.equal "/test"
-    response["REQUEST_PATH"].should.equal "/"
+    response["REQUEST_PATH"].should.equal "/test/foo%25encoding"
     response["PATH_INFO"].should.equal "/foo%25encoding"
     response["QUERY_STRING"].should.equal "quux=1"
   end
@@ -68,7 +68,8 @@ describe Rack::Handler::WEBrick do
     status.should.equal 200
     response["REQUEST_METHOD"].should.equal "POST"
     response["SCRIPT_NAME"].should.equal "/test"
-    response["REQUEST_PATH"].should.equal "/"
+    response["REQUEST_PATH"].should.equal "/test"
+    response["PATH_INFO"].should.equal ""
     response["QUERY_STRING"].should.equal ""
     response["HTTP_X_TEST_HEADER"].should.equal "42"
     response["test.postdata"].should.equal "rack-form-data=23"
@@ -116,6 +117,24 @@ describe Rack::Handler::WEBrick do
     }
     block_ran.should.be.true
     @s.shutdown
+  end
+
+  should "return repeated headers" do
+    @server.mount "/headers", Rack::Handler::WEBrick,
+    Rack::Lint.new(lambda { |req|
+        [
+          401,
+          { "Content-Type" => "text/plain",
+            "WWW-Authenticate" => "Bar realm=X\nBaz realm=Y" },
+          [""]
+        ]
+      })
+
+    Net::HTTP.start(@host, @port) { |http|
+      res = http.get("/headers")
+      res.code.to_i.should.equal 401
+      res["www-authenticate"].should.equal "Bar realm=X, Baz realm=Y"
+    }
   end
 
   @server.shutdown

@@ -1,5 +1,6 @@
 require 'set'
 require 'rack/response'
+require 'stringio'
 
 describe Rack::Response do
   should "have sensible default values" do
@@ -23,7 +24,7 @@ describe Rack::Response do
   it "can be written to" do
     response = Rack::Response.new
 
-    status, header, body = response.finish do
+    _, _, body = response.finish do
       response.write "foo"
       response.write "bar"
       response.write "baz"
@@ -39,6 +40,11 @@ describe Rack::Response do
     response = Rack::Response.new
     response["Content-Type"].should.equal "text/html"
     response["Content-Type"] = "text/plain"
+    response["Content-Type"].should.equal "text/plain"
+  end
+
+  it "can override the initial Content-Type with a different case" do
+    response = Rack::Response.new("", 200, "content-type" => "text/plain")
     response["Content-Type"].should.equal "text/plain"
   end
 
@@ -147,7 +153,7 @@ describe Rack::Response do
       res.status = 404
       res.write "foo"
     }
-    status, header, body = r.finish
+    status, _, body = r.finish
     str = ""; body.each { |part| str << part }
     str.should.equal "foo"
     status.should.equal 404
@@ -155,10 +161,11 @@ describe Rack::Response do
 
   it "doesn't return invalid responses" do
     r = Rack::Response.new(["foo", "bar"], 204)
-    status, header, body = r.finish
+    _, header, body = r.finish
     str = ""; body.each { |part| str << part }
     str.should.be.empty
     header["Content-Type"].should.equal nil
+    header['Content-Length'].should.equal nil
 
     lambda {
       Rack::Response.new(Object.new)
@@ -237,4 +244,10 @@ describe Rack::Response do
     res.headers["Content-Length"].should.equal "8"
   end
 
+  it "calls close on #body" do
+    res = Rack::Response.new
+    res.body = StringIO.new
+    res.close
+    res.body.should.be.closed
+  end
 end

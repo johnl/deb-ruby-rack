@@ -21,12 +21,13 @@ module Rack
 
     def initialize(body=[], status=200, header={}, &block)
       @status = status.to_i
-      @header = Utils::HeaderHash.new({"Content-Type" => "text/html"}.
-                                      merge(header))
+      @header = Utils::HeaderHash.new("Content-Type" => "text/html").
+                                      merge(header)
 
-      @writer = lambda { |x| @body << x }
-      @block = nil
-      @length = 0
+      @chunked = "chunked" == @header['Transfer-Encoding']
+      @writer  = lambda { |x| @body << x }
+      @block   = nil
+      @length  = 0
 
       @body = []
 
@@ -72,12 +73,14 @@ module Rack
 
       if [204, 304].include?(status.to_i)
         header.delete "Content-Type"
+        header.delete "Content-Length"
         [status.to_i, header, []]
       else
         [status.to_i, header, self]
       end
     end
     alias to_a finish           # For *response
+    alias to_ary finish         # For implicit-splat on Ruby 1.9.2
 
     def each(&callback)
       @body.each(&callback)
@@ -91,10 +94,10 @@ module Rack
     #
     def write(str)
       s = str.to_s
-      @length += Rack::Utils.bytesize(s)
+      @length += Rack::Utils.bytesize(s) unless @chunked
       @writer.call s
 
-      header["Content-Length"] = @length.to_s
+      header["Content-Length"] = @length.to_s unless @chunked
       str
     end
 
@@ -122,7 +125,6 @@ module Rack
       def not_found?;     @status == 404;                        end
 
       def redirect?;      [301, 302, 303, 307].include? @status; end
-      def empty?;         [201, 204, 304].include?      @status; end
 
       # Headers
       attr_reader :headers, :original_headers

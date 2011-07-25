@@ -38,8 +38,18 @@ module Rack
         server.run.join
       end
 
+      def self.valid_options
+        {
+          "Host=HOST" => "Hostname to listen on (default: localhost)",
+          "Port=PORT" => "Port to listen on (default: 8080)",
+          "Processors=N" => "Number of concurrent processors to accept (default: 950)",
+          "Timeout=N" => "Time before a request is dropped for inactivity (default: 60)",
+          "Throttle=N" => "Throttle time between socket.accept calls in hundredths of a second (default: 0)",
+        }
+      end
+
       def initialize(app)
-        @app = Rack::Chunked.new(Rack::ContentLength.new(app))
+        @app = app
       end
 
       def process(request, response)
@@ -60,7 +70,7 @@ module Rack
                      "rack.multiprocess" => false, # ???
                      "rack.run_once" => false,
 
-                     "rack.url_scheme" => "http",
+                     "rack.url_scheme" => ["yes", "on", "1"].include?(env["HTTPS"]) ? "https" : "http"
                    })
         env["QUERY_STRING"] ||= ""
 

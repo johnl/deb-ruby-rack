@@ -22,14 +22,17 @@ module Rack
     end
 
     def body;            @env["rack.input"]                       end
-    def scheme;          @env["rack.url_scheme"]                  end
     def script_name;     @env["SCRIPT_NAME"].to_s                 end
     def path_info;       @env["PATH_INFO"].to_s                   end
-    def port;            @env["SERVER_PORT"].to_i                 end
     def request_method;  @env["REQUEST_METHOD"]                   end
     def query_string;    @env["QUERY_STRING"].to_s                end
     def content_length;  @env['CONTENT_LENGTH']                   end
-    def content_type;    @env['CONTENT_TYPE']                     end
+
+    def content_type
+      content_type = @env['CONTENT_TYPE']
+      content_type.nil? || content_type.empty? ? nil : content_type
+    end
+
     def session;         @env['rack.session'] ||= {}              end
     def session_options; @env['rack.session.options'] ||= {}      end
     def logger;          @env['rack.logger']                      end
@@ -51,9 +54,9 @@ module Rack
     #   { 'charset' => 'utf-8' }
     def media_type_params
       return {} if content_type.nil?
-      content_type.split(/\s*[;,]\s*/)[1..-1].
+      Hash[*content_type.split(/\s*[;,]\s*/)[1..-1].
         collect { |s| s.split('=', 2) }.
-        inject({}) { |hash,(k,v)| hash[k.downcase] = v ; hash }
+        map { |k,v| [k.downcase, v] }.flatten]
     end
 
     # The character set of the request body if a "charset" media type
@@ -64,11 +67,41 @@ module Rack
       media_type_params['charset']
     end
 
+    def scheme
+      if @env['HTTPS'] == 'on'
+        'https'
+      elsif @env['HTTP_X_FORWARDED_SSL'] == 'on'
+        'https'
+      elsif @env['HTTP_X_FORWARDED_PROTO']
+        @env['HTTP_X_FORWARDED_PROTO'].split(',')[0]
+      else
+        @env["rack.url_scheme"]
+      end
+    end
+
+    def ssl?
+      scheme == 'https'
+    end
+
     def host_with_port
       if forwarded = @env["HTTP_X_FORWARDED_HOST"]
         forwarded.split(/,\s?/).last
       else
         @env['HTTP_HOST'] || "#{@env['SERVER_NAME'] || @env['SERVER_ADDR']}:#{@env['SERVER_PORT']}"
+      end
+    end
+
+    def port
+      if port = host_with_port.split(/:/)[1]
+        port.to_i
+      elsif port = @env['HTTP_X_FORWARDED_PORT']
+        port.to_i
+      elsif ssl?
+        443
+      elsif @env.has_key?("HTTP_X_FORWARDED_HOST")
+        80
+      else
+        @env["SERVER_PORT"].to_i
       end
     end
 
@@ -84,6 +117,7 @@ module Rack
     def get?;     request_method == "GET"     end
     def head?;    request_method == "HEAD"    end
     def options?; request_method == "OPTIONS" end
+    def patch?;   request_method == "PATCH"   end
     def post?;    request_method == "POST"    end
     def put?;     request_method == "PUT"     end
     def trace?;   request_method == "TRACE"   end
@@ -149,7 +183,8 @@ module Rack
           form_vars = @env["rack.input"].read
 
           # Fix for Safari Ajax postings that always append \0
-          form_vars.sub!(/\0\z/, '')
+          # form_vars.sub!(/\0\z/, '') # performance replacement:
+          form_vars.slice!(-1) if form_vars[-1] == ?\0
 
           @env["rack.request.form_vars"] = form_vars
           @env["rack.request.form_hash"] = parse_query(form_vars)
@@ -164,8 +199,8 @@ module Rack
 
     # The union of GET and POST data.
     def params
-      self.GET.update(self.POST)
-    rescue EOFError => e
+      @params ||= self.GET.merge(self.POST)
+    rescue EOFError
       self.GET
     end
 
@@ -184,9 +219,9 @@ module Rack
       keys.map{|key| params[key] }
     end
 
-    # the referer of the client or '/'
+    # the referer of the client
     def referer
-      @env['HTTP_REFERER'] || '/'
+      @env['HTTP_REFERER']
     end
     alias referrer referer
 
@@ -207,10 +242,9 @@ module Rack
         #   precede those with less specific.  Ordering with respect to other
         #   attributes (e.g., Domain) is unspecified.
         @env["rack.request.cookie_hash"] =
-          Utils.parse_query(@env["rack.request.cookie_string"], ';,').inject({}) {|h,(k,v)|
-            h[k] = Array === v ? v.first : v
-            h
-          }
+          Hash[*Utils.parse_query(@env["rack.request.cookie_string"], ';,').map {|k,v|
+            [k, Array === v ? v.first : v]
+          }.flatten]
       end
     end
 
@@ -218,8 +252,7 @@ module Rack
       @env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"
     end
 
-    # Tries to return a remake of the original request URL as a string.
-    def url
+    def base_url
       url = scheme + "://"
       url << host
 
@@ -228,9 +261,12 @@ module Rack
         url << ":#{port}"
       end
 
-      url << fullpath
-
       url
+    end
+
+    # Tries to return a remake of the original request URL as a string.
+    def url
+      base_url + fullpath
     end
 
     def path
@@ -267,7 +303,7 @@ module Rack
       end
 
       def parse_multipart(env)
-        Utils::Multipart.parse_multipart(env)
+        Rack::Multipart.parse_multipart(env)
       end
   end
 end

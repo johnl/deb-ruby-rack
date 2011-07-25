@@ -16,6 +16,7 @@ describe Rack::Request do
     req.should.not.be.put
     req.should.not.be.delete
     req.should.not.be.head
+    req.should.not.be.patch
 
     req.script_name.should.equal ""
     req.path_info.should.equal "/"
@@ -52,12 +53,90 @@ describe Rack::Request do
     req.host.should.equal ""
   end
 
+  should "figure out the correct port" do
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/", "HTTP_HOST" => "www2.example.org")
+    req.port.should.equal 80
+
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/", "HTTP_HOST" => "www2.example.org:81")
+    req.port.should.equal 81
+
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/", "SERVER_NAME" => "example.org", "SERVER_PORT" => "9292")
+    req.port.should.equal 9292
+
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org:9292")
+    req.port.should.equal 9292
+
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org")
+    req.port.should.equal 80
+
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org", "HTTP_X_FORWARDED_SSL" => "on")
+    req.port.should.equal 443
+
+     req = Rack::Request.new \
+      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org", "HTTP_X_FORWARDED_PROTO" => "https")
+    req.port.should.equal 443
+
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org", "HTTP_X_FORWARDED_PORT" => "9393")
+    req.port.should.equal 9393
+
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org:9393", "SERVER_PORT" => "80")
+    req.port.should.equal 9393
+
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org", "SERVER_PORT" => "9393")
+    req.port.should.equal 80
+  end
+
+  should "figure out the correct host with port" do
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/", "HTTP_HOST" => "www2.example.org")
+    req.host_with_port.should.equal "www2.example.org"
+
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81")
+    req.host_with_port.should.equal "localhost:81"
+
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/", "SERVER_NAME" => "example.org", "SERVER_PORT" => "9292")
+    req.host_with_port.should.equal "example.org:9292"
+
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org:9292")
+    req.host_with_port.should.equal "example.org:9292"
+
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org", "SERVER_PORT" => "9393")
+    req.host_with_port.should.equal "example.org"
+  end
+
   should "parse the query string" do
     req = Rack::Request.new(Rack::MockRequest.env_for("/?foo=bar&quux=bla"))
     req.query_string.should.equal "foo=bar&quux=bla"
     req.GET.should.equal "foo" => "bar", "quux" => "bla"
     req.POST.should.be.empty
     req.params.should.equal "foo" => "bar", "quux" => "bla"
+  end
+
+  should "not unify GET and POST when calling params" do
+    mr = Rack::MockRequest.env_for("/?foo=quux",
+      "REQUEST_METHOD" => 'POST',
+      :input => "foo=bar&quux=bla"
+    )
+    req = Rack::Request.new mr
+
+    req.params
+
+    req.GET.should.equal "foo" => "quux"
+    req.POST.should.equal "foo" => "bar", "quux" => "bla"
+    req.params.should.equal req.GET.merge(req.POST)
   end
 
   should "raise if rack.input is missing" do
@@ -171,7 +250,7 @@ describe Rack::Request do
 
     req = Rack::Request.new \
       Rack::MockRequest.env_for("/")
-    req.referer.should.equal "/"
+    req.referer.should.equal nil
   end
 
   should "extract user agent correctly" do
@@ -182,6 +261,24 @@ describe Rack::Request do
     req = Rack::Request.new \
       Rack::MockRequest.env_for("/")
     req.user_agent.should.equal nil
+  end
+
+  should "treat missing content type as nil" do
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/")
+    req.content_type.should.equal nil
+  end
+
+  should "treat empty content type as nil" do
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/", "CONTENT_TYPE" => "")
+    req.content_type.should.equal nil
+  end
+
+  should "return nil media type for empty content type" do
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/", "CONTENT_TYPE" => "")
+    req.media_type.should.equal nil
   end
 
   should "cache, but invalidates the cache" do
@@ -211,6 +308,40 @@ describe Rack::Request do
     req.should.be.xhr
   end
 
+  should "ssl detection" do
+    request = Rack::Request.new(Rack::MockRequest.env_for("/"))
+    request.scheme.should.equal "http"
+    request.should.not.be.ssl?
+
+    request = Rack::Request.new(Rack::MockRequest.env_for("/", 'HTTPS' => 'on'))
+    request.scheme.should.equal "https"
+    request.should.be.ssl?
+
+    request = Rack::Request.new(Rack::MockRequest.env_for("/", 'rack.url_scheme' => 'https'))
+    request.scheme.should.equal "https"
+    request.should.be.ssl?
+
+    request = Rack::Request.new(Rack::MockRequest.env_for("/", 'HTTP_HOST' => 'www.example.org:8080'))
+    request.scheme.should.equal "http"
+    request.should.not.be.ssl?
+
+    request = Rack::Request.new(Rack::MockRequest.env_for("/", 'HTTP_HOST' => 'www.example.org:8443', 'HTTPS' => 'on'))
+    request.scheme.should.equal "https"
+    request.should.be.ssl?
+
+    request = Rack::Request.new(Rack::MockRequest.env_for("/", 'HTTP_HOST' => 'www.example.org:8443', 'HTTP_X_FORWARDED_SSL' => 'on'))
+    request.scheme.should.equal "https"
+    request.should.be.ssl?
+
+    request = Rack::Request.new(Rack::MockRequest.env_for("/", 'HTTP_X_FORWARDED_PROTO' => 'https'))
+    request.scheme.should.equal "https"
+    request.should.be.ssl?
+
+    request = Rack::Request.new(Rack::MockRequest.env_for("/", 'HTTP_X_FORWARDED_PROTO' => 'https, http, http'))
+    request.scheme.should.equal "https"
+    request.should.be.ssl
+  end
+
   should "parse cookies" do
     req = Rack::Request.new \
       Rack::MockRequest.env_for("", "HTTP_COOKIE" => "foo=bar;quux=h&m")
@@ -224,6 +355,18 @@ describe Rack::Request do
     req = Rack::Request.new \
       Rack::MockRequest.env_for('', 'HTTP_COOKIE' => 'foo=bar;foo=car')
     req.cookies.should.equal 'foo' => 'bar'
+  end
+
+  should 'parse cookies with quotes' do
+    req = Rack::Request.new Rack::MockRequest.env_for('', {
+      'HTTP_COOKIE' => '$Version="1"; Customer="WILE_E_COYOTE"; $Path="/acme"; Part_Number="Rocket_Launcher_0001"; $Path="/acme"'
+    })
+    req.cookies.should.equal({
+      '$Version'    => '"1"',
+      'Customer'    => '"WILE_E_COYOTE"',
+      '$Path'       => '"/acme"',
+      'Part_Number' => '"Rocket_Launcher_0001"',
+    })
   end
 
   should "provide setters" do
@@ -242,6 +385,13 @@ describe Rack::Request do
   should "provide the original env" do
     req = Rack::Request.new(e = Rack::MockRequest.env_for(""))
     req.env.should == e
+  end
+
+  should "restore the base URL" do
+    Rack::Request.new(Rack::MockRequest.env_for("")).base_url.
+      should.equal "http://example.org"
+    Rack::Request.new(Rack::MockRequest.env_for("", "SCRIPT_NAME" => "/foo")).base_url.
+      should.equal "http://example.org"
   end
 
   should "restore the URL" do
@@ -293,6 +443,71 @@ describe Rack::Request do
       req.media_type_params.should.include 'bling'
       req.media_type_params['bling'].should.equal 'bam'
   end
+
+  should "parse with junk before boundry" do
+    # Adapted from RFC 1867.
+    input = <<EOF
+blah blah\r
+\r
+--AaB03x\r
+content-disposition: form-data; name="reply"\r
+\r
+yes\r
+--AaB03x\r
+content-disposition: form-data; name="fileupload"; filename="dj.jpg"\r
+Content-Type: image/jpeg\r
+Content-Transfer-Encoding: base64\r
+\r
+/9j/4AAQSkZJRgABAQAAAQABAAD//gA+Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcg\r
+--AaB03x--\r
+EOF
+    req = Rack::Request.new Rack::MockRequest.env_for("/",
+                      "CONTENT_TYPE" => "multipart/form-data, boundary=AaB03x",
+                      "CONTENT_LENGTH" => input.size,
+                      :input => input)
+
+    req.POST.should.include "fileupload"
+    req.POST.should.include "reply"
+
+    req.should.be.form_data
+    req.content_length.should.equal input.size
+    req.media_type.should.equal 'multipart/form-data'
+    req.media_type_params.should.include 'boundary'
+    req.media_type_params['boundary'].should.equal 'AaB03x'
+
+    req.POST["reply"].should.equal "yes"
+
+    f = req.POST["fileupload"]
+    f.should.be.kind_of Hash
+    f[:type].should.equal "image/jpeg"
+    f[:filename].should.equal "dj.jpg"
+    f.should.include :tempfile
+    f[:tempfile].size.should.equal 76
+  end
+
+  should "not infinite loop with a malformed HTTP request" do
+    # Adapted from RFC 1867.
+    input = <<EOF
+--AaB03x
+content-disposition: form-data; name="reply"
+
+yes
+--AaB03x
+content-disposition: form-data; name="fileupload"; filename="dj.jpg"
+Content-Type: image/jpeg
+Content-Transfer-Encoding: base64
+
+/9j/4AAQSkZJRgABAQAAAQABAAD//gA+Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcg
+--AaB03x--
+EOF
+    req = Rack::Request.new Rack::MockRequest.env_for("/",
+                      "CONTENT_TYPE" => "multipart/form-data, boundary=AaB03x",
+                      "CONTENT_LENGTH" => input.size,
+                      :input => input)
+
+    lambda{req.POST}.should.raise(EOFError)
+  end
+
 
   should "parse multipart form data" do
     # Adapted from RFC 1867.
@@ -392,6 +607,24 @@ EOF
                       :input => input)
 
     lambda { req.POST }.should.raise(EOFError)
+  end
+
+  should "correctly parse the part name from Content-Id header" do
+    input = <<EOF
+--AaB03x\r
+Content-Type: text/xml; charset=utf-8\r
+Content-Id: <soap-start>\r
+Content-Transfer-Encoding: 7bit\r
+\r
+foo\r
+--AaB03x--\r
+EOF
+    req = Rack::Request.new Rack::MockRequest.env_for("/",
+                      "CONTENT_TYPE" => "multipart/related, boundary=AaB03x",
+                      "CONTENT_LENGTH" => input.size,
+                      :input => input)
+
+    req.params.keys.should.equal ["<soap-start>"]
   end
 
   should "not try to interpret binary as utf8" do

@@ -2,6 +2,7 @@ require 'stringio'
 require 'time'  # for Time#httpdate
 require 'rack/deflater'
 require 'rack/mock'
+require 'zlib'
 
 describe Rack::Deflater do
   def build_response(status, body, accept_encoding, headers = {})
@@ -11,6 +12,11 @@ describe Rack::Deflater do
     response = Rack::Deflater.new(app).call(request)
 
     return response
+  end
+
+  def inflate(buf)
+    inflater = Zlib::Inflate.new(-Zlib::MAX_WBITS)
+    inflater.inflate(buf) << inflater.finish
   end
 
   should "be able to deflate bodies that respond to each" do
@@ -26,7 +32,26 @@ describe Rack::Deflater do
     })
     buf = ''
     response[2].each { |part| buf << part }
-    buf.should.equal("K\313\317OJ,\002\000")
+    inflate(buf).should.equal("foobar")
+  end
+
+  should "flush deflated chunks to the client as they become ready" do
+    body = Object.new
+    class << body; def each; yield("foo"); yield("bar"); end; end
+
+    response = build_response(200, body, "deflate")
+
+    response[0].should.equal(200)
+    response[1].should.equal({
+      "Content-Encoding" => "deflate",
+      "Vary" => "Accept-Encoding"
+    })
+    buf = []
+    inflater = Zlib::Inflate.new(-Zlib::MAX_WBITS)
+    response[2].each { |part| buf << inflater.inflate(part) }
+    buf << inflater.finish
+    buf.delete_if { |part| part.empty? }
+    buf.should.equal(%w(foo bar))
   end
 
   # TODO: This is really just a special case of the above...
@@ -40,7 +65,7 @@ describe Rack::Deflater do
     })
     buf = ''
     response[2].each { |part| buf << part }
-    buf.should.equal("\363H\315\311\311W(\317/\312IQ\004\000")
+    inflate(buf).should.equal("Hello world!")
   end
 
   should "be able to gzip bodies that respond to each" do
@@ -61,6 +86,25 @@ describe Rack::Deflater do
     gz = Zlib::GzipReader.new(io)
     gz.read.should.equal("foobar")
     gz.close
+  end
+
+  should "flush gzipped chunks to the client as they become ready" do
+    body = Object.new
+    class << body; def each; yield("foo"); yield("bar"); end; end
+
+    response = build_response(200, body, "gzip")
+
+    response[0].should.equal(200)
+    response[1].should.equal({
+      "Content-Encoding" => "gzip",
+      "Vary" => "Accept-Encoding"
+    })
+    buf = []
+    inflater = Zlib::Inflate.new(Zlib::MAX_WBITS + 32)
+    response[2].each { |part| buf << inflater.inflate(part) }
+    buf << inflater.finish
+    buf.delete_if { |part| part.empty? }
+    buf.should.equal(%w(foo bar))
   end
 
   should "be able to fallback to no deflation" do
