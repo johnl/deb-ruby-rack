@@ -1,11 +1,6 @@
 require 'rack/file'
 
 module Rack
-  class File #:nodoc:
-    unless instance_methods(false).include?('to_path')
-      alias :to_path :path
-    end
-  end
 
   # = Sendfile
   #
@@ -46,16 +41,15 @@ module Rack
   #     proxy_set_header   X-Forwarded-For     $proxy_add_x_forwarded_for;
   #
   #     proxy_set_header   X-Sendfile-Type     X-Accel-Redirect;
-  #     proxy_set_header   X-Accel-Mapping     /files/=/var/www/;
+  #     proxy_set_header   X-Accel-Mapping     /var/www/=/files/;
   #
   #     proxy_pass         http://127.0.0.1:8080/;
   #   }
   #
   # Note that the X-Sendfile-Type header must be set exactly as shown above. The
-  # X-Accel-Mapping header should specify the name of the private URL pattern,
-  # followed by an equals sign (=), followed by the location on the file system
-  # that it maps to. The middleware performs a simple substitution on the
-  # resulting path.
+  # X-Accel-Mapping header should specify the internal URI path, followed by an
+  # equals sign (=), followed name of the location in the file system that it maps
+  # to. The middleware performs a simple substitution on the resulting path.
   #
   # See Also: http://wiki.codemongers.com/NginxXSendfile
   #
@@ -117,6 +111,7 @@ module Rack
           end
         when 'X-Sendfile', 'X-Lighttpd-Send-File'
           path = F.expand_path(body.to_path)
+          headers['Content-Length'] = '0'
           headers[type] = path
           body = []
         when '', nil
@@ -128,17 +123,17 @@ module Rack
     end
 
     private
-      def variation(env)
-        @variation ||
-          env['sendfile.type'] ||
-          env['HTTP_X_SENDFILE_TYPE']
-      end
+    def variation(env)
+      @variation ||
+        env['sendfile.type'] ||
+        env['HTTP_X_SENDFILE_TYPE']
+    end
 
-      def map_accel_path(env, file)
-        if mapping = env['HTTP_X_ACCEL_MAPPING']
-          internal, external = mapping.split('=', 2).map{ |p| p.strip }
-          file.sub(/^#{internal}/i, external)
-        end
+    def map_accel_path(env, file)
+      if mapping = env['HTTP_X_ACCEL_MAPPING']
+        internal, external = mapping.split('=', 2).map{ |p| p.strip }
+        file.sub(/^#{internal}/i, external)
       end
+    end
   end
 end

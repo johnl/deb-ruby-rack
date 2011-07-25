@@ -13,6 +13,13 @@ module Rack
         @server.start
       end
 
+      def self.valid_options
+        {
+          "Host=HOST" => "Hostname to listen on (default: localhost)",
+          "Port=PORT" => "Port to listen on (default: 8080)",
+        }
+      end
+
       def self.shutdown
         @server.shutdown
         @server = nil
@@ -20,7 +27,7 @@ module Rack
 
       def initialize(server, app)
         super server
-        @app = Rack::ContentLength.new(app)
+        @app = app
       end
 
       def service(req, res)
@@ -43,11 +50,11 @@ module Rack
 
         env["HTTP_VERSION"] ||= env["SERVER_PROTOCOL"]
         env["QUERY_STRING"] ||= ""
-        env["REQUEST_PATH"] ||= "/"
         unless env["PATH_INFO"] == ""
           path, n = req.request_uri.path, env["SCRIPT_NAME"].length
           env["PATH_INFO"] = path[n, path.length-n]
         end
+        env["REQUEST_PATH"] ||= [env["SCRIPT_NAME"], env["PATH_INFO"]].join
 
         status, headers, body = @app.call(env)
         begin
@@ -56,9 +63,9 @@ module Rack
             if k.downcase == "set-cookie"
               res.cookies.concat vs.split("\n")
             else
-              vs.split("\n").each { |v|
-                res[k] = v
-              }
+              # Since WEBrick won't accept repeated headers,
+              # merge the values per RFC 1945 section 4.2.
+              res[k] = vs.split("\n").join(", ")
             end
           }
           body.each { |part|

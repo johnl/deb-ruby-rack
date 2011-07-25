@@ -12,13 +12,17 @@ module Rack
   # like sendfile on the +path+.
 
   class File
+    SEPS = Regexp.union(*[::File::SEPARATOR, ::File::ALT_SEPARATOR].compact)
+
     attr_accessor :root
     attr_accessor :path
+    attr_accessor :cache_control
 
     alias :to_path :path
 
-    def initialize(root)
+    def initialize(root, cache_control = nil)
       @root = root
+      @cache_control = cache_control
     end
 
     def call(env)
@@ -29,64 +33,93 @@ module Rack
 
     def _call(env)
       @path_info = Utils.unescape(env["PATH_INFO"])
-      return forbidden  if @path_info.include? ".."
+      parts = @path_info.split SEPS
 
-      @path = F.join(@root, @path_info)
+      return fail(403, "Forbidden")  if parts.include? ".."
 
-      begin
-        if F.file?(@path) && F.readable?(@path)
-          serving
-        else
-          raise Errno::EPERM
-        end
+      @path = F.join(@root, *parts)
+
+      available = begin
+        F.file?(@path) && F.readable?(@path)
       rescue SystemCallError
-        not_found
+        false
       end
-    end
 
-    def forbidden
-      body = "Forbidden\n"
-      [403, {"Content-Type" => "text/plain",
-             "Content-Length" => body.size.to_s,
-             "X-Cascade" => "pass"},
-       [body]]
-    end
-
-    # NOTE:
-    #   We check via File::size? whether this file provides size info
-    #   via stat (e.g. /proc files often don't), otherwise we have to
-    #   figure it out by reading the whole file into memory. And while
-    #   we're at it we also use this as body then.
-
-    def serving
-      if size = F.size?(@path)
-        body = self
+      if available
+        serving(env)
       else
-        body = [F.read(@path)]
-        size = Utils.bytesize(body.first)
+        fail(404, "File not found: #{@path_info}")
       end
-
-      [200, {
-        "Last-Modified"  => F.mtime(@path).httpdate,
-        "Content-Type"   => Mime.mime_type(F.extname(@path), 'text/plain'),
-        "Content-Length" => size.to_s
-      }, body]
     end
 
-    def not_found
-      body = "File not found: #{@path_info}\n"
-      [404, {"Content-Type" => "text/plain",
-         "Content-Length" => body.size.to_s,
-         "X-Cascade" => "pass"},
-       [body]]
+    def serving(env)
+      # NOTE:
+      #   We check via File::size? whether this file provides size info
+      #   via stat (e.g. /proc files often don't), otherwise we have to
+      #   figure it out by reading the whole file into memory.
+      size = F.size?(@path) || Utils.bytesize(F.read(@path))
+
+      response = [
+        200,
+        {
+          "Last-Modified"  => F.mtime(@path).httpdate,
+          "Content-Type"   => Mime.mime_type(F.extname(@path), 'text/plain')
+        },
+        self
+      ]
+      response[1].merge! 'Cache-Control' => @cache_control if @cache_control
+
+      ranges = Rack::Utils.byte_ranges(env, size)
+      if ranges.nil? || ranges.length > 1
+        # No ranges, or multiple ranges (which we don't support):
+        # TODO: Support multiple byte-ranges
+        response[0] = 200
+        @range = 0..size-1
+      elsif ranges.empty?
+        # Unsatisfiable. Return error, and file size:
+        response = fail(416, "Byte range unsatisfiable")
+        response[1]["Content-Range"] = "bytes */#{size}"
+        return response
+      else
+        # Partial content:
+        @range = ranges[0]
+        response[0] = 206
+        response[1]["Content-Range"]  = "bytes #{@range.begin}-#{@range.end}/#{size}"
+        size = @range.end - @range.begin + 1
+      end
+
+      response[1]["Content-Length"] = size.to_s
+      response
     end
 
     def each
-      F.open(@path, "rb") { |file|
-        while part = file.read(8192)
+      F.open(@path, "rb") do |file|
+        file.seek(@range.begin)
+        remaining_len = @range.end-@range.begin+1
+        while remaining_len > 0
+          part = file.read([8192, remaining_len].min)
+          break unless part
+          remaining_len -= part.length
+
           yield part
         end
-      }
+      end
     end
+
+    private
+
+    def fail(status, body)
+      body += "\n"
+      [
+        status,
+        {
+          "Content-Type" => "text/plain",
+          "Content-Length" => body.size.to_s,
+          "X-Cascade" => "pass"
+        },
+        [body]
+      ]
+    end
+
   end
 end

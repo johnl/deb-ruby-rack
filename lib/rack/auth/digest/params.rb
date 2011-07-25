@@ -4,11 +4,10 @@ module Rack
       class Params < Hash
 
         def self.parse(str)
-          split_header_value(str).inject(new) do |header, param|
+          Params[*split_header_value(str).map do |param|
             k, v = param.split('=', 2)
-            header[k] = dequote(v)
-            header
-          end
+            [k, dequote(v)]
+          end.flatten]
         end
 
         def self.dequote(str) # From WEBrick::HTTPUtils
@@ -22,7 +21,7 @@ module Rack
         end
 
         def initialize
-          super
+          super()
 
           yield self if block_given?
         end
@@ -38,9 +37,8 @@ module Rack
         UNQUOTED = ['nc', 'stale']
 
         def to_s
-          inject([]) do |parts, (k, v)|
-            parts << "#{k}=" + (UNQUOTED.include?(k) ? v.to_s : quote(v))
-            parts
+          map do |k, v|
+            "#{k}=" + (UNQUOTED.include?(k) ? v.to_s : quote(v))
           end.join(', ')
         end
 

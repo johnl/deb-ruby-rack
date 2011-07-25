@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name            = "rack"
-  s.version         = "1.2.2"
+  s.version         = "1.3.1"
   s.platform        = Gem::Platform::RUBY
   s.summary         = "a modular Ruby webserver interface"
 
@@ -15,12 +15,11 @@ Also see http://rack.rubyforge.org.
 EOF
 
   s.files           = Dir['{bin/*,contrib/*,example/*,lib/**/*,test/**/*}'] +
-                        %w(COPYING KNOWN-ISSUES rack.gemspec README SPEC)
+                        %w(COPYING KNOWN-ISSUES rack.gemspec Rakefile README.rdoc SPEC)
   s.bindir          = 'bin'
   s.executables     << 'rackup'
   s.require_path    = 'lib'
-  s.has_rdoc        = true
-  s.extra_rdoc_files = ['README', 'SPEC', 'KNOWN-ISSUES']
+  s.extra_rdoc_files = ['README.rdoc', 'KNOWN-ISSUES']
   s.test_files      = Dir['test/spec_*.rb']
 
   s.author          = 'Christian Neukirchen'

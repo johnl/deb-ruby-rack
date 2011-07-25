@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 require 'rack/utils'
 require 'rack/mock'
 
@@ -16,6 +17,38 @@ describe Rack::Utils do
     matz_name_sep = "\xE3\x81\xBE\xE3\x81\xA4 \xE3\x82\x82\xE3\x81\xA8".unpack("a*")[0] # Matsu moto
     matz_name_sep.force_encoding("UTF-8") if matz_name_sep.respond_to? :force_encoding
     Rack::Utils.escape(matz_name_sep).should.equal '%E3%81%BE%E3%81%A4+%E3%82%82%E3%81%A8'
+  end
+
+  if RUBY_VERSION[/^\d+\.\d+/] == '1.8'
+    should "escape correctly for multibyte characters if $KCODE is set to 'U'" do
+      default_kcode, $KCODE = $KCODE, 'U'
+
+      matz_name = "\xE3\x81\xBE\xE3\x81\xA4\xE3\x82\x82\xE3\x81\xA8".unpack("a*")[0] # Matsumoto
+      matz_name.force_encoding("UTF-8") if matz_name.respond_to? :force_encoding
+      Rack::Utils.escape(matz_name).should.equal '%E3%81%BE%E3%81%A4%E3%82%82%E3%81%A8'
+      matz_name_sep = "\xE3\x81\xBE\xE3\x81\xA4 \xE3\x82\x82\xE3\x81\xA8".unpack("a*")[0] # Matsu moto
+      matz_name_sep.force_encoding("UTF-8") if matz_name_sep.respond_to? :force_encoding
+      Rack::Utils.escape(matz_name_sep).should.equal '%E3%81%BE%E3%81%A4+%E3%82%82%E3%81%A8'
+
+      $KCODE = default_kcode
+    end
+
+    should "unescape multibyte characters correctly if $KCODE is set to 'U'" do
+      default_kcode, $KCODE = $KCODE, 'U'
+      Rack::Utils.unescape('%E3%81%BE%E3%81%A4+%E3%82%82%E3%81%A8').should.equal(
+        "\xE3\x81\xBE\xE3\x81\xA4 \xE3\x82\x82\xE3\x81\xA8".unpack("a*")[0])
+      $KCODE = default_kcode
+    end
+  end
+
+  if "".respond_to?(:encode)
+    should "escape non-UTF8 strings" do
+      Rack::Utils.escape("ø".encode("ISO-8859-1")).should.equal "%F8"
+    end
+  end
+
+  should "escape path spaces with %20" do
+    Rack::Utils.escape_path("foo bar").should.equal  "foo%20bar"
   end
 
   should "unescape correctly" do
@@ -64,6 +97,9 @@ describe Rack::Utils do
       should.equal "foo" => "bar", "baz" => ""
     Rack::Utils.parse_nested_query("my+weird+field=q1%212%22%27w%245%267%2Fz8%29%3F").
       should.equal "my weird field" => "q1!2\"'w$5&7/z8)?"
+
+    Rack::Utils.parse_nested_query("a=b&pid%3D1234=1023").
+      should.equal "pid=1234" => "1023", "a" => "b"
 
     Rack::Utils.parse_nested_query("foo[]").
       should.equal "foo" => [nil]
@@ -175,9 +211,20 @@ describe Rack::Utils do
       message.should.equal "value must be a Hash"
   end
 
+  should "should escape html entities [&><'\"/]" do
+    Rack::Utils.escape_html("foo").should.equal "foo"
+    Rack::Utils.escape_html("f&o").should.equal "f&amp;o"
+    Rack::Utils.escape_html("f<o").should.equal "f&lt;o"
+    Rack::Utils.escape_html("f>o").should.equal "f&gt;o"
+    Rack::Utils.escape_html("f'o").should.equal "f&#x27;o"
+    Rack::Utils.escape_html('f"o').should.equal "f&quot;o"
+    Rack::Utils.escape_html("f/o").should.equal "f&#x2F;o"
+    Rack::Utils.escape_html("<foo></foo>").should.equal "&lt;foo&gt;&lt;&#x2F;foo&gt;"
+  end
+
   should "figure out which encodings are acceptable" do
     helper = lambda do |a, b|
-      request = Rack::Request.new(Rack::MockRequest.env_for("", "HTTP_ACCEPT_ENCODING" => a))
+      Rack::Request.new(Rack::MockRequest.env_for("", "HTTP_ACCEPT_ENCODING" => a))
       Rack::Utils.select_best_encoding(a, b)
     end
 
@@ -212,6 +259,49 @@ describe Rack::Utils do
 
   should "return status code for symbol" do
     Rack::Utils.status_code(:ok).should.equal 200
+  end
+end
+
+describe Rack::Utils, "byte_range" do
+  should "ignore missing or syntactically invalid byte ranges" do
+    Rack::Utils.byte_ranges({},500).should.equal nil
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "foobar"},500).should.equal nil
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "furlongs=123-456"},500).should.equal nil
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes="},500).should.equal nil
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=-"},500).should.equal nil
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=123,456"},500).should.equal nil
+    # A range of non-positive length is syntactically invalid and ignored:
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=456-123"},500).should.equal nil
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=456-455"},500).should.equal nil
+  end
+
+  should "parse simple byte ranges" do
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=123-456"},500).should.equal [(123..456)]
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=123-"},500).should.equal [(123..499)]
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=-100"},500).should.equal [(400..499)]
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=0-0"},500).should.equal [(0..0)]
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=499-499"},500).should.equal [(499..499)]
+  end
+
+  should "truncate byte ranges" do
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=123-999"},500).should.equal [(123..499)]
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=600-999"},500).should.equal []
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=-999"},500).should.equal [(0..499)]
+  end
+
+  should "ignore unsatisfiable byte ranges" do
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=500-501"},500).should.equal []
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=500-"},500).should.equal []
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=999-"},500).should.equal []
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=-0"},500).should.equal []
+  end
+
+  should "handle byte ranges of empty files" do
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=123-456"},0).should.equal []
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=0-"},0).should.equal []
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=-100"},0).should.equal []
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=0-0"},0).should.equal []
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=-0"},0).should.equal []
   end
 end
 
@@ -298,6 +388,12 @@ describe Rack::Utils::HeaderHash do
     end
   end
 
+  should "not create headers out of thin air" do
+    h = Rack::Utils::HeaderHash.new
+    h['foo']
+    h['foo'].should.be.nil
+    h.should.not.include 'foo'
+  end
 end
 
 describe Rack::Utils::Context do
@@ -351,267 +447,5 @@ describe Rack::Utils::Context do
     r5 = Rack::MockRequest.new(a5).get('/')
     r5.status.should.equal 200
     r4.body.should.equal r5.body
-  end
-end
-
-describe Rack::Utils::Multipart do
-  def multipart_fixture(name)
-    file = multipart_file(name)
-    data = File.open(file, 'rb') { |io| io.read }
-
-    type = "multipart/form-data; boundary=AaB03x"
-    length = data.respond_to?(:bytesize) ? data.bytesize : data.size
-
-    { "CONTENT_TYPE" => type,
-      "CONTENT_LENGTH" => length.to_s,
-      :input => StringIO.new(data) }
-  end
-
-  def multipart_file(name)
-    File.join(File.dirname(__FILE__), "multipart", name.to_s)
-  end
-
-  should "return nil if content type is not multipart" do
-    env = Rack::MockRequest.env_for("/",
-            "CONTENT_TYPE" => 'application/x-www-form-urlencoded')
-    Rack::Utils::Multipart.parse_multipart(env).should.equal nil
-  end
-
-  should "parse multipart upload with text file" do
-    env = Rack::MockRequest.env_for("/", multipart_fixture(:text))
-    params = Rack::Utils::Multipart.parse_multipart(env)
-    params["submit-name"].should.equal "Larry"
-    params["files"][:type].should.equal "text/plain"
-    params["files"][:filename].should.equal "file1.txt"
-    params["files"][:head].should.equal "Content-Disposition: form-data; " +
-      "name=\"files\"; filename=\"file1.txt\"\r\n" +
-      "Content-Type: text/plain\r\n"
-    params["files"][:name].should.equal "files"
-    params["files"][:tempfile].read.should.equal "contents"
-  end
-
-  should "parse multipart upload with nested parameters" do
-    env = Rack::MockRequest.env_for("/", multipart_fixture(:nested))
-    params = Rack::Utils::Multipart.parse_multipart(env)
-    params["foo"]["submit-name"].should.equal "Larry"
-    params["foo"]["files"][:type].should.equal "text/plain"
-    params["foo"]["files"][:filename].should.equal "file1.txt"
-    params["foo"]["files"][:head].should.equal "Content-Disposition: form-data; " +
-      "name=\"foo[files]\"; filename=\"file1.txt\"\r\n" +
-      "Content-Type: text/plain\r\n"
-    params["foo"]["files"][:name].should.equal "foo[files]"
-    params["foo"]["files"][:tempfile].read.should.equal "contents"
-  end
-
-  should "parse multipart upload with binary file" do
-    env = Rack::MockRequest.env_for("/", multipart_fixture(:binary))
-    params = Rack::Utils::Multipart.parse_multipart(env)
-    params["submit-name"].should.equal "Larry"
-    params["files"][:type].should.equal "image/png"
-    params["files"][:filename].should.equal "rack-logo.png"
-    params["files"][:head].should.equal "Content-Disposition: form-data; " +
-      "name=\"files\"; filename=\"rack-logo.png\"\r\n" +
-      "Content-Type: image/png\r\n"
-    params["files"][:name].should.equal "files"
-    params["files"][:tempfile].read.length.should.equal 26473
-  end
-
-  should "parse multipart upload with empty file" do
-    env = Rack::MockRequest.env_for("/", multipart_fixture(:empty))
-    params = Rack::Utils::Multipart.parse_multipart(env)
-    params["submit-name"].should.equal "Larry"
-    params["files"][:type].should.equal "text/plain"
-    params["files"][:filename].should.equal "file1.txt"
-    params["files"][:head].should.equal "Content-Disposition: form-data; " +
-      "name=\"files\"; filename=\"file1.txt\"\r\n" +
-      "Content-Type: text/plain\r\n"
-    params["files"][:name].should.equal "files"
-    params["files"][:tempfile].read.should.equal ""
-  end
-
-  should "parse multipart upload with filename with semicolons" do
-    env = Rack::MockRequest.env_for("/", multipart_fixture(:semicolon))
-    params = Rack::Utils::Multipart.parse_multipart(env)
-    params["files"][:type].should.equal "text/plain"
-    params["files"][:filename].should.equal "fi;le1.txt"
-    params["files"][:head].should.equal "Content-Disposition: form-data; " +
-      "name=\"files\"; filename=\"fi;le1.txt\"\r\n" +
-      "Content-Type: text/plain\r\n"
-    params["files"][:name].should.equal "files"
-    params["files"][:tempfile].read.should.equal "contents"
-  end
-
-  should "not include file params if no file was selected" do
-    env = Rack::MockRequest.env_for("/", multipart_fixture(:none))
-    params = Rack::Utils::Multipart.parse_multipart(env)
-    params["submit-name"].should.equal "Larry"
-    params["files"].should.equal nil
-    params.keys.should.not.include "files"
-  end
-
-  should "parse IE multipart upload and clean up filename" do
-    env = Rack::MockRequest.env_for("/", multipart_fixture(:ie))
-    params = Rack::Utils::Multipart.parse_multipart(env)
-    params["files"][:type].should.equal "text/plain"
-    params["files"][:filename].should.equal "file1.txt"
-    params["files"][:head].should.equal "Content-Disposition: form-data; " +
-      "name=\"files\"; " +
-      'filename="C:\Documents and Settings\Administrator\Desktop\file1.txt"' +
-      "\r\nContent-Type: text/plain\r\n"
-    params["files"][:name].should.equal "files"
-    params["files"][:tempfile].read.should.equal "contents"
-  end
-
-  should "parse filename and modification param" do
-    env = Rack::MockRequest.env_for("/", multipart_fixture(:filename_and_modification_param))
-    params = Rack::Utils::Multipart.parse_multipart(env)
-    params["files"][:type].should.equal "image/jpeg"
-    params["files"][:filename].should.equal "genome.jpeg"
-    params["files"][:head].should.equal "Content-Type: image/jpeg\r\n" +
-      "Content-Disposition: attachment; " +
-      "name=\"files\"; " +
-      "filename=genome.jpeg; " +
-      "modification-date=\"Wed, 12 Feb 1997 16:29:51 -0500\";\r\n" +
-      "Content-Description: a complete map of the human genome\r\n"
-    params["files"][:name].should.equal "files"
-    params["files"][:tempfile].read.should.equal "contents"
-  end
-
-  should "parse filename with escaped quotes" do
-    env = Rack::MockRequest.env_for("/", multipart_fixture(:filename_with_escaped_quotes))
-    params = Rack::Utils::Multipart.parse_multipart(env)
-    params["files"][:type].should.equal "application/octet-stream"
-    params["files"][:filename].should.equal "escape \"quotes"
-    params["files"][:head].should.equal "Content-Disposition: form-data; " +
-      "name=\"files\"; " +
-      "filename=\"escape \\\"quotes\"\r\n" +
-      "Content-Type: application/octet-stream\r\n"
-    params["files"][:name].should.equal "files"
-    params["files"][:tempfile].read.should.equal "contents"
-  end
-
-  should "parse filename with percent escaped quotes" do
-    env = Rack::MockRequest.env_for("/", multipart_fixture(:filename_with_percent_escaped_quotes))
-    params = Rack::Utils::Multipart.parse_multipart(env)
-    params["files"][:type].should.equal "application/octet-stream"
-    params["files"][:filename].should.equal "escape \"quotes"
-    params["files"][:head].should.equal "Content-Disposition: form-data; " +
-      "name=\"files\"; " +
-      "filename=\"escape %22quotes\"\r\n" +
-      "Content-Type: application/octet-stream\r\n"
-    params["files"][:name].should.equal "files"
-    params["files"][:tempfile].read.should.equal "contents"
-  end
-
-  should "parse filename with unescaped quotes" do
-    env = Rack::MockRequest.env_for("/", multipart_fixture(:filename_with_unescaped_quotes))
-    params = Rack::Utils::Multipart.parse_multipart(env)
-    params["files"][:type].should.equal "application/octet-stream"
-    params["files"][:filename].should.equal "escape \"quotes"
-    params["files"][:head].should.equal "Content-Disposition: form-data; " +
-      "name=\"files\"; " +
-      "filename=\"escape \"quotes\"\r\n" +
-      "Content-Type: application/octet-stream\r\n"
-    params["files"][:name].should.equal "files"
-    params["files"][:tempfile].read.should.equal "contents"
-  end
-
-  should "parse filename with escaped quotes and modification param" do
-    env = Rack::MockRequest.env_for("/", multipart_fixture(:filename_with_escaped_quotes_and_modification_param))
-    params = Rack::Utils::Multipart.parse_multipart(env)
-    params["files"][:type].should.equal "image/jpeg"
-    params["files"][:filename].should.equal "\"human\" genome.jpeg"
-    params["files"][:head].should.equal "Content-Type: image/jpeg\r\n" +
-      "Content-Disposition: attachment; " +
-      "name=\"files\"; " +
-      "filename=\"\"human\" genome.jpeg\"; " +
-      "modification-date=\"Wed, 12 Feb 1997 16:29:51 -0500\";\r\n" +
-      "Content-Description: a complete map of the human genome\r\n"
-    params["files"][:name].should.equal "files"
-    params["files"][:tempfile].read.should.equal "contents"
-  end
-
-  it "rewinds input after parsing upload" do
-    options = multipart_fixture(:text)
-    input = options[:input]
-    env = Rack::MockRequest.env_for("/", options)
-    params = Rack::Utils::Multipart.parse_multipart(env)
-    params["submit-name"].should.equal "Larry"
-    params["files"][:filename].should.equal "file1.txt"
-    input.read.length.should.equal 197
-  end
-
-  it "builds multipart body" do
-    files = Rack::Utils::Multipart::UploadedFile.new(multipart_file("file1.txt"))
-    data  = Rack::Utils::Multipart.build_multipart("submit-name" => "Larry", "files" => files)
-
-    options = {
-      "CONTENT_TYPE" => "multipart/form-data; boundary=AaB03x",
-      "CONTENT_LENGTH" => data.length.to_s,
-      :input => StringIO.new(data)
-    }
-    env = Rack::MockRequest.env_for("/", options)
-    params = Rack::Utils::Multipart.parse_multipart(env)
-    params["submit-name"].should.equal "Larry"
-    params["files"][:filename].should.equal "file1.txt"
-    params["files"][:tempfile].read.should.equal "contents"
-  end
-
-  it "builds nested multipart body" do
-    files = Rack::Utils::Multipart::UploadedFile.new(multipart_file("file1.txt"))
-    data  = Rack::Utils::Multipart.build_multipart("people" => [{"submit-name" => "Larry", "files" => files}])
-
-    options = {
-      "CONTENT_TYPE" => "multipart/form-data; boundary=AaB03x",
-      "CONTENT_LENGTH" => data.length.to_s,
-      :input => StringIO.new(data)
-    }
-    env = Rack::MockRequest.env_for("/", options)
-    params = Rack::Utils::Multipart.parse_multipart(env)
-    params["people"][0]["submit-name"].should.equal "Larry"
-    params["people"][0]["files"][:filename].should.equal "file1.txt"
-    params["people"][0]["files"][:tempfile].read.should.equal "contents"
-  end
-
-  it "can parse fields that end at the end of the buffer" do
-    input = File.read(multipart_file("bad_robots"))
-
-    req = Rack::Request.new Rack::MockRequest.env_for("/",
-                      "CONTENT_TYPE" => "multipart/form-data, boundary=1yy3laWhgX31qpiHinh67wJXqKalukEUTvqTzmon",
-                      "CONTENT_LENGTH" => input.size,
-                      :input => input)
-
-    req.POST['file.path'].should.equal "/var/tmp/uploads/4/0001728414"
-    req.POST['addresses'].should.not.equal nil
-  end
-
-  it "builds complete params with the chunk size of 16384 slicing exactly on boundary" do
-    data = File.open(multipart_file("fail_16384_nofile")) { |f| f.read }.gsub(/\n/, "\r\n")
-    options = {
-      "CONTENT_TYPE" => "multipart/form-data; boundary=----WebKitFormBoundaryWsY0GnpbI5U7ztzo",
-      "CONTENT_LENGTH" => data.length.to_s,
-      :input => StringIO.new(data)
-    }
-    env = Rack::MockRequest.env_for("/", options)
-    params = Rack::Utils::Multipart.parse_multipart(env)
-
-    params.should.not.equal nil
-    params.keys.should.include "AAAAAAAAAAAAAAAAAAA"
-    params["AAAAAAAAAAAAAAAAAAA"].keys.should.include "PLAPLAPLA_MEMMEMMEMM_ATTRATTRER"
-    params["AAAAAAAAAAAAAAAAAAA"]["PLAPLAPLA_MEMMEMMEMM_ATTRATTRER"].keys.should.include "new"
-    params["AAAAAAAAAAAAAAAAAAA"]["PLAPLAPLA_MEMMEMMEMM_ATTRATTRER"]["new"].keys.should.include "-2"
-    params["AAAAAAAAAAAAAAAAAAA"]["PLAPLAPLA_MEMMEMMEMM_ATTRATTRER"]["new"]["-2"].keys.should.include "ba_unit_id"
-    params["AAAAAAAAAAAAAAAAAAA"]["PLAPLAPLA_MEMMEMMEMM_ATTRATTRER"]["new"]["-2"]["ba_unit_id"].should.equal "1017"
-  end
-
-  should "return nil if no UploadedFiles were used" do
-    data = Rack::Utils::Multipart.build_multipart("people" => [{"submit-name" => "Larry", "files" => "contents"}])
-    data.should.equal nil
-  end
-
-  should "raise ArgumentError if params is not a Hash" do
-    lambda { Rack::Utils::Multipart.build_multipart("foo=bar") }.
-      should.raise(ArgumentError).
-      message.should.equal "value must be a Hash"
   end
 end

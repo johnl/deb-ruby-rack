@@ -1,5 +1,6 @@
 require 'yaml'
 require 'rack/mock'
+require 'stringio'
 
 app = lambda { |env|
   req = Rack::Request.new(env)
@@ -167,7 +168,7 @@ describe Rack::MockRequest do
   end
 
   should "accept params and build multipart encoded params for POST requests" do
-    files = Rack::Utils::Multipart::UploadedFile.new(File.join(File.dirname(__FILE__), "multipart", "file1.txt"))
+    files = Rack::Multipart::UploadedFile.new(File.join(File.dirname(__FILE__), "multipart", "file1.txt"))
     res = Rack::MockRequest.new(app).post("/foo", :params => { "submit-name" => "Larry", "files" => files })
     env = YAML.load(res.body)
     env["REQUEST_METHOD"].should.equal "POST"
@@ -179,9 +180,18 @@ describe Rack::MockRequest do
 
   should "behave valid according to the Rack spec" do
     lambda {
-      res = Rack::MockRequest.new(app).
+      Rack::MockRequest.new(app).
         get("https://bla.example.org:9292/meh/foo?bar", :lint => true)
     }.should.not.raise(Rack::Lint::LintError)
+  end
+
+  should "call close on the original body object" do
+    called = false
+    body   = Rack::BodyProxy.new(['hi']) { called = true }
+    capp   = proc { |e| [200, {'Content-Type' => 'text/plain '}, body] }
+    called.should.equal false
+    Rack::MockRequest.new(capp).get('/', :lint => true)
+    called.should.equal true
   end
 end
 
@@ -214,7 +224,7 @@ describe Rack::MockResponse do
     res.original_headers["Content-Type"].should.equal "text/yaml"
     res["Content-Type"].should.equal "text/yaml"
     res.content_type.should.equal "text/yaml"
-    res.content_length.should.be > 0
+    res.content_length.should.not.equal 0
     res.location.should.be.nil
   end
 
@@ -231,6 +241,14 @@ describe Rack::MockResponse do
     res.should.be.ok
     res.errors.should.not.be.empty
     res.errors.should.include "foo"
+  end
+
+  should "allow calling body.close afterwards" do
+    # this is exactly what rack-test does
+    body = StringIO.new("hi")
+    res = Rack::MockResponse.new(200, {}, body)
+    body.close if body.respond_to?(:close)
+    res.body.should == 'hi'
   end
 
   should "optionally make Rack errors fatal" do

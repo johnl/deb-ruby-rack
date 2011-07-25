@@ -23,18 +23,45 @@ module Rack
     def call(env)
       @app.call(env)
     rescue StandardError, LoadError, SyntaxError => e
-      backtrace = pretty(env, e)
+      exception_string = dump_exception(e)
+
+      env["rack.errors"].puts(exception_string)
+      env["rack.errors"].flush
+
+      if prefers_plain_text?(env)
+        content_type = "text/plain"
+        body = [exception_string]
+      else
+        content_type = "text/html"
+        body = pretty(env, e)
+      end
+
       [500,
-       {"Content-Type" => "text/html",
-        "Content-Length" => backtrace.join.size.to_s},
-       backtrace]
+       {"Content-Type" => content_type,
+        "Content-Length" => Rack::Utils.bytesize(body.join).to_s},
+       body]
+    end
+
+    def prefers_plain_text?(env)
+      env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest" && (!env["HTTP_ACCEPT"] || !env["HTTP_ACCEPT"].include?("text/html"))
+    end
+
+    def dump_exception(exception)
+      string = "#{exception.class}: #{exception.message}\n"
+      string << exception.backtrace.map { |l| "\t#{l}" }.join("\n")
+      string
     end
 
     def pretty(env, exception)
       req = Rack::Request.new(env)
-      path = (req.script_name + req.path_info).squeeze("/")
 
-      frames = exception.backtrace.map { |line|
+      # This double assignment is to prevent an "unused variable" warning on
+      # Ruby 1.9.3.  Yes, it is dumb, but I don't like Ruby yelling at me.
+      path = path = (req.script_name + req.path_info).squeeze("/")
+
+      # This double assignment is to prevent an "unused variable" warning on
+      # Ruby 1.9.3.  Yes, it is dumb, but I don't like Ruby yelling at me.
+      frames = frames = exception.backtrace.map { |line|
         frame = OpenStruct.new
         if line =~ /(.*?):(\d+)(:in `(.*)')?/
           frame.filename = $1
@@ -57,10 +84,6 @@ module Rack
           nil
         end
       }.compact
-
-      env["rack.errors"].puts "#{exception.class}: #{exception.message}"
-      env["rack.errors"].puts exception.backtrace.map { |l| "\t" + l }
-      env["rack.errors"].flush
 
       [@template.result(binding)]
     end
@@ -195,7 +218,13 @@ TEMPLATE = <<'HTML'
   <h2><%=h exception.message %></h2>
   <table><tr>
     <th>Ruby</th>
-    <td><code><%=h frames.first.filename %></code>: in <code><%=h frames.first.function %></code>, line <%=h frames.first.lineno %></td>
+    <td>
+<% if first = frames.first %>
+      <code><%=h first.filename %></code>: in <code><%=h first.function %></code>, line <%=h frames.first.lineno %>
+<% else %>
+      unknown location
+<% end %>
+    </td>
   </tr><tr>
     <th>Web</th>
     <td><code><%=h req.request_method %> <%=h(req.host + path)%></code></td>

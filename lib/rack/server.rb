@@ -48,6 +48,12 @@ module Rack
             options[:Port] = port
           }
 
+          opts.on("-O", "--option NAME[=VALUE]", "pass VALUE to the server as option NAME. If no VALUE, sets it to true. Run '#{$0} -s SERVER -h' to get a list of options for SERVER") { |name|
+            name, value = name.split('=', 2)
+            value = true if value.nil?
+            options[name.to_sym] = value
+          }
+
           opts.on("-E", "--env ENVIRONMENT", "use ENVIRONMENT for defaults (default: development)") { |e|
             options[:environment] = e
           }
@@ -57,25 +63,56 @@ module Rack
           }
 
           opts.on("-P", "--pid FILE", "file to store PID (default: rack.pid)") { |f|
-            options[:pid] = f
+            options[:pid] = ::File.expand_path(f)
           }
 
           opts.separator ""
           opts.separator "Common options:"
 
-          opts.on_tail("-h", "--help", "Show this message") do
+          opts.on_tail("-h", "-?", "--help", "Show this message") do
             puts opts
+            puts handler_opts(options)
+
             exit
           end
 
           opts.on_tail("--version", "Show version") do
-            puts "Rack #{Rack.version}"
+            puts "Rack #{Rack.version} (Release: #{Rack.release})"
             exit
           end
         end
-        opt_parser.parse! args
+
+        begin
+          opt_parser.parse! args
+        rescue OptionParser::InvalidOption => e
+          warn e.message
+          abort opt_parser.to_s
+        end
+
         options[:config] = args.last if args.last
         options
+      end
+
+      def handler_opts(options)
+        begin
+          info = []
+          server = Rack::Handler.get(options[:server]) || Rack::Handler.default(options)
+          if server && server.respond_to?(:valid_options)
+            info << ""
+            info << "Server-specific options for #{server.name}:"
+
+            has_options = false
+            server.valid_options.each do |name, description|
+              next if name.to_s.match(/^(Host|Port)[^a-zA-Z]/) # ignore handler's host and port options, we do our own.
+              info << "  -O %-21s %s" % [name, description]
+              has_options = true
+            end
+            return "" if !has_options
+          end
+          info.join("\n")
+        rescue NameError
+          return "Warning: Could not find handler specified (#{options[:server] || 'default'}) to determine handler-specific options"
+        end
       end
     end
 
@@ -136,6 +173,7 @@ module Rack
     #     require the given libraries
     def initialize(options = nil)
       @options = options
+      @app = options[:app] if options && options[:app]
     end
 
     def options
@@ -144,7 +182,7 @@ module Rack
 
     def default_options
       {
-        :environment => "development",
+        :environment => ENV['RACK_ENV'] || "development",
         :pid         => nil,
         :Port        => 9292,
         :Host        => "0.0.0.0",
@@ -165,10 +203,20 @@ module Rack
       end
     end
 
+    def self.logging_middleware
+      lambda { |server|
+        server.server.name =~ /CGI/ ? nil : [Rack::CommonLogger, $stderr]
+      }
+    end
+
     def self.middleware
       @middleware ||= begin
         m = Hash.new {|h,k| h[k] = []}
-        m["deployment"].concat  [lambda {|server| server.server.name =~ /CGI/ ? nil : [Rack::CommonLogger, $stderr] }]
+        m["deployment"].concat [
+          [Rack::ContentLength],
+          [Rack::Chunked],
+          logging_middleware
+        ]
         m["development"].concat m["deployment"] + [[Rack::ShowExceptions], [Rack::Lint]]
         m
       end
@@ -179,14 +227,6 @@ module Rack
     end
 
     def start
-      if options[:debug]
-        $DEBUG = true
-        require 'pp'
-        p options[:server]
-        pp wrapped_app
-        pp app
-      end
-
       if options[:warn]
         $-w = true
       end
@@ -198,6 +238,18 @@ module Rack
       if library = options[:require]
         require library
       end
+
+      if options[:debug]
+        $DEBUG = true
+        require 'pp'
+        p options[:server]
+        pp wrapped_app
+        pp app
+      end
+
+      # Touch the wrapped app, so that the config.ru is loaded before
+      # daemonization (i.e. before chdir, etc).
+      wrapped_app
 
       daemonize_app if options[:daemonize]
       write_pid if options[:pid]
@@ -225,7 +277,8 @@ module Rack
         # http://hoohoo.ncsa.uiuc.edu/cgi/cl.html
         args.clear if ENV.include?("REQUEST_METHOD")
 
-        options.merge! opt_parser.parse! args
+        options.merge! opt_parser.parse!(args)
+        options[:config] = ::File.expand_path(options[:config])
         ENV["RACK_ENV"] = options[:environment]
         options
       end
@@ -254,7 +307,6 @@ module Rack
           Process.setsid
           exit if fork
           Dir.chdir "/"
-          ::File.umask 0000
           STDIN.reopen "/dev/null"
           STDOUT.reopen "/dev/null", "a"
           STDERR.reopen "/dev/null", "a"
