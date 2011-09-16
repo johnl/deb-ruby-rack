@@ -1,0 +1,3804 @@
+Sat Jul 16 14:45:19 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Bump version
+
+Sat Jul 16 14:43:44 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Update for the 1.3.2 release
+    
+    Conflicts:
+    
+    	README.rdoc
+
+Sat Jul 16 17:14:03 2011 -0300  Santiago Pastorino <santiago@wyeworks.com>
+  * Rack::Utils.escape should work with symbols in Ruby 1.8.7
+
+Wed Jul 13 16:13:50 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Bump version
+
+Wed Jul 13 16:10:37 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Update readme pending patch release
+
+Wed Jul 13 16:05:43 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Merge pull request #206 from brendan/19451fc0463ec424fa368cac05be15c75e87e016
+    
+    Fixed a Regexp that allows bad urls to DoS you.
+
+Wed Jul 13 13:01:59 2011 -0700  Brendan Baldwin <brendan@usergenic.com>
+  * Fixed a Regexp bug that can DoS your box.
+
+Sat Jul 2 13:57:29 2011 -0700  nleguen <nleguen@anaeinteractive.com>
+  * Edited lib/rack/sendfile.rb via GitHub
+
+Wed Jun 29 20:20:25 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * update changes
+
+Wed Jun 29 20:13:36 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * prepare readme for 1.3.1
+
+Tue Jun 14 09:37:48 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * Have MockRequest call close on the body rather than MockResponse.
+    That way close is called automatically when testing just with
+    vanilla Rack, but not called twice when using other testing libs
+    like rack-test.
+    
+    Related to #191.
+
+Fri Jun 10 17:59:44 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * test for Rack::Response#close
+
+Thu Jun 9 22:14:35 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * call #close on body in mock responses
+
+Wed Jun 29 10:21:14 2011 -0700  Samuel Williams <samuel.williams@oriontransfer.co.nz>
+  * Minor error in documentation regarding the order of parameters in HTTP_X_ACCEL_MAPPING.
+
+Sun Jun 26 20:49:47 2011 -0400  Matthew M. Boedicker <matthewm@boedicker.org>
+  * make sure the Cache-Control header can never be nil
+
+Sun Jun 26 20:41:52 2011 -0400  Matthew M. Boedicker <matthewm@boedicker.org>
+  * fix typo
+
+Thu Jun 16 12:10:11 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * simpler, dry implementation for HeaderHash#to_hash, fixes #177
+
+Thu Jun 16 11:15:30 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * update core team list
+
+Tue Jun 14 16:34:38 2011 +0800  Jan Xie <jan.h.xie@gmail.com>
+  * block should not be called if IOError raised
+    
+    Signed-off-by: Konstantin Haase <konstantin.mailinglists@googlemail.com>
+
+Tue Jun 14 09:49:13 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * more tests for Rack::BodyProxy
+
+Tue Jun 14 09:44:22 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * let Rack::BodyProxy raise an IOError (like IO and StringIO do) when calling #close twice. Related to #191.
+
+Tue Jun 14 00:22:35 2011 +0800  Jan Xie <jan.h.xie@gmail.com>
+  * fix BodyProxy#close
+    
+    Signed-off-by: Konstantin Haase <konstantin.mailinglists@googlemail.com>
+
+Thu Jun 9 22:13:44 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * BasicObject does not define respond_to?
+
+Thu Jun 9 09:14:04 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * fix typo
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Tue May 31 11:02:15 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * nicer method_missings
+
+Tue May 31 11:15:42 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * allow passing in rack.session in tests (used to work previously)
+
+Tue May 31 11:47:43 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * fix Rack::Lock, use same logic for Rack::CommonLogger
+
+Wed May 25 23:33:40 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Sigh, thinking backports was a bad idea
+
+Thu May 26 11:50:08 2011 +0700  oleg dashevskii <olegdashevskii@gmail.com>
+  * Fix Rack::Utils.escape in the case when $KCODE='U'
+    
+    CGI.escape backport used in this case
+
+Thu May 26 11:26:16 2011 +0700  oleg dashevskii <olegdashevskii@gmail.com>
+  * Fix a regression caused by f043f32ce99
+
+Tue May 24 22:23:10 2011 -0700  Erik Michaels-Ober <sferik@gmail.com>
+  * Restore Ruby 1.9.1 compatibility
+    
+    URI.decode_www_form_component and URI.encode_www_form_component were not
+    added until Ruby 1.9.2.
+
+Wed May 25 10:14:46 2011 -0700  Erik Michaels-Ober <sferik@gmail.com>
+  * Add .rdoc extension so GitHub can apply formatting
+
+Mon May 23 19:30:53 2011 -0700  Blake Mizerany <blake.mizerany@gmail.com>
+  * fix whitespace errors
+
+Mon May 23 00:31:33 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Update for 1.2.3 release
+
+Sun May 22 23:06:08 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Thirteenth public release, 1.3.0
+
+Sun May 22 22:52:24 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Prep for full 1.3.0 release
+
+Sun May 22 22:50:04 2011 -0700  James Tucker <jftucker@gmail.com>
+  * We don't actually use rdoctask
+
+Sun May 22 22:49:10 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Update SPEC
+
+Sun May 22 22:48:17 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Grammatical corrections (thanks digitalally)
+
+Sun May 22 22:19:33 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Update links and correct a spelling error
+
+Sun May 22 22:15:20 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Update README changelog
+
+Fri May 20 09:40:50 2011 -0700  raggi <jftucker@gmail.com>
+  * Return behavior against Connection: close for Content-Length middleware, as it's contended. Left notes for future discussion.
+
+Thu May 19 23:19:19 2011 -0700  raggi <jftucker@gmail.com>
+  * missed a spot of coverage
+
+Thu May 19 23:14:40 2011 -0700  raggi <jftucker@gmail.com>
+  * Fix support for variable length bodies that respond to to_ary. Add notes for future proposed changes. Include test coverage.
+
+Thu May 19 22:20:54 2011 -0700  raggi <jftucker@gmail.com>
+  * Fix the line endings. You shouldn't tell git to modify files yo'
+
+Thu May 19 21:46:15 2011 -0500  Joshua Peek <josh@joshpeek.com>
+  * Revert "Improve Rack::ContentLength middleware."
+    
+    This reverts commit 2b3abc73f3e3a23110f2c8f43458416674130511.
+
+Thu May 19 13:10:51 2011 -0400  Joshua Peek <josh@joshpeek.com>
+  * Rack 1.3.0.beta2
+
+Thu May 19 07:55:52 2011 -0700  Aaron Patterson <aaron.patterson@gmail.com>
+  * Merge pull request #166 from josevalim/master
+    
+    Improve content-length middleware
+
+Thu May 19 09:31:18 2011 -0400  José Valim <jose.valim@gmail.com>
+  * Improve Rack::ContentLength middleware.
+    
+    1) It makes Rack::ContentLength middleware conform with the rack specification by removing the to_ary check;
+    
+    2) Make Rack::ContentLength accept an extra header argument that checks for sendfile headers
+
+Tue May 17 14:14:59 2011 -0700  Joshua Peek <josh@joshpeek.com>
+  * Merge pull request #163 from jeremy/multipart-mixed
+    
+    Test that parsing a multipart/mixed upload no longer blows up
+
+Sun Jun 27 17:38:08 2010 -0700  Jeremy Kemper <jeremy@bitsweat.net>
+  * Test that parsing a multipart/mixed upload no longer blows up
+
+Sun May 8 11:38:12 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Merge pull request #154 from rkh/session-options
+    
+    keep :secret and :coder in env["rack.session.options"]
+
+Sun May 8 11:37:57 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Merge pull request #155 from rkh/secure-random
+    
+    use SecureRandom.hex
+
+Wed May 4 11:39:19 2011 -0700  Aaron Patterson <aaron.patterson@gmail.com>
+  * Merge pull request #158 from josevalim/cookies.
+    
+    Ensure cookies respect renew.
+
+Wed May 4 20:36:37 2011 +0200  José Valim <jose.valim@gmail.com>
+  * Ensure cookies respect renew.
+
+Wed May 4 12:04:45 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * SecureRandom actually raises a NotImplementedError if no random device is availabl
+
+Wed May 4 11:19:35 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * use SecureRandom.hex
+    
+    fixes session id generation on JRuby, might even produce slightly better performance on other Rubies
+
+Tue May 3 14:50:56 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * keep :secret and :coder in env["rack.session.options"]
+
+Tue May 3 03:38:40 2011 -0700  raggi <jftucker@gmail.com>
+  * Mark as beta
+
+Tue May 3 03:37:26 2011 -0700  raggi <jftucker@gmail.com>
+  * Update readme with some changelogs
+
+Tue May 3 03:23:20 2011 -0700  raggi <jftucker@gmail.com>
+  * Pass through a cache_control option for Rack::Static
+
+Tue May 3 03:06:11 2011 -0700  raggi <jftucker@gmail.com>
+  * Support cache control in Rack::File as second argument
+
+Tue May 3 02:22:03 2011 -0700  raggi <jftucker@gmail.com>
+  * Allow files with '..', but not path components that are '..'
+
+Tue May 3 01:54:33 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Merge pull request #92 from stormbrew/handler-options-2.1.
+    
+    Ability for rackup/Rack::Server to accept handler-specific options on the command line
+
+Tue May 3 01:46:37 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Merge pull request #135 from rinaldifonseca/master.
+    
+    Refactor Rack::URLMap
+
+Tue May 3 01:41:45 2011 -0700  Florian Gilcher <florian.gilcher@asquera.de>
+  * Keep #params from merging POST into GET
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Tue May 3 01:12:16 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Merge pull request #151 from bigfix/encode_www_form_component.
+    
+    Backport URI.encode_www_form_component instead.
+
+Tue May 3 01:02:31 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Merge pull request #137 from AndreasWurm/master.
+    
+    allow multi-line comments in the config file
+
+Tue May 3 00:59:03 2011 -0700  raggi <jftucker@gmail.com>
+  * Bump release
+
+Tue May 3 00:55:34 2011 -0700  raggi <jftucker@gmail.com>
+  * escape_path (URI escape rather than CGI escape)
+
+Tue May 3 00:40:48 2011 -0700  raggi <jftucker@gmail.com>
+  * Correct bug L#94 reported by Nikolai Lugovoi, keys should not form part of the query string.
+
+Tue May 3 00:14:44 2011 -0700  Brendan Baldwin <brendan@usergenic.com>
+  * Added a new multipart fixture and spec to demonstrate that current 1.2 Rack can
+    explode when Content-Type is present, but "filename" is not.  This is a bug in
+    handling multipart.  Apache HTTP Client will provide Content-Type description
+    without filename for form-data, for example.
+    
+    Conflicts:
+    
+    	test/spec_utils.rb
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Mon May 2 23:48:36 2011 -0700  raggi <jftucker@gmail.com>
+  * Autoloads, requires, and using new api
+
+Mon May 2 23:40:17 2011 -0700  raggi <jftucker@gmail.com>
+  * slice is about double the speed on MRI, and slightly faster on 1.9
+
+Mon May 2 23:21:51 2011 -0700  raggi <jftucker@gmail.com>
+  * Closes #21 Rack::Response#finish should delete Content-Length if status==204 etc from jjw
+
+Mon May 2 22:51:31 2011 -0700  raggi <jftucker@gmail.com>
+  * Bump to 1.3.0
+
+Mon May 2 22:49:17 2011 -0700  raggi <jftucker@gmail.com>
+  * encoding not needed
+
+Mon May 2 22:47:47 2011 -0700  raggi <jftucker@gmail.com>
+  * Merge branch 'multipart' of https://github.com/shwoodard/rack into shwoodard-multipart
+    
+    * 'multipart' of https://github.com/shwoodard/rack:
+      refactor of multipart module
+    
+    Conflicts:
+    	test/spec_utils.rb
+
+Mon May 2 22:37:36 2011 -0700  Sam Woodard <sam.h.woodard@gmail.com>
+  * Merge branch 'master' into multipart
+    
+    * master:
+      Add protection against a malformed or malicious HTTP request causing an infinite loop
+      If handler is not to be found, raise initial load error.
+      If autoloading a rack handler by guessing the corresponding ruby file to load, take into account that this ruby file might register the handler properly.
+    
+    Conflicts:
+    	lib/rack/utils.rb
+
+Mon May 2 22:29:50 2011 -0700  raggi <jftucker@gmail.com>
+  * 1.9 lambdas care (yep, they're emo - rock on.)
+
+Mon May 2 22:27:10 2011 -0700  raggi <jftucker@gmail.com>
+  * 1.9 not having '.' in load path
+
+Mon May 2 22:10:25 2011 -0700  raggi <jftucker@gmail.com>
+  * shurrup 1.8.6
+
+Mon May 2 22:06:02 2011 -0700  raggi <jftucker@gmail.com>
+  * Coverage for #146
+
+Mon May 2 21:41:43 2011 -0700  raggi <jftucker@gmail.com>
+  * Add some basic Rack::Server tests, nothing like the oldies, but faster
+
+Mon May 2 22:08:36 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Merge pull request #136 from rkh/better-handlers.
+    
+    Better handlers
+
+Mon May 2 22:08:16 2011 -0700  Sam Woodard <sam.h.woodard@gmail.com>
+  * refactor of multipart module
+
+Mon May 2 18:35:27 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Merge pull request #147 from mcommons/master.
+    
+    Add protection against a malformed or malicious HTTP request causing an infinite loop
+
+Mon May 2 13:25:24 2011 -0700  John Firebaugh <john_firebaugh@us.ibm.com>
+  * Backport URI.encode_www_form_component instead.
+    
+    This is better than the cgi/util.rb backport:
+    - Faster (https://gist.github.com/952373)
+    - More spec compliant
+    - Doesn't produce warnings if cgi.rb is required elsewhere
+
+Mon May 2 13:16:28 2011 -0700  Aaron Patterson <aaron.patterson@gmail.com>
+  * backporting cgi/util.rb from ruby 1.9 to rack
+
+Mon May 2 12:01:20 2011 -0700  Aaron Patterson <aaron.patterson@gmail.com>
+  * only pull in cgi/util
+
+Mon May 2 10:39:40 2011 -0700  Aaron Patterson <aaron.patterson@gmail.com>
+  * Merge pull request #140 from jfirebaugh/escape.
+    
+    Just use CGI.escape/unescape.
+
+Wed Feb 23 19:40:36 2011 -0800  Eric Wong <normalperson@yhbt.net>
+  * conditionalget: use canonical "ETag" capitalization
+    
+    It matches the capitalization in rfc2616 and is also faster
+    for Rack::HeaderHash users that also use the canonical
+    capitalization.
+
+Wed Feb 23 19:35:40 2011 -0800  Eric Wong <normalperson@yhbt.net>
+  * conditionalget: garbage reduction and speedup
+    
+    No need to create an array and do a lookup on it every
+    time when case/when can be done more efficiently be
+    the runtime.
+
+Fri Apr 29 17:05:41 2011 -0400  Mobile Commons <android@mcommons.com>
+  * Add protection against a malformed or malicious HTTP request causing an infinite loop
+
+Tue Jan 18 02:35:33 2011 +0000  Eric Wong <normalperson@yhbt.net>
+  * deflater flushes each chunk of the response
+    
+    This allows clients to receive streaming response bodies as
+    they're generated by the application, not only when it's ideal
+    for zlib.  Space-efficiency is hurt somewhat, but there's no
+    other way to allow this middleware to work without completely
+    breaking otherwise valid applications.
+
+Tue Jan 18 02:35:33 2011 +0000  Eric Wong <normalperson@yhbt.net>
+  * loosen deflater spec for zlib option changes
+    
+    As long as zlib can properly deflate the response body with
+    the -Zlib::MAX_WBITS option, we'll consider it a valid
+    response.  The next commit will flush the buffer with each
+    chunk to allow for compressed streaming responses.
+
+Wed Apr 27 15:05:52 2011 -0700  Joshua Peek <josh@joshpeek.com>
+  * Merged pull request #126 from plentz/master.
+    
+    mongrel rack.url_scheme was hardcoded to http
+
+Sun Apr 17 17:06:41 2011 -0700  Aaron Patterson <aaron.patterson@gmail.com>
+  * use a chunked body wrapper rather than duping and returning the chunked encoding middleware
+
+Thu Apr 7 00:53:29 2011 +0200  José Valim <jose.valim@gmail.com>
+  * Do not send ETag if no-cache is set.
+
+Thu Apr 14 09:08:09 2011 -0700  Aaron Patterson <aaron.patterson@gmail.com>
+  * Revert "Add handlers for Unicorn, Rainbows! and Zbatery"
+    
+    This reverts commit dff8e34f43c2897062d5b252406398ced2d360a8.
+    
+    The author of unicorn / rainbows! / zbatery has asked us to revert this
+    commit.  So I am.  See here:
+    
+      http://groups.google.com/group/rack-devel/browse_thread/thread/23f73707363e0918
+
+Tue Apr 12 11:24:17 2011 +0000  VG <vaudoc@gmail.com>
+  * Remove has_rdoc= method from gemspec
+
+Sun Apr 10 16:10:09 2011 -0700  John Firebaugh <john.firebaugh@gmail.com>
+  * Just use CGI.escape/unescape.
+    
+    The previous definitions were virtually identical to those provided
+    by CGI in 1.8.7/1.9.2, except that Rack::Utils.escape failed on non-
+    UTF8 encoded input.
+    
+    Tested on 1.8.7, 1.9.2 and JRuby.
+
+Thu Mar 31 15:09:31 2011 +1100  Ryan Bigg <radarlistener@gmail.com>
+  * Need to call run app for Builder example to work
+
+Thu Mar 31 15:09:14 2011 +1100  Ryan Bigg <radarlistener@gmail.com>
+  * Need to require 'rack/lobster' for first Rack::Builder example to work
+
+Thu Mar 31 15:07:35 2011 +1100  Ryan Bigg <radarlistener@gmail.com>
+  * Rack::Builder example needs a run otherwise it won't run
+
+Thu Mar 31 15:07:20 2011 +1100  Ryan Bigg <radarlistener@gmail.com>
+  * do and end beginning and end for a multi-lined block is basically the standard in Ruby
+
+Thu Mar 31 15:01:22 2011 +1100  Ryan Bigg <radarlistener@gmail.com>
+  * Add documentation for use, run and map methods in Rack::Builder
+
+Thu Mar 31 00:55:38 2011 +0200  Andreas Wurm <andreaswurm@gmx.de>
+  * allow multi-line comments in the config file
+
+Fri Mar 25 23:21:29 2011 -0300  rinaldifonseca <rinaldifonseca@gmail.com>
+  * 1.9, lambda argument count has to match
+
+Tue Mar 22 01:55:57 2011 -0300  rinaldifonseca <rinaldifonseca@gmail.com>
+  * Refactoring Rack::URLMap NEGATIVE_INFINITY constant
+
+Mon Mar 21 01:36:25 2011 -0300  rinaldifonseca <rinaldifonseca@gmail.com>
+  * Adding a constant in order to avoid to calculate (1.0 / 0.0) each time
+
+Mon Mar 21 00:18:26 2011 -0300  rinaldifonseca <rinaldifonseca@gmail.com>
+  * Refactoring Rack: URLMap in order to show our intention through the code rather than write comments
+
+Fri Mar 25 23:21:29 2011 -0300  rinaldifonseca <rinaldifonseca@gmail.com>
+  * 1.9, lambda argument count has to match
+
+Tue Mar 22 01:55:57 2011 -0300  rinaldifonseca <rinaldifonseca@gmail.com>
+  * Refactoring Rack::URLMap NEGATIVE_INFINITY constant
+
+Tue Mar 22 00:27:18 2011 +0100  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * If handler is not to be found, raise initial load error.
+    
+    Keep in mind that the load error might be for some library required by the
+    handler, not the handler itself.
+
+Mon Mar 21 22:00:56 2011 +0100  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * If autoloading a rack handler by guessing the corresponding ruby file to load, take into account that this ruby file might register the handler properly.
+    
+    This basically would allow moving the Thin handler into the Thin gem and still supporting `rackup -s thin`.
+    
+    Also, when using Rack::Handler.register, call #to_s on both arguments. This allows, besides passing a symbol for `server`, passing a class or module as `klass` argument, see the included test case for an example.
+
+Mon Mar 21 10:32:46 2011 -0500  Joshua Peek <josh@joshpeek.com>
+  * Merge branch 'master' of https://github.com/hanklords/rack into hanklords-master
+
+Mon Mar 21 10:32:18 2011 -0500  Joshua Peek <josh@joshpeek.com>
+  * Merge branch 'unicorn' of https://github.com/rkh/rack into rkh-unicorn
+
+Mon Mar 21 01:36:25 2011 -0300  rinaldifonseca <rinaldifonseca@gmail.com>
+  * Adding a constant in order to avoid to calculate (1.0 / 0.0) each time
+
+Mon Jan 24 19:11:37 2011 -0500  Max Cantor <max@maxcantor.net>
+  * Added a note about requiring to Session::Abstract::ID docs
+
+Mon Mar 21 02:11:00 2011 +0800  Gabriel Horner <gabriel.horner@gmail.com>
+  * Add tests for Rack::Builder.parse_file
+
+Mon Mar 21 00:18:26 2011 -0300  rinaldifonseca <rinaldifonseca@gmail.com>
+  * Refactoring Rack: URLMap in order to show our intention through the code rather than write comments
+
+Fri Mar 18 16:05:42 2011 -0700  Maël Clérambault <maelclerambault@yahoo.fr>
+  * Force content-length to 0 so apache mod_xsendfile does not hang
+
+Fri Mar 18 18:54:58 2011 +0100  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * Add handlers for Unicorn, Rainbows! and Zbatery
+    
+    Unicorn and akin do *not* include rack handlers, at least not in the sense of Rack::Handler.
+
+Fri Mar 18 10:20:34 2011 -0500  Joshua Peek <josh@joshpeek.com>
+  * Merge branch 'patch' of https://github.com/rkh/rack into rkh-patch
+
+Fri Mar 18 10:20:14 2011 -0500  Joshua Peek <josh@joshpeek.com>
+  * Merge branch 'safe-md5-params' of https://github.com/rkh/rack into rkh-safe-md5-params
+
+Fri Mar 18 10:19:30 2011 -0500  Joshua Peek <josh@joshpeek.com>
+  * Merge branch 'auth-digest-with-rack-builder' of https://github.com/rkh/rack into rkh-auth-digest-with-rack-builder
+
+Fri Mar 18 15:05:32 2011 +0100  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * add Rack::Request#patch?
+
+Fri Mar 18 15:02:22 2011 +0100  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * add support for PATCH verb to Rack::MethodOverride
+
+Fri Mar 18 14:48:20 2011 +0100  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * allow passing opaque or an options hash to Rack::Auth::Digest::MD5.new, that way it is actually usable as middleware with Rack::Builder or similar
+
+Fri Mar 18 14:35:53 2011 +0100  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * in auth/digest/params, do not accidentially pass block used for construction to Hash#initialize, where it is used for default values at might be triggered again later on
+
+Sun Mar 13 01:38:52 2011 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update README
+
+Fri Mar 4 11:50:27 2011 -0600  Brad Ediger <brad.ediger@madriska.com>
+  * MD5 Digest auth: fail if authenticator returns nil
+    
+    Fixes the authenticator API to deny access if nil is returned from the
+    authenticator block. Without this patch, the nil gets to_s'd to "" and
+    an empty password would be accepted.
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Wed Mar 9 13:58:41 2011 -0300  Diego Plentz <diego@plentz.org>
+  * mongrel rack.url_scheme was hardcoded to http
+
+Wed Feb 9 18:32:26 2011 -0800  raggi <jftucker@gmail.com>
+  * improve gemloader to include runtime deps if any, and not break on complex requirements
+
+Mon Jan 24 01:49:43 2011 +0800  Jon Leighton <j@jonathanleighton.com>
+  * If there is an X-Forwarded-Host header, we should take the absence of a port segment to imply 'standard port', not 'use the SERVER_PORT'
+
+Thu Jan 13 14:59:50 2011 -0800  Aaron Patterson <aaron.patterson@gmail.com>
+  * refactor Rack::MockResponse to be a subclass of Rack::Response, also make sure the real response object does not set Content-Length if the transfer type is chunked
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Thu Jan 13 14:27:00 2011 -0800  Aaron Patterson <aaron.patterson@gmail.com>
+  * moving MockResponse underneath Rack::Response
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Fri Jan 14 06:10:08 2011 +0800  Aaron Patterson <aaron.patterson@gmail.com>
+  * fixing unused variable warnings in 1.9.3
+
+Mon Jan 3 18:08:18 2011 -0600  Joshua Peek <josh@joshpeek.com>
+  * Extract Request#base_url
+
+Fri Dec 31 20:40:09 2010 -0500  raggi <jftucker@gmail.com>
+  * Make mock response work like response with respect to headers
+
+Thu Dec 23 13:07:13 2010 -0800  Dave Myron <dave.myron@contentfree.com>
+  * Correct the regex for finding the part name by Content-Id header. Fixes issue #98 at rack/rack
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Fri Dec 31 20:18:27 2010 -0500  raggi <jftucker@gmail.com>
+  * Adding SPEC with rake task dependencies
+
+Wed Dec 22 11:28:17 2010 +0800  Jan Dudek <jd@jandudek.com>
+  * Removed references to SPEC from rack.gemspec
+
+Sun Dec 19 19:25:45 2010 -0800  raggi <jftucker@gmail.com>
+  * Use gemloader in fulltest
+
+Sun Dec 19 19:19:47 2010 -0800  raggi <jftucker@gmail.com>
+  * Add gemloader script that will provide the ability to activate development dependencies at the correct version for point releases
+
+Sun Dec 19 19:06:45 2010 -0800  raggi <jftucker@gmail.com>
+  * Add stage to gitignore
+
+Sun Dec 19 14:17:26 2010 -0600  Joshua Peek <josh@joshpeek.com>
+  * Delegate lock proxy to_path
+
+Sat Dec 18 06:01:13 2010 +0800  Aaron Patterson <aaron.patterson@gmail.com>
+  * Cookies may be configured with an object that will serialize and deserialize the session cookie data.  fixes #70, fixes #4
+
+Sat Dec 18 05:07:13 2010 +0800  Aaron Patterson <aaron.patterson@gmail.com>
+  * read from the input until we find the boundary. fixes #45
+
+Sat Dec 18 04:20:13 2010 +0800  Aaron Patterson <aaron.patterson@gmail.com>
+  * parsing cookies with quotes works
+
+Mon Dec 20 03:51:04 2010 +0800  John Firebaugh <john_firebaugh@us.ibm.com>
+  * Rack::Lock should unlock if the app raises an exception.
+
+Fri Dec 17 10:57:19 2010 +0800  Aaron Patterson <aaron.patterson@gmail.com>
+  * use a proxy object to call close on the mutex when the body is closed. closes #87
+
+Mon Dec 13 09:03:15 2010 -0600  Pierre Chapuis <catwell@archlinux.us>
+  * Fix Rack::Auth::Digest query string bug
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Sat Dec 11 16:21:52 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Replace %T with %H:%M:%S for compatibility on Windows
+
+Wed Dec 1 18:58:36 2010 -0700  Graham <graham-git@stormbrew.ca>
+  * Implemented handler-specific options in a way that allows them to be retrieved and used from rackup or any other user of Rack::Server.
+    
+    - Rack handlers that can accept options can now provide a valid_options method that returns a hash of options that can be passed to the handler.
+    - If the hash contains Host or Port, they will be ignored for display by Rack::Server.
+    - Options can be passed in with -O or --option followed by optname=value, or just optname if the option is binary.
+    - rackup -h will display options for the default handler, and rackup -s SERVERNAME -h will display the options for SERVERNAME.
+
+Thu Dec 2 09:48:13 2010 +0800  Graham <graham-git@stormbrew.ca>
+  * FastCGI Handler should not rebind to host/port if file is set.
+    
+    File should override Port/Host so that things like Rackup that *always* pass in a host/port combination can be overriden by the File parameter. This change makes that happen.
+
+Sat Dec 11 12:56:34 2010 +0800  Raving Genius <rg+code@ravinggenius.com>
+  * Add MIME types for .ttf and .woff
+
+Thu Aug 12 02:30:55 2010 +0800  Rich Meyers <richmeyers@gmx.com>
+  * Treat an empty content type as nil content type (issue #40) -- tests
+
+Thu Aug 12 02:23:55 2010 +0800  Rich Meyers <richmeyers@gmx.com>
+  * Treat an empty content type as nil content type (issue #40)
+
+Wed Sep 8 04:40:48 2010 +0800  Andrew Bortz <abortz@cs.stanford.edu>
+  * Resolve absolute path of config so daemonize works
+
+Wed Sep 22 23:55:24 2010 +0800  John Barnette <jbarnette@gmail.com>
+  * Don't throw exceptions for invalid command-line options.
+
+Thu Nov 18 20:15:02 2010 +0800  Andrew Stevens <astevens@tstmedia.com>
+  * Fixes REQUEST_PATH for WEBrick
+
+Thu Dec 9 21:40:00 2010 +0200  Janne Hietamaki <janne.hietamaki@leonidasoy.fi>
+  * use is_a?(IO) instance of instance_of?(String)
+
+Thu Dec 2 18:36:31 2010 +0200  Janne Hietamaki <janne.hietamaki@leonidasoy.fi>
+  * Fixed handling of multipart fields that have Content-Type but are not files.
+    
+    https://github.com/rack/rack/commit/acffe8ef5ea6de74fe306f2dd908b7681a21aaad
+
+Fri Nov 5 14:19:12 2010 -0600  John Sumsion <sumsionjg@familysearch.org>
+  * Removing the promiscous umask from the daemonize implementation.
+    
+    This prevents me from putting a daemon process in a jail of some kind, and
+    being able to control the umask from the environment before I launch it.
+    
+    There is no corollary to this in the Ruby 1.9's Process.daemon, see
+    rb_daemon in ruby/process.c.
+
+Thu Nov 18 09:27:18 2010 +0800  Postmodern <postmodern.mod3@gmail.com>
+  * Properly handle nil header values in Rack::MockResponse#initialize.
+
+Thu Dec 9 12:08:15 2010 -0600  Joshua Peek <josh@joshpeek.com>
+  * Trim whitespace added in 2ed5a13d
+
+Sat Oct 23 14:33:34 2010 -0600  Simon Chiang <simon.a.chiang@gmail.com>
+  * performance improvement by making derived regexps into constants
+
+Thu Dec 9 12:04:20 2010 -0600  Stephen Celis <stephen@stephencelis.com>
+  * Rack::Request support for HTTP_X_FORWARDED_{PORT,SSL}
+
+Thu Dec 9 11:05:17 2010 -0600  Joshua Peek <josh@joshpeek.com>
+  * Silence test warnings
+
+Tue Nov 2 21:34:25 2010 +0800  Martin Ottenwaelter <martin.ottenwaelter@gmail.com>
+  * HTTP_X_FORWARDED_PROTO can be a list of chained values, eg 'https, http, http'
+
+Thu Oct 28 23:00:52 2010 +0800  Sam Stephenson <sam@37signals.com>
+  * Fix initializing Response objects with differently-cased Content-Type headers
+
+Tue Oct 26 10:25:01 2010 -0500  Joshua Peek <josh@joshpeek.com>
+  * Request#scheme returns 'https' if forwarded protocol headers are set
+
+Fri Oct 8 15:10:03 2010 +0200  José Valim <jose.valim@gmail.com>
+  * ssl? should also return true if rack.url_scheme is https.
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Sun Oct 10 17:42:22 2010 -0300  raggi <jftucker@gmail.com>
+  * showexceptions: gracefully handle empty backtraces
+    
+    Some HTTP servers (e.g. Unicorn and Rainbows!) raise certain
+    exceptions without a backtrace[1], so avoid triggering our own
+    NoMethodError exception because of this.
+    
+    [1] - http://git.bogomips.org/cgit/unicorn.git/commit/?id=e4256da292f9626d7dfca60e08f65651a0a9139a
+    
+    Conflicts:
+    
+    	test/spec_showexceptions.rb
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Mon Oct 4 13:28:32 2010 -0300  raggi <jftucker@gmail.com>
+  * Use chunked first over in-memory content-length calculation
+
+Mon Oct 4 13:05:08 2010 -0300  raggi <jftucker@gmail.com>
+  * minor performance items on rack::chunked
+
+Mon Oct 4 13:00:25 2010 -0300  raggi <jftucker@gmail.com>
+  * release semantics of Rack::Chunked and Rack::ContentLength from handlers. this should not be forced on users.
+
+Sun Oct 3 22:09:13 2010 -0300  raggi <jftucker@gmail.com>
+  * Rack::Logger conforms to Rack::Lint, closes Lighthouse #89
+
+Sun Oct 3 21:58:32 2010 -0300  raggi <jftucker@gmail.com>
+  * Move Rack::File.byte_ranges to Rack::Utils
+
+Sun Oct 3 21:50:06 2010 -0300  raggi <jftucker@gmail.com>
+  * minor style changes for merge
+
+Sun Oct 3 17:08:49 2010 -0700  Jens Alfke <jens@mooseyard.com>
+  * Byte-range support for File class.
+    
+    Allows Rack to support byte-range requests (via
+    the HTTP 1.1 "Range:" header) for static files,
+    even when sendfile is not being used.
+    
+    Conforms to RFC 2616 sec. 14.35 _except_ that
+    multiple byte-ranges are not supported yet.
+    (They're parsed correctly, but the response body
+    would need to be a MIME multipart.)
+    
+    Tested in Ruby 1.8.7 on Mac OS X 10.6.4.
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Sun Oct 3 14:47:55 2010 -0700  José Valim <jose.valim@gmail.com>
+  * Move sid initialization to another method so it can be overwritten by other frameworks.
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Sun Oct 3 17:32:02 2010 -0300  raggi <jftucker@gmail.com>
+  * Adding support for securerandom, will be in use by default. n.b. hacky test
+
+Sun Oct 3 17:35:22 2010 -0300  raggi <jftucker@gmail.com>
+  * 186 bro :'(
+
+Sun Oct 3 15:58:49 2010 -0300  raggi <jftucker@gmail.com>
+  * Merge branch 'perfix' of http://github.com/thedarkone/rack into thedarkone-perfix
+    
+    * 'perfix' of http://github.com/thedarkone/rack:
+      No need to delete a key that doesn't exist.
+      Avoiding invoking #delete unless unnecessary.
+      Fix the phantom header key bug.
+      Revert "Don't set header to nil on HeaderHash#include?"
+
+Sun Oct 3 15:43:42 2010 -0200  Santiago Pastorino <santiago@wyeworks.com>
+  * PERF: change inject({}) to Hash + map
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Sun Oct 3 15:33:07 2010 -0200  Santiago Pastorino <santiago@wyeworks.com>
+  * PERF: just using a map here is fine
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Sun Oct 3 15:27:28 2010 -0200  Santiago Pastorino <santiago@wyeworks.com>
+  * PERF: change inject({}) to Hash + map
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Wed Sep 22 21:09:05 2010 +0200  José Valim <jose.valim@gmail.com>
+  * Etag middleware should not return a digest if body is empty and should also allow a default cache directive when no caching is done.
+
+Sun Oct 3 19:30:20 2010 +0200  José Valim <jose.valim@gmail.com>
+  * Fix Memcached tests.
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Tue Sep 28 14:16:49 2010 +0200  José Valim <jose.valim@gmail.com>
+  * Improve performance of cookie store by unpacking the data just once.
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Sun Sep 19 23:26:16 2010 +0200  José Valim <jose.valim@gmail.com>
+  * Improves performance by lazy loading the session.
+    
+    The session has two flags, one for reading and another for writing. If the session is just read, we get it from the store but do not send a cookie a back to the client unless it was written.
+    
+    This commit also adds Rack::Request#ssl? for convenience.
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Sun Oct 3 13:44:31 2010 -0300  raggi <jftucker@gmail.com>
+  * Spec that referer no longer defaults to '/', but is allowed to be nil
+
+Fri Sep 17 07:33:05 2010 -0700  Greg Hazel <ghazel@gmail.com>
+  * do not default referer to '/'
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Sun Oct 3 13:29:37 2010 -0300  raggi <jftucker@gmail.com>
+  * Cleanup whitespace and docs from patch
+
+Fri Sep 10 23:08:24 2010 -0700  Mark Turner <mark@amerine.net>
+  * modified rack::static comment to reflect new routes
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Fri Sep 10 23:00:03 2010 -0700  Mark Turner <mark@amerine.net>
+  * Added the ability to pass a hash of route to file mappings to Rack::Static
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Fri Sep 24 16:33:37 2010 +0200  thedarkone <thedarkone2@gmail.com>
+  * No need to delete a key that doesn't exist.
+
+Wed Sep 22 16:49:45 2010 +0200  thedarkone <thedarkone2@gmail.com>
+  * Avoiding invoking #delete unless unnecessary.
+
+Wed Sep 22 18:36:17 2010 +0200  thedarkone <thedarkone2@gmail.com>
+  * Fix the phantom header key bug.
+    
+    Bug report: http://groups.google.com/group/rack-devel/browse_thread/thread/cb0548dfe7a70702.
+
+Wed Sep 22 18:27:15 2010 +0200  thedarkone <thedarkone2@gmail.com>
+  * Revert "Don't set header to nil on HeaderHash#include?"
+    
+    The change is a bit messy.
+    
+    This reverts commit f6f3c60938ea3b08f3292a2480e6753c293584e5.
+
+Thu Sep 23 00:09:44 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Adjust rest of comment of Sendfile
+
+Wed Sep 22 23:30:27 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Adjust indentation of Sendfile source
+
+Wed Sep 22 23:29:53 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Fix comment in Sendfile
+
+Tue Sep 21 00:08:35 2010 +0800  Durran Jordan and Paul Elliott <dev+durran+paulelliott@hashrocket.com>
+  * Need to properly escape UTF-8 strings in 1.9.2
+    
+    Rack was generating warnings in 1.9.2:
+    ...rack/utils.rb:16: warning: regexp match /.../n against to UTF-8 string
+    
+    Modified the regex in utils to support UTF-8. Did not add tests since
+    the multibyte escape tests cover this case when in 1.9.2.
+    
+    Verified tests pass in: 1.8.6-p399, 1.8.7-p302, ree-1.8.7-2010.02,
+    1.9.2-p0
+
+Fri Sep 10 23:23:26 2010 +0800  Rhett Sutphin <rhett@detailedbalance.net>
+  * Include all values for repeated response headers in WEBrick.  Closes #52.
+
+Tue Sep 7 07:22:48 2010 +0800  José Valim <jose.valim@gmail.com>
+  * Should only handle 200 responses on conditional get middleware.
+
+Sat Sep 11 06:03:15 2010 +0800  stahnma <stahnma@websages.com>
+  * Adding Rakefile to rack.gemspec
+
+Wed Sep 8 20:59:52 2010 +0800  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * Skip Rack::Lint::InputWrapper serialization in TestRequest. Makes tests pass on Ruby 1.9.1p378.
+
+Wed Sep 8 20:26:12 2010 +0800  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * Avoid failing tests on platforms that do not support fork (JRuby/Windows). Relies on fork raising a NotImplementedError on those platforms, which both MRI and JRuby do.
+
+Wed Sep 8 19:42:43 2010 +0800  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * return array instead of string as request body, so it works on 1.9
+
+Wed Sep 8 19:40:42 2010 +0800  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * memcache raises a RuntimeError on 1.9.2p0, too
+
+Tue Sep 7 00:16:11 2010 +0800  José Valim <jose.valim@gmail.com>
+  * Ensure the HTTP Cache-Control is set in the Etag middleware if none was given. It is extremally important to mark these responses as private by default.
+
+Sun Jun 13 07:02:43 2010 -0600  Simon Chiang <simon.a.chiang@gmail.com>
+  * updated escape_html to use hex entities and to escape forward slash
+    Small merge work required.
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Tue Aug 3 13:45:23 2010 -0300  Damian Janowski <damian.janowski@gmail.com>
+  * Make ShowExceptions respond with plain text on AJAX calls.
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Wed Aug 11 21:57:43 2010 -0700  Postmodern <postmodern.mod3@gmail.com>
+  * Alias Response#to_ary to #finish for implicit-splat in Ruby 1.9.2.
+    
+    * In Ruby 1.9.2 #to_ary is required for implicit-splat.
+      http://redmine.ruby-lang.org/issues/show/1393
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Tue Jul 20 12:35:07 2010 +0200  José Valim <jose.valim@gmail.com>
+  * Should set ETag only if status is 200 or 201.
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Mon Jul 19 12:41:56 2010 +0200  José Valim <jose.valim@gmail.com>
+  * Refactor session stores by providing a with_lock helper and by moving the responsitility to handle :renew and :drop up to Abstract::ID.
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Mon Jul 19 11:09:46 2010 +0200  José Valim <jose.valim@gmail.com>
+  * Make a few changes to the session store:
+    
+    * Provide :cookie_only as option and as default. If false, allows SID to be retrieved from GET/POST params;
+    
+    * Do not send the cookie back to the client if session id did not change;
+    
+    * Make Abstract::ID implementation more modular, allowing Cookie implementation to be simpler by inheriting from it;
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Mon Jul 19 23:38:35 2010 +0100  raggi <jftucker@gmail.com>
+  * Update docs and minor corrections.
+
+Mon Jul 19 23:09:13 2010 +0200  José Valim <jose.valim@gmail.com>
+  * ETag middleware should not be triggered in sendfile bodies.
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Mon Jul 19 23:36:20 2010 +0100  raggi <jftucker@gmail.com>
+  * Remove unneeded monkey patch to Rack::File from Rack::Sendfile
+
+Sun Jul 18 19:39:29 2010 +0200  José Valim <jose.valim@gmail.com>
+  * Rack::Etag should not set ETag if Last-Modified header is sent.
+    
+    The HTTP specification says that if both Last-Modified and ETag are sent, both should be matched in other to check if a request is fresh or not. If Rack always set ETag, even if Last-Modified is sent, checking the freshness according to specification becomes non trivial, since I will always need the digested body response.
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Sun Jul 18 20:00:59 2010 +0200  José Valim <jose.valim@gmail.com>
+  * Make ConditionalGet middleware respect HTTP specification.
+    
+    The specification says if both IF_NONE_MATCH and IF_MODIFIED_SINCE are sent, both should match in order to return 304.
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Sat Jun 19 19:03:48 2010 -0400  Loren Segal <lsegal@soen.ca>
+  * Rack::Server should accept :app and override :config.
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Thu Jul 8 14:23:39 2010 +0100  raggi <jftucker@gmail.com>
+  * The application should be loaded prior to daemonization to prevent issues with chdir etc.
+
+Thu Jul 8 14:23:12 2010 +0100  raggi <jftucker@gmail.com>
+  * Debugging should not change semantics of load path or require modification before loading the application
+
+Tue Jun 29 04:34:02 2010 +0800  Brasten Sager <brasten@gmail.com>
+  * Modified Rack::Request#port to respect HTTP_X_FORWARDED_HOST port information if available
+
+Thu Jun 17 08:18:27 2010 -0300  raggi <jftucker@gmail.com>
+  * Update gitignore to ignore compiled classes and the lighttpd error log
+
+Thu Jun 17 08:17:31 2010 -0300  raggi <jftucker@gmail.com>
+  * Use ::File.unlink in place of Tempfile#unlink to avoid 1.9.1 bug
+
+Thu Jun 17 11:43:36 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Fix ESCAPE_HTML_PATTERN construction
+
+Thu Jun 17 11:31:29 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Merge branch 'master' of github.com:rack/rack
+    
+    * 'master' of github.com:rack/rack: (24 commits)
+      rack handler specs are "fast"
+      don't need to warn about missing require
+      bail out of cgi tests if lighttpd isn't installed
+      don't run session memcache tests if no connection can be made
+      rack lock should require thread
+      Use a more common format for extra version data, as per R. Konstantin Haase suggestion
+      Show rack release version in rackup --version
+      Fix cgi test for BSDish systems
+      Rack should respect $RACK_ENV when starting up, fixes 3rd party bugs introduced by b433e484c9ee47ffceb7645129403df31f60db7f
+      Fix Rakefile
+      Prepare 1.2.1
+      Rename spec/ back to test/
+      Make CGI handler obey rack spec by wrapping stdin in a rewindable stream.
+      More gemspec fixes
+      Hard-core version number in gemspec
+      Push Rack.release to 1.2
+      Last README updates
+      Fix gem dependencies to use bacon
+      Silence test suite
+      Fix thin specs for 1.0 and bacon Fix TestRequest for servers that add unserializables in env.
+      ...
+
+Wed Jun 16 10:01:50 2010 -0500  Joshua Peek <josh@joshpeek.com>
+  * rack handler specs are "fast"
+
+Wed Jun 16 09:54:02 2010 -0500  Joshua Peek <josh@joshpeek.com>
+  * don't need to warn about missing require
+
+Wed Jun 16 09:51:08 2010 -0500  Joshua Peek <josh@joshpeek.com>
+  * bail out of cgi tests if lighttpd isn't installed
+
+Wed Jun 16 09:43:25 2010 -0500  Joshua Peek <josh@joshpeek.com>
+  * don't run session memcache tests if no connection can be made
+
+Wed Jun 16 09:31:56 2010 -0500  Joshua Peek <josh@joshpeek.com>
+  * rack lock should require thread
+
+Wed Jun 16 11:13:54 2010 -0300  raggi <jftucker@gmail.com>
+  * Use a more common format for extra version data, as per R. Konstantin Haase suggestion
+
+Wed Jun 16 11:11:12 2010 -0300  raggi <jftucker@gmail.com>
+  * Show rack release version in rackup --version
+
+Wed Jun 16 11:06:49 2010 -0300  raggi <jftucker@gmail.com>
+  * Fix cgi test for BSDish systems
+
+Wed Jun 16 10:57:45 2010 -0300  raggi <jftucker@gmail.com>
+  * Rack should respect $RACK_ENV when starting up, fixes 3rd party bugs introduced by b433e484c9ee47ffceb7645129403df31f60db7f
+
+Tue Jun 15 11:52:37 2010 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix Rakefile
+
+Tue Jun 15 11:39:08 2010 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Prepare 1.2.1
+
+Tue Jun 15 11:37:52 2010 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Rename spec/ back to test/
+
+Tue Jun 15 01:11:36 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * FastCGI handler should respect :Host option
+
+Wed May 12 00:43:31 2010 -0400  visudo <max@maxcantor.net>
+  * Make CGI handler obey rack spec by wrapping stdin in a rewindable
+    stream.
+    
+    Signed-off-by: raggi <jftucker@gmail.com>
+
+Sun Jun 13 19:57:49 2010 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge remote branch 'official/master'
+
+Sun Jun 13 19:38:43 2010 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * More gemspec fixes
+
+Sun Jun 13 19:37:40 2010 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Hard-core version number in gemspec
+
+Sun Jun 13 19:36:13 2010 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Push Rack.release to 1.2
+
+Sun Jun 13 19:35:35 2010 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Last README updates
+
+Sun Jun 13 19:34:01 2010 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge branch 'bacon'
+
+Sun Jun 13 17:00:34 2010 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix gem dependencies to use bacon
+
+Sun Jun 13 16:54:03 2010 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Silence test suite
+
+Sun Jun 13 09:18:07 2010 -0300  raggi <jftucker@gmail.com>
+  * Fix thin specs for 1.0 and bacon
+    Fix TestRequest for servers that add unserializables in env.
+
+Sun Jun 13 18:40:09 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Improve performance and flexibility of Rack::Utils.escape_html
+
+Sat Jun 12 23:34:13 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * require time in response because it's used for cookies
+
+Sat Jun 12 23:33:52 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Fix Handler::CGI so it uses $stdin.binmode
+
+Sat Jun 12 23:33:25 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Fix spec requires and the missing ones
+
+Sat Jun 12 12:43:36 2010 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update README and gemspec
+
+Sat Jun 12 18:44:04 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Ported specs to bacon
+
+Fri Jun 11 10:29:10 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Add Request.trace? and Request.options?
+
+Thu Jun 10 12:45:39 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Add mime-type for webm
+
+Wed Jun 9 12:59:59 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Remove trailing whitespace
+
+Tue Jun 8 21:06:39 2010 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * make sure PATH_INFO and SCRIPT_NAME get reset
+
+Fri Apr 30 23:57:36 2010 -0700  Tim Connor <timocratic@gmail.com>
+  * don't dupe env in urlmap so modifications down the chain persist back up
+
+Fri Apr 30 23:38:07 2010 -0700  Tim Connor <timocratic@gmail.com>
+  * test for mapping in builder
+
+Wed Jun 9 12:44:59 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Don't use 'unknown' in HTTP_X_FORWARDED_FOR
+
+Wed Mar 31 19:29:47 2010 +0800  Timur Batyrshin <erthad@altlinux.org>
+  * set ENV["RACK_ENV"] to options[:environment] as many frameworks rely on this
+
+Wed Jun 9 01:03:01 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Implement proper RFC 2822 Time format based on RFC 2109 example for cookie expires
+
+Wed Jun 9 00:29:10 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Get rid of a few more warnings
+
+Wed Jun 9 00:27:03 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Avoid warning on 1.8.7 regarding File.to_path
+
+Wed Jun 9 00:22:16 2010 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * The correct IP from HTTP_X_FORWARDED_FOR is the first one
+
+Sat May 15 07:26:15 2010 +0800  Simon Chiang <simon.a.chiang@gmail.com>
+  * removed parsing of quoted values
+
+Wed May 26 16:46:30 2010 +0300  Matias Korhonen <matias@kiskolabs.com>
+  * Fixes the nginx #send_file configuration example.
+
+Wed May 5 11:54:07 2010 -0600  Simon Chiang <simon.chiang@pinnacol.com>
+  * updated Session::Memcache initialization to pass MemCache options correctly
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Wed May 5 16:58:20 2010 +0530  Anil Wadghule <anildigital@gmail.com>
+  * Improved comment by giving example
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Thu Jan 7 21:43:51 2010 -0800  Zach Brock <zbrock@gmail.com>
+  * allow delete of cookies with same name but different domain
+    
+    Adding a spec for adding multiple cookies with the same name on
+    different domains
+
+Wed Apr 28 17:43:55 2010 -0700  Jon Bardin <jon@jbardin.local>
+  * added test for bug with escaping query string parameters
+
+Thu Apr 29 14:55:34 2010 -0700  Ryan Tomayko <rtomayko@gmail.com>
+  * avoid uninitialized ivar warning
+
+Fri Apr 9 17:05:25 2010 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fully remove camping
+
+Fri Apr 9 17:02:52 2010 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Remove Camping adapter
+    
+    Camping 2.0 supports Rack as-is.
+
+Wed Apr 7 13:34:00 2010 -0500  Joshua Peek <josh@joshpeek.com>
+  * size is not part of the input SPEC
+    
+    If size is added as a formal requirement, revert this commit. Till
+    then Lint should bomb if middleware tries to access
+    env['rack.input'].size.
+    
+    Discussion about adding #size to rack.input
+    http://groups.google.com/group/rack-devel/browse_thread/thread/9c06163a4b13ccad
+
+Wed Apr 7 13:32:22 2010 -0500  Joshua Peek <josh@joshpeek.com>
+  * Require 'rack' from mock.rb since it references Rack::VERSION
+    
+    (Fixes tests)
+
+Tue Mar 23 19:49:28 2010 +0000  raggi <jftucker@gmail.com>
+  * Update Rack::Mock to use Rack::VERSION too
+
+Tue Mar 23 19:48:31 2010 +0000  raggi <jftucker@gmail.com>
+  * Merge branch 'rag'
+    
+    * rag:
+      Update all handlers to use Rack::VERSION instead of a hardcoded array for the protocol version.
+      Make Rack::Recursive thread safe by removing shared state
+      Deprecate unused log object in Rack::Handler::SCGI
+      Move trap(:INT) to Rack::Server and support optional Handler protocol where handlers may implement .shutdown to do pre-exit cleanup.
+      Fix a bug in CGI detection
+      Adding options passthrough for Rack::Server.start to make CGI apps easier to author
+
+Tue Mar 23 19:47:50 2010 +0000  raggi <jftucker@gmail.com>
+  * Update all handlers to use Rack::VERSION instead of a hardcoded array for the protocol version.
+
+Tue Mar 23 19:37:38 2010 +0000  raggi <jftucker@gmail.com>
+  * Make Rack::Recursive thread safe by removing shared state
+
+Tue Mar 23 19:36:05 2010 +0000  raggi <jftucker@gmail.com>
+  * Deprecate unused log object in Rack::Handler::SCGI
+
+Tue Mar 23 19:29:44 2010 +0000  raggi <jftucker@gmail.com>
+  * Move trap(:INT) to Rack::Server and support optional Handler protocol where handlers may implement .shutdown to do pre-exit cleanup.
+
+Tue Mar 23 19:23:43 2010 +0000  raggi <jftucker@gmail.com>
+  * Fix a bug in CGI detection
+
+Tue Mar 23 19:22:54 2010 +0000  raggi <jftucker@gmail.com>
+  * Adding options passthrough for Rack::Server.start to make CGI apps easier to author
+
+Tue Mar 23 08:51:04 2010 +0000  Alex <Alex@Alexs-Mac-Pro.local>
+  * add Mime type for .htc files ('text/x-component')
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Tue Mar 9 06:54:15 2010 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * cookie utility methods use multiline strings instead of arrays
+
+Tue Mar 9 06:29:02 2010 -0800  Larry Siden <lsiden@gmail.com>
+  * ContentLength coerces status to int
+
+Thu Mar 4 11:14:30 2010 -0800  Jeremy Kemper <jeremy@bitsweat.net>
+  * Rack::ETag: stream the body digest. Omit to_s on body parts since Rack spec requires strings.
+
+Thu Mar 4 10:09:53 2010 -0800  Jeremy Kemper <jeremy@bitsweat.net>
+  * Merge remote branch 'origin/master'
+    
+    Conflicts:
+    	lib/rack/rewindable_input.rb
+
+Mon Feb 22 14:47:55 2010 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * fix whitespace errors in rewindable_input.rb
+
+Mon Feb 15 11:14:32 2010 -0800  Jeremy Kemper <jeremy@bitsweat.net>
+  * Merge remote branch 'origin/master'
+    
+    Conflicts:
+    	lib/rack/rewindable_input.rb
+
+Mon Feb 8 11:37:54 2010 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * soften requirements for content-length in mock header spec
+
+Mon Feb 8 11:35:27 2010 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Merge commit 'headius/master'
+
+Mon Feb 8 10:41:52 2010 -0800  Alex Beregszaszi <alex@datira.com>
+  * Don't set header to nil on HeaderHash#include?
+    
+    http://groups.google.com/group/rack-devel/browse_thread/thread/cb0548dfe7a70702
+
+Sun Feb 7 23:56:01 2010 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * "WWW-Authenticate" header generated by Auth::Digest::MD5 is wrong (RFC 2617)
+    
+    Reported by Iñaki Baz Castillo.  [#83 state:resolved]
+
+Sun Feb 7 23:52:19 2010 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * gem and rdoc need SPEC
+
+Sun Feb 7 23:50:08 2010 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * parse_multipart: Content-Type field doesn't imply a file upload
+    
+    Fixes issues created by 6674f3652.  [#79 state:resolved]
+
+Sun Feb 7 23:48:37 2010 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * rack/utils needs FileUtils
+
+Mon Feb 1 12:21:47 2010 +0100  Julik <me@julik.nl>
+  * Add a failing test and fix for #90
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Tue Jan 26 15:35:04 2010 -0500  Alexander Kahn <alexanderkahn@gmail.com>
+  * Add possessive apostrophe to sendfile documentation.
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Thu Jan 21 09:09:49 2010 -0600  Joshua Peek <josh@joshpeek.com>
+  * Additional tests for a180673
+
+Thu Jan 21 08:41:38 2010 -0600  Sam Ruby <rubys@intertwingly.net>
+  * Fixes next token after a filename may include a dash or other character
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Thu Jan 21 08:30:15 2010 -0600  Joshua Peek <josh@joshpeek.com>
+  * Fixed "quotes" typo
+
+Wed Jan 20 20:05:19 2010 -0600  Joshua Peek <josh@joshpeek.com>
+  * broken_unquoted should be case insensitive
+
+Wed Jan 20 19:46:44 2010 -0600  Sam Ruby <rubys@intertwingly.net>
+  * Improve multipart parsing support for UAs that don't correctly escape
+    Content-Disposition filenames.
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Sun Jan 17 13:05:29 2010 -0600  Charles Oliver Nutter <headius@headius.com>
+  * Add 100 extra wrappers and 0.1s delay to ensure timing test produces measurable results.
+
+Sun Jan 17 13:05:02 2010 -0600  Charles Oliver Nutter <headius@headius.com>
+  * Hardcode content-length of 418 for JRuby for now.
+
+Sun Jan 10 16:56:59 2010 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix SPEC documentation to say subclasses are allowed
+
+Wed Jan 6 14:47:47 2010 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * It's 2010 now.
+
+Wed Jan 6 14:31:59 2010 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Drop RDOX support
+
+Sun Jan 3 13:20:07 2010 -0600  Joshua Peek <josh@joshpeek.com>
+  * Set 1.1 release date
+
+Sun Jan 3 19:45:57 2010 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update copyright messages
+
+Sun Jan 3 12:36:04 2010 -0600  Joshua Peek <josh@joshpeek.com>
+  * Remove brittle spec that relies on unstable marshal format
+
+Sat Dec 26 18:10:36 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Revert "Add --chdir option to rackup"
+    
+    This reverts commit b5a47e25cf65ad2d87cf9e20474ca372ed91c1b0
+
+Sat Dec 26 17:50:26 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Add --chdir option to rackup
+
+Sat Dec 26 17:25:20 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Use "config" instead of "rack_file"
+
+Sat Dec 26 16:42:00 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Add shebang back to rackup
+
+Sat Dec 26 11:24:20 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Note nosqueeze change
+
+Sat Dec 26 11:17:52 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Merge remote branch 'origin/nosqueeze'
+
+Sat Dec 26 11:15:47 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Add previous change to changelog
+
+Sat Dec 26 11:10:40 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Tag not found responses from file servers with X-Cascade header
+    
+    Prepares internal file servers for revised Rack::Cascade that looks
+    for a magic header instead of discarding all 404 responses.
+
+Sat Dec 26 11:07:21 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * whoops, bad restoration
+
+Sat Dec 26 11:03:42 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Restore old school tar release tools
+
+Sat Dec 26 10:58:20 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Bump version and release to 1.1
+
+Sat Dec 26 06:25:41 2009 +0000  Eric Wong <normalperson@yhbt.net>
+  * update README, Sunshowers is not a web server
+    
+    Sunshowers is a library that can enhance Rack::Request when
+    used with Rainbows! but is not a server itself.  Additionally,
+    the official name for Rainbows! is "Rainbows!" with a bang.
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Fri Dec 25 14:12:52 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update web server list in README
+
+Fri Dec 25 13:30:35 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update README
+
+Thu Dec 24 21:04:40 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Modernize packaging and publishing tasks for gemcutter
+
+Thu Dec 24 21:01:27 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * ignore dist tmp files
+
+Thu Dec 24 20:46:36 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Prepare release notes for 1.1
+
+Wed Dec 23 20:42:37 2009 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Test case for matching mutliple /'s in URLMap
+
+Wed Dec 23 20:24:56 2009 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * URLMap matches multiple /'s but does not modify PATH_INFO
+
+Wed Oct 28 19:16:29 2009 -0700  Ricardo Chimal, Jr <ricardo@heroku.com>
+  * Don't munge PATH_INFO in URLMap
+
+Tue Dec 22 15:19:22 2009 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Failing testcase for URLMap squeeze issue
+
+Thu Jan 15 05:46:21 2009 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Use Content-Type to determine POST params parsing [#20]
+    
+    Reverts the hard test for a 'PUT' request method (8d01dc0) and
+    uses the Content-Type to determine whether to read into the
+    request body. The Request#POST method parses the request body
+    if (and only if) either of the following conditions are met:
+    
+    1. The request's Content-Type is application/x-www-form-urlencoded
+       or multipart/form-data. Note: the REQUEST_METHOD is ignored in
+       this case.
+    
+    2. The original REQUEST_METHOD is 'POST' and no Content-Type header
+       was specified in the request. Note that we use the REQUEST_METHOD
+       value before any modifications by the MethodOverride middleware.
+    
+    This is very similar to how this worked prior to 8d01dc0 but
+    narrows the 'no Content-Type' special case to apply only to
+    POST requests. A PUT request with no Content-Type header would
+    trigger parsing before - with this change only POST requests
+    with no Content-Type trigger parsing.
+
+Sun Dec 20 20:58:34 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Status code lookup utility
+
+Sun Dec 20 20:50:15 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Extract parse_query and parse_multipart in Request so subclasses
+    can change their behavior [#71 state:resolved]
+
+Sun Dec 20 20:39:11 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Request#host knows about forwared host [#77 state:resolved]
+
+Sun Dec 20 20:22:45 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Request#user_agent
+
+Sun Dec 20 20:18:11 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * exclude rackup tests by default because they often stall
+
+Sun Dec 20 14:53:26 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Mention fix-root-scriptname in KNOWN-ISSUES
+
+Sun Dec 20 14:49:02 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge branch 'master' of github.com:rack/rack
+
+Fri Dec 11 16:44:07 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * ignore rackup log output
+
+Fri Dec 11 16:42:37 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * NullLogger should actually be a middleware
+
+Fri Dec 11 16:40:57 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Simple rack logger middleware that wraps rack.errors
+
+Fri Dec 11 16:29:43 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Nop NullLogger
+
+Fri Dec 11 16:18:41 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * rack.logger specification
+
+Fri Dec 11 16:03:39 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Import Ryan's Sendfile from contrib into core
+
+Fri Dec 11 16:00:57 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Import runtime middleware by paul (Paul Sadauskas) into core
+
+Fri Dec 11 15:52:08 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Import etag middleware from contrib into core
+
+Fri Dec 11 15:40:08 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Import Config by jcrosby (Jon Crosby) into core
+
+Thu Dec 10 21:52:38 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Reverse hash for looking up status codes by symbol
+
+Thu Dec 10 21:35:12 2009 -0600  Eric Wong <normalperson@yhbt.net>
+  * HeaderHash#each yields Lint-OK multivalue headers
+    
+    Rack::Lint does not allow header values yielded by #each to be
+    non-String objects, so we join them like we do in #to_hash.
+    This finally allows HeaderHash to be passed in the Rack response
+    as a header without needing #to_hash.
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Thu Dec 10 21:34:50 2009 -0600  Eric Wong <normalperson@yhbt.net>
+  * CommonLogger uses HeaderHash to lookup Content-Length
+    
+    Since HeaderHash is cheaper to use now, encourage its usage
+    instead of reinventing a way to lookup header values with
+    an enforced O(n) overhead.
+    
+    Under best conditions, this can now be done in O(1) time if the
+    rest of our middleware stack already uses (and passes)
+    HeaderHash.  This does make things slower if CommonLogger is the
+    only middleware in the stack, however that's probably not too
+    common.
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Thu Dec 10 21:34:17 2009 -0600  Eric Wong <normalperson@yhbt.net>
+  * avoid HeaderHash#to_hash in middlewares
+    
+    Since HeaderHash objects are valid header responses, avoid
+    converting the headers to Hash objects only to have it
+    reconverted back to HeaderHash in the next middleware.
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Thu Dec 10 21:33:53 2009 -0600  Eric Wong <normalperson@yhbt.net>
+  * HeaderHash.new avoids unnecessary object creation
+    
+    Creating a new HeaderHash is an O(n) operation in addition to
+    the cost of allocating a new object.  When using multiple pieces
+    of middleware, this can lead to unnecessary memory allocation
+    and iteration overhead.   We now explicitly define the
+    HeaderHash.new class method to return its original argument if
+    it is already a HeaderHash to avoid repeating work.
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Mon Nov 16 13:50:27 2009 -0500  Derek and Matt <drat@gdis-imac-2.local>
+  * Fixed multipart parameter parsing for when a field's body ends at the same time as a chunk (i.e. we've reached EOL and buffer is empty)
+
+Thu Nov 5 16:00:10 2009 -0500  Bosko Milekic <bmilekic@tesla.(none)>
+  * Introduce failing test case for multipart parser when it slices exactly on a boundary and patch multipart parser so it passes it - the failing test case comes with a sample payload specific to the fact that the default bufsize used by the multipart parser is exactly 16384.  should this default be changed, the test will no longer apply.
+
+Thu Dec 10 21:08:01 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Tell people to report bugs to lighthouse
+
+Thu Dec 10 21:03:32 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Don't delete PATH_INFO from env in fastcgi, mongrel, and webrick
+    handlers because PATH_INFO must not be nil according to SPEC
+    [#75 state:resolved]
+
+Thu Dec 3 13:10:28 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Merge branch 'memcache-session-bugfix'
+    
+    * memcache-session-bugfix:
+      Test-fix for shallow copy change checks
+      Added test for deep hash checks, prevent shallow copy check failure
+      Session::Memcache fixes
+      Updating Session::Memcache test
+      Inlining of #merge_sessions
+
+Thu Dec 3 13:07:46 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Test-fix for shallow copy change checks
+    Simplification of new/missing session keys
+
+Thu Dec 3 13:04:16 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Added test for deep hash checks, prevent shallow copy check failure
+    Rewording variables for clarity
+
+Sun Nov 22 20:15:28 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Session::Memcache fixes
+    
+    Restructing logical branches to be less inlince
+    Uniform naming of variables
+    Fix of of inline session merging
+
+Sun Nov 22 20:12:04 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Updating Session::Memcache test
+    
+    Pointless instantiation removed
+    Moved bad connection check above good connection check
+    A blank string for the server specification uses defaults, fixed
+
+Sun Nov 22 18:08:53 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Inlining of #merge_sessions
+
+Wed Dec 2 19:54:36 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Merge branch 'quoted-string-cookies'
+    
+    * quoted-string-cookies:
+      Test added to check to ensure that quoted values are properly parsed
+
+Wed Dec 2 19:32:56 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Test added to check to ensure that quoted values are properly parsed
+    Using a regular expression to identify quoted string values, could be optimized
+
+Tue Nov 24 20:35:04 2009 +0800  mig-hub <mig@mypeplum.com>
+  * Fix typo on lib/rack/session/pool.rb
+
+Wed Dec 2 02:47:38 2009 +0800  Geoffrey Grosenbach <boss@topfunky.com>
+  * Added mime type for .manifest (HTML5 offline storage)
+
+Tue Nov 17 13:02:04 2009 +0800  Chris Wanstrath <chris@ozmm.org>
+  * Response should call #to_i on the status, as per the spec.
+    
+    "The status, if parsed as integer (to_i), must be greater than or equal
+    to 100."
+
+Mon Nov 23 15:06:30 2009 -0800  Carl Lerche <carllerche@mac.com>
+  * Extract the option parser
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Sun Nov 22 15:45:20 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Initial removal of OpenID related files
+    Removal of references in Rakefile and the core include
+
+Sat Nov 21 10:52:33 2009 -0800  Yehuda Katz + Carl Lerche <ykatz+clerche@engineyard.com>
+  * Refactor rackup into Rack::Server
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Sat Nov 21 10:30:58 2009 -0800  Yehuda Katz + Carl Lerche <ykatz+clerche@engineyard.com>
+  * Test coverage for rackup
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Sat Nov 21 16:53:08 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge branch 'master' of github.com:rack/rack
+
+Sun Oct 18 21:39:16 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update README for 1.0.1
+
+Fri Oct 23 17:49:03 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Fix LSWS handler as suggested by George Wang
+
+Sun Oct 18 21:39:16 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update README for 1.0.1
+
+Sun Oct 18 21:40:04 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge branch 'master' of github.com:rack/rack
+
+Thu Oct 8 08:51:11 2009 +0200  Daniel Rodríguez Troitiño <drodrigueztroitino@yahoo.es>
+  * Fixes the handling of the filename parameter.
+    
+    Uses the RE used by Ruby in cgi.rb, that handles
+    the embedded semicolons in the filename correctly.
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Thu Oct 8 08:48:34 2009 +0200  Daniel Rodríguez Troitiño <drodrigueztroitino@yahoo.es>
+  * Test multipart upload with a semicolon in the name.
+    
+    Test a multipart upload in which the specified
+    filename includes a semicolon. Should be parsed
+    with the included filename, but Rack stops at the
+    filename.
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Mon Oct 5 22:53:28 2009 +0100  raggi <jftucker@gmail.com>
+  * Relax Lint slightly to allow subclasses of the required types
+
+Tue Sep 8 19:11:05 2009 +0200  Michael Fellinger <m.fellinger@gmail.com>
+  * Pass more options to mongrel
+
+Sat Sep 5 13:29:45 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * lib/ should already be added to the $LOAD_PATH by the package manager
+
+Sat Sep 5 13:27:50 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * rackup should expect $LOAD_PATH to already be set up
+
+Tue Aug 11 13:56:50 2009 -0700  dmann <darrinmann@gmail.com>
+  * Checking that the FCGI::Stream class exists, before trying to override the read method.  The FCGI::Stream class does not exist in the pure ruby version of the FCGI module.  FCGI will use pure ruby if:
+    1. FCGI_PURE_RUBY = true
+    2. The C version of FCGI doesn't load (lib not found or the like)
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Wed Aug 12 00:36:25 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge commit 'official/master'
+
+Thu Aug 6 18:41:52 2009 -0500  Eric Wong <normalperson@yhbt.net>
+  * Update Rack::Utils::HTTP_STATUS_CODES hash
+    
+    This adds the following status code lookups for the 102, 207,
+    226, 306, 422, 423, 424, 426, 506, 507, and 510 status codes.
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Wed Aug 5 11:01:43 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Revert "Add common HTTP strings to Rack::Const"
+    
+    This reverts commit 6ae0a1014c2bfc06ad4d91ea04da5c42be454079.
+
+Mon Aug 3 22:33:24 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Kill stray debug line
+
+Mon Aug 3 22:21:15 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Use more compatible gzip write api instead of "<<".
+    
+    Fixes undefined method `<<' for Zlib::GzipWriter on JRuby
+
+Mon Aug 3 16:03:30 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Add common HTTP strings to Rack::Const
+
+Mon Aug 3 12:02:37 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Don't buffer response bodies in session store by creating an unnecessary response wrapper. Extracted set and delete cookie helpers into Utils so they can be used outside Response.
+
+Mon Aug 3 11:41:05 2009 -0500  Masayoshi Takahashi <takahashimm@gmail.com>
+  * rack.input should be ASCII-8BIT even if it's StringIO (for test)
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Thu Jun 25 03:21:21 2009 +0800  Masayoshi Takahashi <takahashimm@gmail.com>
+  * use Rack::Utils::bytesize, not String#size for multibyte characters in Ruby1.9
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Mon Aug 3 10:49:11 2009 -0500  Julien Sanchez <julien.sanchez@gmail.com>
+  * Mongrel handler should use rack_input var
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Mon Aug 3 10:33:18 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Return an empty string for Request#host if HTTP_HOST and SERVER_NAME are both missing
+
+Thu Jul 30 22:53:37 2009 -0500  Patrick Aljord <patcito@gmail.com>
+  * added ogv mime type so that firefox can read theora videos using the html5 <video> tag
+
+Sat Jul 25 23:22:11 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Fixing return value of figure_path when nothing was found
+
+Sun Jul 19 10:23:02 2009 +0900  Genki Takiuchi <genki@s21g.com>
+  * Became conscious of __END__
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Tue Jun 30 19:53:38 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Set correct external_encoding for handlers that don't use RewindableInput
+
+Tue Jun 23 22:46:48 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Use #to_s and #downcase on the ext passed to Rack::Mime::mime_type
+
+Wed Jun 17 17:32:24 2009 -0500  Hongli Lai (Phusion) <hongli@phusion.nl>
+  * Document more clearly that rack.input must be opened in binary mode, and enforce it in Rack::Lint
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Wed Jun 17 17:31:38 2009 -0500  Hongli Lai (Phusion) <hongli@phusion.nl>
+  * Fix unit test errors in spec_rack_commonlogger.rb
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Wed Jun 17 17:30:38 2009 -0500  Hongli Lai (Phusion) <hongli@phusion.nl>
+  * Enforce binary encoding in RewindableInput; fixes Ruby 1.9 issues.
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Wed Jun 17 17:20:40 2009 -0500  Hongli Lai (Phusion) <hongli@phusion.nl>
+  * Fix Rack::Utils::HeaderHash#delete: it's supposed to return the deleted value, or nil if the key doesn't exist. [#54 state:resolved]
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Mon Jun 15 14:17:41 2009 -0500  Kamal Fariz Mahyuddin <kamal.fariz@gmail.com>
+  * Add Rack::Utils::HeaderHash#replace
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Fri Jun 12 11:08:49 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Forgot changing license of Rack::Reloader to MIT
+
+Fri Jun 5 20:39:17 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Make sure that Reloader doesn't break when executed via ruby -e
+
+Mon Jun 1 14:41:04 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Make sure WEBrick respects the :Host option
+
+Sat May 23 17:47:01 2009 -0700  Jeremy Kemper <jeremy@bitsweat.net>
+  * Merge branch 'master' of git://github.com/rack/rack
+
+Sat May 23 15:19:16 2009 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Readdition of dropped file require statement
+
+Thu May 21 03:25:53 2009 -0700  znz <kzhr.nsym@gmail.com>
+  * Typoe of #auth for @authenticator
+    
+    Signed-off-by: Scytrin dai Kinthra <scytrin@gmail.com>
+
+Fri May 1 16:25:16 2009 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Documentation reorganization for Rack::Auth::OpenID
+    Adjust derivation of values for ValidStatus
+    Whitespace and syntax cleanups.
+    Changed authorship tagline.
+
+Fri May 22 15:46:01 2009 -0700  tlrobinson <tom@280north.com>
+  * Fix for form names containing "=": split first then unescape components
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Wed May 20 15:38:24 2009 -0700  Jeremy Kemper <jeremy@bitsweat.net>
+  * Merge branch 'master' of git@github.com:jeremy/rack
+
+Wed May 20 15:36:37 2009 -0700  Jeremy Kemper <jeremy@bitsweat.net>
+  * Ruby 1.9 compatibility. Simplify make_rewindable. Raise if unlinking closes the IO.
+
+Thu May 14 13:37:25 2009 -0700  Jeremy Kemper <jeremy@bitsweat.net>
+  * Missed merge
+
+Wed May 13 18:35:49 2009 -0700  Jeremy Kemper <jeremy@bitsweat.net>
+  * Eliminate assumption that body.each may be called more than once
+
+Fri May 15 04:38:26 2009 +0800  Jeremy Kemper <jeremy@bitsweat.net>
+  * Speed up common header reads by avoiding downcase
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Thu May 14 09:28:11 2009 +0800  Jeremy Kemper <jeremy@bitsweat.net>
+  * Allow empty cascades. Reduce #call object allocation overhead. Speed up #include?
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Thu May 14 08:57:02 2009 +0800  Jeremy Kemper <jeremy@bitsweat.net>
+  * Rack::Request#POST raises if rack.input is missing instead of returning the uninitialized rack.request.form_hash
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Wed Apr 22 14:43:20 2009 +0800  Jeremy Kemper <jeremy@bitsweat.net>
+  * Work in tandem with ContentLength. Avoid dup per request.
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Fri May 15 22:53:04 2009 +0800  Simon Chiang <simon.a.chiang@gmail.com>
+  * optimizations of parse/build query
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Wed May 13 18:53:24 2009 -0700  Jeremy Kemper <jeremy@bitsweat.net>
+  * Merge branch 'commonlogger'
+
+Wed May 13 18:35:49 2009 -0700  Jeremy Kemper <jeremy@bitsweat.net>
+  * Eliminate assumption that body.each may be called more than once
+
+Wed May 13 18:28:11 2009 -0700  Jeremy Kemper <jeremy@bitsweat.net>
+  * Allow empty cascades. Reduce #call object allocation overhead. Speed up #include?
+
+Wed May 13 17:57:02 2009 -0700  Jeremy Kemper <jeremy@bitsweat.net>
+  * Rack::Request#POST raises if rack.input is missing instead of returning the uninitialized rack.request.form_hash
+
+Sun May 10 22:19:20 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Kill request instance memoization
+
+Sat May 2 00:12:00 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Only try to get the rack.errors.string if possible so we don't violate the spec
+
+Thu Apr 30 19:02:57 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Bump remainder of rack.versions
+
+Tue Apr 21 23:43:20 2009 -0700  Jeremy Kemper <jeremy@bitsweat.net>
+  * Work in tandem with ContentLength. Avoid dup per request.
+
+Wed Apr 29 00:28:12 2009 +0100  raggi <jftucker@gmail.com>
+  * Switch to emacs style encoding comment
+
+Wed Apr 29 00:15:53 2009 +0100  raggi <jftucker@gmail.com>
+  * Fix multipart uploads on 1.9
+
+Tue Apr 28 11:43:22 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Add anchor to nested params parsing regexp to prevent stack overflows
+
+Tue Apr 28 10:38:33 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Fix shadowed variables in memcache session spec
+
+Tue Apr 28 10:35:07 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * In 1.9, MemCache client raises an ArgumentError instead of a Runtime error if no servers can be found
+
+Tue Apr 28 10:22:02 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Fix constant already defined warning in tests
+
+Tue Apr 28 00:51:14 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Skip Memcache tests if no servers can be found
+
+Tue Apr 28 00:36:35 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Utils::Multipart.build_multipart returns nil if no UploadedFiles are included
+
+Tue Apr 28 00:20:38 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Fix brittle query string generation tests
+
+Sat Apr 25 16:41:08 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * MockRequest should accept hash params
+    
+    Rack::MockRequest.new(app).get("/foo", :params => {"foo" => "bar"})
+
+Sat Apr 25 16:01:05 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Add Utils::Multipart.build_multipart to complement Utils::Multipart.parse_multipart
+
+Sat Apr 25 15:02:40 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Add Utils.build_nested_query to complement Utils.parse_nested_query and preform the inverse operation
+
+Sat Apr 25 14:31:52 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * MockRequest should properly convert method name to an uppercase string
+
+Sat Apr 25 14:29:00 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * MockRequest should prepend slash to uri path
+
+Sat Apr 25 14:24:55 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Ensure SSL port and HTTP flag are on when using https
+
+Sat Apr 25 07:35:10 2009 -0700  Ryan Tomayko <rtomayko@gmail.com>
+  * fix rack.version in MockRequest
+
+Sat Apr 25 15:12:41 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Java doesn't provide unlink(2) reliably
+
+Sat Apr 25 15:08:42 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Package rack.gemspec as well
+
+Sat Apr 25 15:03:54 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Last minute updates
+
+Sat Apr 25 14:42:36 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge commit 'FooBarWidget/master'
+
+Sat Apr 25 14:37:22 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Patch FCGI::Stream#read to use a buffer
+
+Sat Apr 25 13:02:33 2009 +0200  Hongli Lai (Phusion) <hongli@phusion.nl>
+  * Explain the usefulness of the to_path method of the body.
+
+Sat Apr 25 12:47:18 2009 +0200  Hongli Lai (Phusion) <hongli@phusion.nl>
+  * Fix styling the Rack specification.
+
+Sat Apr 25 12:38:53 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge commit 'official/master'
+
+Sat Apr 25 12:27:42 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update README
+
+Sun Apr 19 19:29:21 2009 +1200  Tim Carey-Smith <tim@spork.in>
+  * Order URL maps by hostname first, putting "empty" first
+    
+    When an aliasing server accepts a request on 1 of the alias
+    hostnames, the SERVER_NAME is set to the primary hostname but
+    the HTTP_HOST is set to the alias.
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Sat Apr 25 12:06:22 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Remove redundant AUTHORS file
+
+Fri Apr 24 13:45:20 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Check for the existence of Rack in the load path.
+    
+    Fixes issues with rubygems where you would get rack in the load path twice if you used gem and require.
+
+Sat Apr 18 19:54:37 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Merge commit 'FooBarWidget/master'
+
+Sat Apr 18 19:47:15 2009 -0500  Joshua Peek <josh@joshpeek.com>
+  * Add 'rack.session' specification
+
+Fri Apr 17 19:31:04 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * ConditionalGet should delete Content-Type and Content-Length headers if they are set
+
+Thu Apr 16 13:57:17 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Improved Rack::Reloader
+
+Wed Apr 15 00:32:29 2009 +0200  Hongli Lai (Phusion) <hongli@phusion.nl>
+  * Optimize parse_multipart: put read data into a buffer in order to reduce garbage. This is allowed by the recent rack.input#read spec changes.
+
+Tue Apr 14 22:04:56 2009 +0200  Hongli Lai (Phusion) <hongli@phusion.nl>
+  * Specify rack.input#read to behave the same like IO#read.
+
+Tue Apr 14 21:47:30 2009 +0200  Hongli Lai (Phusion) <hongli@phusion.nl>
+  * Implement a Rack::RewindableInput utility class, for making any IO object rewindable.
+    Useful for handler implementers who want an easy way to make their rack.input rewindable.
+
+Tue Apr 14 19:38:18 2009 +0200  Hongli Lai (Phusion) <hongli@phusion.nl>
+  * Remove code for handling the possibility that rack.input may not be rewindable, because rack.input is now required to be rewindable.
+
+Tue Apr 14 19:17:57 2009 +0200  Hongli Lai (Phusion) <hongli@phusion.nl>
+  * Update Rack specification: require rack.input to be rewindable.
+
+Tue Apr 14 19:37:14 2009 +0200  Hongli Lai (Phusion) <hongli@phusion.nl>
+  * Describe some things in the specification more clearly, and add some minor styling improvements.
+
+Tue Apr 14 12:09:09 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Rack::Request#write: count length with bytesize
+
+Sat Apr 11 11:56:42 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add #rewind noop for FastCGI
+
+Sat Apr 11 04:52:07 2009 +0200  eTM <juergen.mangler@univie.ac.at>
+  * better multipart handling
+
+Fri Apr 10 13:41:16 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Simplify Rakefile
+
+Fri Apr 10 13:37:19 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Remove deprecated rdoc flag
+
+Fri Apr 10 13:33:27 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix dist task dependencies
+
+Fri Apr 10 13:31:48 2009 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix gem task dependencies
+
+Mon Mar 30 10:32:28 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Allow arbitrary number of arguments for Request::new
+
+Tue Mar 31 12:13:49 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Make sure the correct rack is required in rackup
+
+Wed Mar 18 11:28:41 2009 +0000  Rob <rob.anderton@thewebfellas.com>
+  * Added extra nested params error handling and added messages to exceptions to help with debugging
+    
+    Signed-off-by: Michael Fellinger <m.fellinger@gmail.com>
+
+Wed Mar 18 02:01:29 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Refactor Handler::get and add Handler::try_require
+
+Thu Feb 26 16:51:56 2009 -0700  Graham Batty <graham@graham-battys-macbook.local>
+  * Simplified options for unregistered handlers
+    
+    Made it so that it only accepts FullyCapsedClassNames for unregistered handlers as per suggestions in #rack irc channel.
+    
+    Signed-off-by: Michael Fellinger <m.fellinger@gmail.com>
+
+Thu Feb 26 16:23:56 2009 -0700  Graham Batty <graham@graham-battys-macbook.local>
+  * Made it so that the expectation is that Handler.get raises NameError on failure instead of nil under the principle of obvious failure.
+    
+    Signed-off-by: Michael Fellinger <m.fellinger@gmail.com>
+
+Thu Feb 26 15:36:57 2009 -0700  Graham Batty <graham@graham-battys-macbook.local>
+  * Made auto-registration of unknown handlers much smarter. This should make it possible for the responsibility for handler definition to be on the people writing servers without making life difficult for the user. ie. 'gem install thin', if thin includes its rack adapter, would make 'rackup -s thin' just work, which is how it should be.
+    
+    Signed-off-by: Michael Fellinger <m.fellinger@gmail.com>
+
+Wed Mar 25 14:49:04 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Document version change
+
+Wed Mar 25 14:41:36 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Push version numbers
+
+Wed Mar 25 14:36:47 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Ensure to rebuild rdocs
+
+Wed Mar 25 14:36:29 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update copyright years
+
+Wed Mar 25 14:34:10 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Rack::Response#redirect
+
+Wed Mar 25 14:27:40 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Document SPEC changes, officially deprecate String bodies
+
+Wed Mar 25 14:14:36 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * SPEC: Clarify percent-encoding of PATH_INFO
+
+Wed Mar 25 14:12:36 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Revert "Specify PATH_INFO encoding"
+    
+    This reverts commit 7a3d21f4b469d5ce9d1ee4d952c806064f4dfbcf.
+
+Wed Mar 25 13:50:12 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Build all files needed
+
+Wed Mar 25 13:45:23 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Refactor Rakefile
+
+Wed Mar 18 16:54:15 2009 -0700  TJ Holowaychuk <tj@vision-media.ca>
+  * Added Rack::Request#path
+    
+    I would imagine since its used internally there is a chance other devs will
+    need it, and IMO its a mise-well situation, your call :)
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Wed Mar 18 16:33:58 2009 -0700  TJ Holowaychuk <tj@vision-media.ca>
+  * Refactored Rack::Request#media_type
+    
+    No need for subscript, first reads better
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Thu Mar 12 01:35:06 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Don't evaluate CGI ISINDEX parameters in rackup
+
+Fri Mar 13 09:57:02 2009 -0700  Ryan Tomayko <rtomayko@gmail.com>
+  * Rack::Deflater streaming
+
+Fri Mar 13 13:17:09 2009 -0500  Rob <rob.anderton@thewebfellas.com>
+  * Remove files from params when no file is selected [#37 state:resolved]
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Fri Mar 13 23:37:00 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Rack::File should use Utils::bytesize
+
+Thu Mar 12 20:41:56 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Add URLMap#remap and make the initialize parameter optional
+
+Thu Mar 5 21:21:52 2009 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Handlers use ContentLength and Chunked middleware where needed
+    
+    Each Rack handler now automatically wraps the app in one or more
+    pieces of middleware based on how the server is implemented. All
+    handlers use the Rack::ContentLength middleware and some handlers
+    use the Rack::Chunked middleware. Handlers that don't use the
+    Chunked middleware either do not require CE for some reason or
+    implement CE at the server level.
+    
+    * The Thin handler uses Chunked and ContentLength middleware. Thin
+      has built-in CE support but also allows the app to apply it
+      explicitly. Using our middleware for consistency and also because
+      I believe the Thin folks want to remove CE support in the future.
+    
+    * The Mongrel handler uses Chunked and ContentLength middleware.
+      Mongrel has built-in CE support but also allows the app to apply
+      it explicitly. Using our middleware for consistency across
+      handlers.
+    
+    * The SCGI handler uses Chunked and ContentLength middleware.
+    
+    * The WEBrick handler uses ContentLength middleware only; WEBrick
+      has a really touchy CE implementation that doesn't like it when
+      CE is applied by the application.
+    
+    * The FastCGI handler uses ContentLength only. FastCGI has its own
+      mechanism for transferring bodies that do not include an
+      explicit Content-Length. The FastCGI server applies the chunked
+      encoding if needed.
+    
+    * The CGI handler uses ContentLength only. The CGI spec forbids the
+      use of the Transfer-Encoding header in output from CGI programs.
+      The server program is responsible for applying the chunked
+      encoding if needed. Closing stdout signals the end of the body
+      so it's not really needed anyway.
+    
+    * The LSWS handler uses ContentLength middleware only. Like CGI, LSWS
+      closes the stream after transfer so chunked encoding is never
+      required.
+
+Thu Mar 5 21:20:58 2009 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Rack::Lint no longer requires a Content-Length response header
+
+Thu Mar 5 21:20:17 2009 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Add Rack::Chunked (Transfer-Encoding: chunked) middleware
+
+Wed Mar 11 12:46:07 2009 -0500  Russ Smith <russ@bashme.org>
+  * Force Litespeed input to be a proper IO object [#36 state:resolved]
+    
+    Signed-off-by: Joshua Peek <josh@joshpeek.com>
+
+Thu Mar 5 21:19:23 2009 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Add Rack::Utils.bytesize function, use everywhere
+
+Sun Mar 8 22:37:01 2009 +0100  Sam Roberts <vieuxtech@gmail.com>
+  * Specify PATH_INFO encoding
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Sun Mar 8 00:07:40 2009 -0700  Simon Chiang <simon.a.chiang@gmail.com>
+  * WEBrick handler now sets the unescaped PATH_INFO
+    
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Thu Mar 5 13:17:42 2009 +0000  Brian Candler <b.candler@pobox.com>
+  * Add Rack::ContentType middleware
+    
+    Signed-off-by: Ryan Tomayko <rtomayko@gmail.com>
+
+Wed Mar 4 06:32:47 2009 -0800  candlerb <b.candler@pobox.com>
+  * Quick Rack::Builder code simplification
+    
+    Signed-off-by: Ryan Tomayko <rtomayko@gmail.com>
+
+Thu Feb 26 17:06:24 2009 +0000  Brian Candler <b.candler@pobox.com>
+  * Allow realm to be passed to auth handler's initialize method
+    
+    Signed-off-by: Ryan Tomayko <rtomayko@gmail.com>
+
+Wed Feb 25 09:22:38 2009 -0800  yonghui <yonghui.luo@gmail.com>
+  * Use / suffix in text and URLs in directory listing
+    
+    Signed-off-by: Ryan Tomayko <rtomayko@gmail.com>
+
+Wed Feb 4 23:38:32 2009 -0500  S. Brent Faulkner <brentf@unwwwired.net>
+  * Make MethodOverride + Auth::Digest play well together
+    
+    Auth::Digest::Request#method now uses any value in
+    rack.methodoverride.original_method to override the value in
+    REQUEST_METHOD
+    
+    Signed-off-by: Ryan Tomayko <rtomayko@gmail.com>
+
+Mon Jan 19 14:33:45 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Add Response#length and Response#length=
+
+Sat Feb 14 18:10:38 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Split parse_query utility into parse_query and parse_nested_query. parse_nested_query now chooses the last value instead of returning an array of all of them.
+
+Tue Feb 10 18:30:49 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Revert "Don't clobber nested parameter values. Fixes checkboxes in nested forms."
+    
+    This reverts commit 94a08fe93e785f34520d31fc2413d31bc211416d.
+
+Tue Feb 10 13:13:37 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Don't clobber nested parameter values. Fixes checkboxes in nested forms.
+
+Sun Feb 8 20:57:59 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Fix of Auth::Abstract::Handler to return headers within spec.
+    401 and 400 responses must have Content-Type and Content-Length defined.
+
+Mon Dec 8 17:29:56 2008 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Add body.to_path to SPEC; implement in Rack::File
+    
+    Rack::File responds to #to_path. Rack::Lint checks that the files
+    given in #to_path exist and will WARN on rack.errors if not.
+
+Tue Feb 3 15:19:16 2009 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Fix spec failures in Utils::parse_multipart under 1.9
+    
+    File.read assumes that the file is encoded with default external
+    encoding. This was causing a regexp match failure because the String
+    was UTF-8 while the Regexp was binary. Opening the file with a
+    binary mode and slurping corrects the issue.
+
+Tue Feb 3 14:39:22 2009 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Fix spec failures in Rack::Deflator under 1.9
+    
+    There were two issues here that
+    
+    * String#length was used to determine the Content-Length
+      resulting in off-by-one failures in expected length
+      assertions.
+    
+    * The specs were using body.to_s to convert bodies to Strings.
+      In Ruby 1.8, #to_s is like #join; in Ruby 1.9, #to_s is like
+      #inspect
+
+Mon Feb 2 03:18:42 2009 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Fix spec failures and warnings in Rack::Lock under 1.9
+
+Mon Feb 2 03:08:21 2009 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Fix all specs that use String for response body
+    
+    This leaves only four test failures under Ruby 1.9, which are
+    unrelated to the 'body.each' issue.
+
+Sun Feb 1 00:57:22 2009 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Handlers split header values on "\n" instead of using #each
+
+Sun Feb 1 00:48:58 2009 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Normalize Array header values to Strings in HeaderHash#to_hash
+
+Sun Feb 1 00:17:36 2009 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * SPEC: header values must be Strings instead of responding to #each [#27]
+
+Fri Feb 6 15:39:55 2009 +0100  Sam Roberts <vieuxtech@gmail.com>
+  * Fix typo in Rack::ShowExceptions error message
+    Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+
+Sat Jan 31 17:24:08 2009 -0500  S. Brent Faulkner <brentf@unwwwired.net>
+  * Make URLMap + Auth::Digest play well together
+    
+    Splices the SCRIPT_NAME and PATH_INFO to validate auth URI.
+    
+    Signed-off-by: Ryan Tomayko <rtomayko@gmail.com>
+
+Sat Jan 31 15:00:06 2009 -0700  sbfaulkner <brentf@gto.net>
+  * Fix Auth::Digest spec always requesting '/'
+    
+    The request_with_digest_auth helper method was always requesting '/'
+    for the first request; corrected to request the specified path
+    instead.
+    
+    Signed-off-by: Ryan Tomayko <rtomayko@gmail.com>
+
+Sun Feb 1 00:55:22 2009 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Run Thin tests on separate port from Mongrel tests
+    
+    This shouldn't really be necessary but the mongrel tests
+    are currently prone to deadlocks and other weirdness, which
+    causes mongrel to stay on its port. That causes the thin tests
+    to fail as well in a way that's misleading.
+
+Sat Jan 31 22:47:16 2009 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Fix warnings. Use should.equal instead of should ==
+
+Sat Jan 31 23:40:09 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Add support for nested parameter parsing
+
+Sat Jan 31 22:03:54 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Fix Rack::Request subclassing and memoization issues
+
+Thu Jan 29 22:34:43 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Non-destructive URLMap
+
+Fri Jan 16 21:30:57 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Fixed typos in Auth::OpenID
+    Adjusted tests for Session::Pool and Session::Memcache
+
+Sat Jan 24 19:26:43 2009 -0500  Aaron Pfeifer <aaron.pfeifer@gmail.com>
+  * Use $stdin and $stderr instead of STDIN and STDERR
+    
+    This ensures that references are always to the *current*
+    streams.
+    
+    Signed-off-by: Ryan Tomayko <rtomayko@gmail.com>
+
+Wed Jan 21 22:16:14 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Deflater sets Content-Length header [#9 state:resolved]
+
+Wed Jan 21 22:00:37 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Content Length needs to be a string
+
+Mon Jan 19 14:44:31 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Close #16: String#to_a breaks 1.9 compatibility
+
+Wed Jan 21 22:03:13 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge branch 'master' of git://github.com/remi/rack
+
+Sun Jan 18 10:52:05 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Clean up Safari's ajax POST body
+
+Tue Jan 20 20:56:26 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Don't create empty tempfile if no file was selected
+
+Wed Jan 21 10:49:29 2009 -0700  remi <remi@remitaylor.com>
+  * set CONTENT_LENGTH header in Rack::MockRequest.env_for so :input POST variables work properly
+
+Thu Jan 15 14:01:31 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Add Locking middleware
+
+Thu Jan 15 14:37:38 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Trim IE's full file path in multipart uploads
+
+Fri Jan 16 14:53:58 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Rack::Session update part 3
+    Updated Memcache and tests in accordance with changes to Abstract::ID
+    Support for :drop option added to Memcache
+    Adjusted mutex locking dependant on rack.multithread in Memcache and Pool
+    Adjusted session merging algorithms in Memcache and Pool
+    Abstract::ID#set_session and #get_session arguments adjusted
+
+Fri Jan 16 23:42:39 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge commit 'jdelStrother/master'
+
+Fri Jan 16 16:53:00 2009 +0000  Jonathan del Strother <jon.delStrother@bestbefore.tv>
+  * Fix multipart parsing of binary content in UTF8 mode
+    
+    The boundary regexp should use the 'n' multibyte switch to disable multibyte processing on the multipart content bodies.
+
+Sat Jan 10 11:18:01 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Adjusted Session::Pool#generate_id to prevent collisions.
+    Pool#get_session appropriately reduced, mutex only writes and selective reads
+    Pool#set_session looks for :drop in 'rack.session.options' to remove a session from the main pool
+    ID#set_session will regenerate a session id if the :renew option is present
+    ID#set_session will ignore :defer if :renew is true
+    Session::Abstract::ID allows for deferring from setting a cookie in a response by using the :defer option.
+    Removal of :key in default options, default is inlined.
+
+Sat Jan 10 11:20:42 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Major update to Rack::Auth::OpenID
+    Includes accessor methods for Rack::Request and an auth middleware
+    
+    Full test update.
+    Full documentation update.
+    Reduced complexity of options, compensated with additional flexibility
+    through overriding methods.
+
+Fri Jan 9 14:56:32 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Addition of HttpOnly cookie support to Rack::Response
+
+Thu Jan 15 00:16:40 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Add multipart tests for input that does not support rewinding
+
+Thu Jan 15 00:10:54 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Add multipart test with binary file
+
+Wed Jan 14 10:33:05 2009 -0500  Matt Todd <chiology@gmail.com>
+  * Fix brittle test after Rack::Request memoization
+    
+    The Content-Length changed due to how Rack::Request memoizes
+    itself in the env.
+
+Tue Jan 13 18:21:51 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Add tests for multipart uploads. Also ensure multipart parser tries to rewind the input stream.
+
+Wed Jan 14 12:38:51 2009 -0600  Joshua Peek <josh@joshpeek.com>
+  * Explicitly require request, response, and utils
+
+Sun Jan 11 14:37:48 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge commit 'scytrin/master'
+
+Fri Jan 9 15:46:16 2009 -0500  Diego Scataglini <diego@junivi.com>
+  * fixed wrong reference to Rack::Utils in rdocs
+
+Fri Jan 9 18:28:09 2009 +0200  Eero Saynatkari <projects@kittensoft.org>
+  * Update Content-Length in Response#write, not in #finish. Spec.
+    
+    * This means that the absence of the Content-Length header
+      can actually be used by the ContentLength middleware to
+      figure out if it should run.
+    
+    * There is no "default" Content-Length.
+
+Fri Jan 9 17:32:54 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix directory traversal exploits in Rack::File and Rack::Directory
+
+Wed Jan 7 21:15:44 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Updates to session systems.
+    ID brought closer in line to Rack::Session::Cookie
+    Adjusted to be compatible with Rack::Utils::Context
+    Tests updated and adjusted
+
+Tue Jan 6 20:40:11 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Simplification of Rack::Utils::Context
+    Adjustment of tests and documentation
+
+Tue Jan 6 08:16:43 2009 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Merge branch 'master' of git://github.com/rack/rack
+
+Tue Jan 6 12:56:00 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Last minute README fixes
+
+Tue Jan 6 12:46:37 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix last glitches
+
+Tue Jan 6 12:44:44 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Set release date
+
+Mon Jan 5 17:44:36 2009 -0800  Jon Crosby <jon@joncrosby.me>
+  * Store original HTTP method in MethodOverride middleware
+
+Tue Jan 6 12:30:29 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix typos in auth/openid
+    Reported by Robert Adkins <radkins@technetra.com>
+
+Mon Jan 5 18:41:15 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Rack::File::MIME_TYPES is now Rack::Mime::MIME_TYPES
+
+Mon Jan 5 18:35:59 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Another changes addition
+
+Mon Jan 5 18:35:31 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update gemspec
+
+Mon Jan 5 18:16:36 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update thanks
+
+Mon Jan 5 18:16:24 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update copyright
+
+Mon Jan 5 18:06:11 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update README
+
+Mon Jan 5 15:00:15 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * In URLMap, entries without host name should come first
+
+Mon Jan 5 14:59:38 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Marshall of String changed in 1.9
+
+Mon Jan 5 14:59:27 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Rewrite Response test to use a well-defined #each
+
+Mon Jan 5 14:59:06 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Array#to_a changed in 1.9
+
+Mon Jan 5 14:58:45 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Constants are symbols in 1.9
+
+Mon Jan 5 13:51:20 2009 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Shuffle scopes for 1.9
+
+Mon Jan 5 05:41:13 2009 -0400  raggi <jftucker@gmail.com>
+  * Fix spec_rack_response for 1.9
+
+Sun Jan 4 23:19:31 2009 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Fix webrick handler for ruby 1.9.1
+
+Tue Dec 30 22:03:42 2008 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge commit 'official/master'
+
+Tue Dec 30 21:48:17 2008 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add trailing slash to the alternative gem server
+
+Mon Dec 29 22:31:27 2008 -0600  Joshua Peek <josh@joshpeek.com>
+  * Support X-Http-Method-Override header in MethodOverride middleware
+
+Tue Dec 30 12:23:26 2008 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Don't leak absolute paths in error messages
+    Reported by Yonghui Luo.
+
+Mon Dec 29 02:15:25 2008 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Implement HeaderHash#merge! and HeaderHash#merge
+
+Mon Dec 29 00:40:46 2008 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Use HeaderHash where header case should be insensitive
+    
+    The ConditionalGet, ContentLength, Deflator, and ShowStatus
+    middleware components were reading/checking headers case
+    sensitively.
+
+Thu Dec 11 21:00:27 2008 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Non-normalizing HeaderHash with case-insensitive lookups
+    
+    This is a backwards incompatible change that removes header name
+    normalization while attempting to keep most of its benefits. The
+    header name case is preserved but the Hash has case insensitive
+    lookup, replace, delete, and include semantics.
+
+Mon Dec 29 11:49:29 2008 -0600  Joshua Peek <josh@joshpeek.com>
+  * Don't try to rewind CGI input
+
+Sun Dec 28 14:08:47 2008 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Reformat Rack::Deflater code
+
+Tue Dec 23 00:23:49 2008 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Rack::Deflator respects the no-transform cache control directive
+
+Thu Dec 25 12:20:50 2008 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update README
+
+Thu Dec 25 12:09:42 2008 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Idiomize code
+
+Wed Dec 24 19:33:17 2008 -0500  Matt Todd <chiology@gmail.com>
+  * Added specification for Rack::Request memoization.
+
+Wed Dec 24 19:25:20 2008 -0500  Matt Todd <chiology@gmail.com>
+  * Updated spec with the new size of the content length based on the new environment variable data included with the Rack::Request instantiation memoization.
+
+Wed Dec 24 19:24:44 2008 -0500  Matt Todd <chiology@gmail.com>
+  * Added Rack::Request initialization memoization to reduce repetitive instantiation cost.
+
+Tue Dec 23 21:32:38 2008 -0600  Joshua Peek <josh@joshpeek.com>
+  * Rewind input after parsing request form vars
+
+Tue Dec 23 21:22:50 2008 -0600  Joshua Peek <josh@joshpeek.com>
+  * Delegate Lint::InputWrapper#rewind to underlying IO object
+
+Tue Dec 23 11:52:11 2008 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * use Set instead of Array for STATUS_WITH_NO_ENTITY_BODY
+
+Mon Dec 22 22:17:18 2008 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Rack::ContentLength tweaks ...
+    
+     * Adds a Content-Length header only when the body is of knownable
+       length (String, Array).
+     * Does nothing when Transfer-Encoding header is present in
+       response.
+     * Uses a Set instead of an Array for status code lookup (linear
+       search through 102 elements seemed expensive).
+
+Sat Dec 20 13:36:22 2008 -0800  Dan Kubb <dan.kubb@autopilotmarketing.com>
+  * Fixed Rack::Deflater to handle responses with Last-Modified header
+    
+    * There was a bug when performing gzip compression where the
+      Last-Modified response header was assumed to be a Time object,
+      and passed directly to Zlib::GzipWriter#mtime, causing an exception
+      since it is always a String.
+    
+      This fix parses the Last-Modified header using Time.httpdate and
+      returns a Time obejct, which can be safely passed to
+      Zlib::GzipWriter#mtime.
+
+Sat Dec 20 13:23:05 2008 -0800  Dan Kubb <dan.kubb@autopilotmarketing.com>
+  * Do not add Content-Encoding for a response without and entity body
+
+Sat Dec 20 13:17:18 2008 -0800  Dan Kubb <dan.kubb@autopilotmarketing.com>
+  * Updated Rack::Deflater spec helper to allow setting the default status
+
+Sat Dec 20 13:06:28 2008 -0800  Dan Kubb <dan.kubb@autopilotmarketing.com>
+  * Moved STATUS_WITH_NO_ENTITY_BODY into Rack::Utils
+    
+    * Removed duplicate constant from Rack::ContentLength and Rack::Lint
+
+Sat Dec 20 13:00:58 2008 -0800  Dan Kubb <dan.kubb@autopilotmarketing.com>
+  * Added Accept-Encoding to HTTP Vary header
+
+Fri Dec 19 15:24:21 2008 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge commit 'rtomayko/methodoverride'
+
+Thu Dec 18 19:25:24 2008 -0800  Ryan Tomayko <rtomayko@gmail.com>
+  * Fix MethodOverride error when POST has no _method param
+
+Wed Dec 17 10:02:15 2008 -0500  macournoyer <macournoyer@gmail.com>
+  * Add autoload for Thin handler
+
+Tue Dec 16 21:48:21 2008 -0500  macournoyer <macournoyer@gmail.com>
+  * Add Thin handler
+
+Tue Dec 9 10:34:19 2008 -0600  Joshua Peek <josh@joshpeek.com>
+  * Add ContentLength middleware
+
+Mon Dec 1 22:24:23 2008 -0700  kastner <kastner@gmail.com>
+  * fixing camping bug. see gist:26011
+
+Tue Dec 2 11:28:49 2008 -0600  Joshua Peek <josh@joshpeek.com>
+  * Correct status code language to follow RFC 2616
+
+Wed Nov 19 22:07:38 2008 +0100  Daniel Roethlisberger <daniel@roe.ch>
+  * Improve session id security: Make session id size configurable, raise the default size from 32 bits to 128 bits, and refactor to allow for easy monkey patching the actual session id generation. Modified version according to feedback.
+
+Wed Nov 19 22:23:30 2008 +0100  Daniel Roethlisberger <daniel@roe.ch>
+  * Add support for Secure and HttpOnly flags to session cookies. Set HttpOnly flag by default, since normally, there is no need to read a Rack session from JavaScript in the browser. Do not set the Secure flag by default, since that breaks if the application is not served over TLS.
+
+Fri Oct 17 11:43:25 2008 -0700  Eric Wong <normalperson@yhbt.net>
+  * Avoid slurping or parsing request body on PUT requests
+    
+    Uploading a large file via the HTTP PUT method causes
+    `@env["rack.input"].read' to be called inside the POST method.  This
+    means the entire file is slurped into memory and was needlessly causing
+    my Sinatra process to eat up 300M+ for some uploads I've been doing.
+
+Thu Nov 20 14:49:32 2008 -0800  postmodern <postmodern.mod3@gmail.com>
+  * Use the universally supported select event handler for lighttpd.
+    
+    * freebsd-kqueue is obviously not supported on Linux.
+
+Thu Nov 20 00:14:21 2008 -0800  postmodern <postmodern.mod3@gmail.com>
+  * When calling map, create another object of the same class.
+    
+    * This allows one to extend Rack::Builder to create specialized Rack
+      DSLs.
+
+Fri Nov 28 15:51:48 2008 +0100  Christian Neukirchen <chneukirchen@gmail.com>
+  * Silence Net::HTTP warning
+
+Tue Nov 25 16:33:27 2008 -0800  Phil Hagelberg <technomancy@gmail.com>
+  * Updated the tests to use net/http since open-uri doesn't stream responses.
+    
+    Oh, and now the tests actually pass.
+
+Tue Nov 25 16:16:39 2008 -0800  Phil Hagelberg <technomancy@gmail.com>
+  * Allow streaming with the Mongrel Handler.
+    
+    Write directly to the socket instead of keeping it in the Mongrel Response body.
+    Send the status/headers up front.
+
+Tue Nov 25 15:29:24 2008 -0800  Phil Hagelberg <technomancy@gmail.com>
+  * Add tests for streaming with Mongrel.
+
+Sat Nov 22 19:46:48 2008 -0800  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Merge commit 'core/master'
+
+Sun Oct 19 00:15:49 2008 -0600  Ben Alpert <spicyjalapeno@gmail.com>
+  * Implemented Rack::Head, modified Rack::Lint to ensure responses to HEAD requests have empty bodies
+
+Sat Oct 11 16:45:41 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix header emission for WEBrick and Set-Cookie
+    Found by Michael Fellinger.
+    This does not fix Set-Cookie2, Warning, or WWW-Authenticate, because
+    WEBrick has no way to have duplicates for them.
+
+Wed Oct 1 12:10:40 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Test that Rack::Session::Cookie ignores tampered with session cookies
+    by Christoffer Sawicki
+
+Tue Sep 30 19:18:35 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add secure cookies
+    Proposed by necrodome.
+
+Tue Sep 30 17:25:29 2008 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Empty is if Content-Length is 0, [''] ain't empty?
+
+Tue Sep 16 11:50:27 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Rewrite Rack::Builder tests to avoid race-conditions
+
+Sat Sep 13 04:28:51 2008 -0400  Matt Todd <chiology@gmail.com>
+  * Added another example demonstrating the Rack::Builder.app method.
+
+Sat Sep 13 04:21:38 2008 -0400  Matt Todd <chiology@gmail.com>
+  * Added spec for application initialization to be performed only once.
+
+Sat Sep 13 03:47:12 2008 -0400  Matt Todd <chiology@gmail.com>
+  * Implemented Rack::Builder.app and added specs.
+
+Wed Sep 10 18:56:46 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add :secure option for set_cookie
+    By Brad Hilton.
+
+Tue Sep 9 11:25:49 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * ConditionalGet middleware (Last-Modified/Etag)
+    
+    Adapted from Michael Klishin's implementation for Merb:
+    http://github.com/wycats/merb-core/tree/master/lib/merb-core/rack/middleware/conditional_get.rb
+    
+    Implemented by Ryan Tomayko.
+
+Sun Sep 7 12:20:22 2008 -0500  Joshua Peek <josh@joshpeek.com>
+  * Add MethodOverride middleware to allow browsers to fake PUT and DELETE methods
+
+Sun Sep 7 20:20:30 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update emongrel and add swiftiplied mongrel
+
+Sun Sep 7 20:15:26 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update Rack::File
+    
+      * Fix trouble with wrong Content-Length if File.size returns 0
+      * Use Rack::Mime
+      * Split _call into methods for easier subclassing
+    
+    Based on a patch by Michael Fellinger.
+
+Sun Sep 7 19:52:15 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * New version of Rack::Directory
+    
+    * Handles symlinks
+      * Less disk access
+      * Uses UTF8
+      * Human-readable filesize from Bytes to Terabytes
+      * Uses Rack::File as app by default
+      * Does a File.expand_path on the
+      * +root+ argument
+      * Splits up the _call
+      * method for easier
+      * subclassing
+      * Use new Rack::Mime
+    
+    Based on a patch by Michael Fellinger.
+
+Sun Sep 7 17:51:44 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Rack::Mime, a module containing a MIME-type list and helpers
+    Proposed and implemented by Michael Fellinger.
+
+Fri Sep 5 22:22:16 2008 +0300  Michael S. Klishin <michael@novemberain.com>
+  * Make Rack::Lint::InputWrapper delegate size method to underlying IO object.
+    
+    See http://snurl.com/3nesq: Lint was breaking file uploads in a Merb app.
+    
+    Signed-off-by: Michael S. Klishin <michael@novemberain.com>
+
+Sat Aug 30 16:47:50 2008 +0900  Michael Fellinger <m.fellinger@gmail.com>
+  * Add Request#ip and corresponding spec
+
+Thu Aug 28 15:57:14 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make Rack::Lobster set Content-Length
+
+Thu Aug 28 15:55:19 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make Rack::ShowExceptions set Content-Length
+
+Thu Aug 28 15:54:21 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make Rack::Response count Content-Length
+
+Thu Aug 28 15:47:47 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Remove empty FastCGI headers nginx likes to pass
+
+Sun Aug 24 00:52:30 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Merge commit 'core/master'
+
+Thu Aug 21 12:26:47 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update to version 0.4
+
+Thu Aug 21 13:24:41 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Cosmetics
+
+Thu Aug 21 12:26:36 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix packaging script
+
+Thu Aug 21 12:13:57 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update README
+
+Tue Aug 19 13:15:18 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * REQUEST_METHOD only must be a valid token
+
+Sat Aug 9 18:53:04 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Improve test documentation
+
+Sat Aug 9 18:52:33 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Don't test OpenID in the default test suite
+
+Sat Aug 9 18:52:03 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Wrangle paths so finally lighttpd should start everything on all platforms correctly
+
+Sat Aug 9 18:50:33 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Don't test openid if not available
+
+Sat Aug 9 18:49:53 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Don't test mongrel if not available
+
+Sat Aug 9 18:29:44 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Silence OpenID warnings
+
+Sat Aug 9 18:29:15 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make memcache tests start and kill memcached itself
+
+Thu Aug 7 03:32:31 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * BUG: Output of date in wrong time format for cookie expiration (fixed)
+    Altered test output to match correct name of gem needing to be installed for memcache
+
+Thu Aug 7 03:01:31 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Merge commit 'core/master'
+
+Fri Aug 1 12:24:43 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make Rack::Lint threadsafe
+    reported by Sunny Hirai
+
+Thu Jul 24 11:26:17 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge git://github.com/dkubb/rack
+
+Thu Jul 24 01:40:18 2008 -0700  Dan Kubb <dan.kubb@autopilotmarketing.com>
+  * Ensure the comparison is case insensitive
+
+Thu Jul 24 01:12:25 2008 -0700  Dan Kubb <dan.kubb@autopilotmarketing.com>
+  * Updated Rake::Lint to ensure Content-Length header is present for non-chunked responses
+
+Sat Jul 12 12:47:35 2008 +0200  Julik <me@julik.nl>
+  * Make Lint show proper errors for headers
+
+Wed Jul 9 15:18:35 2008 +0200  Clive Crous <clive@crous.co.za>
+  * Fix digest paramater scanning.
+    Current scan sometimes took down sites.
+    Worst case scenario is when a user just clicked "ok" without entering a username. This could take down the entire website.
+    This is related to the ruby (language) bug:
+    http://rubyforge.org/tracker/index.php?func=detail&aid=21131&group_id=426&atid=1698
+
+Tue Jul 1 22:59:09 2008 +0200  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * spec_rack_handler.rb - Fixed typos
+
+Mon Jun 23 17:18:28 2008 +0200  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * spec_rack_utils.rb - Reformulated two test case descriptions
+
+Sat Jul 5 02:23:45 2008 +0200  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * deflater.rb - Make gzip's mtime parameter mandatory
+
+Sat Jul 5 02:16:09 2008 +0200  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * deflater.rb - Update TODOs
+
+Sat Jul 5 02:13:17 2008 +0200  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * deflater.rb - Move out the Zlib::Deflate constructor arguments to a constant
+
+Fri Jul 4 23:57:05 2008 +0200  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * deflater.rb - Removed unnecessary require "time" and whitespace
+
+Fri Jul 4 12:53:43 2008 -0600  Ben Alpert <spicyjalapeno@gmail.com>
+  * added mtime for Deflater.gzip and fixed gzip spec
+
+Fri Jul 4 13:36:18 2008 +0200  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * deflater.rb - Added an error message for the 406 Not Acceptable case
+
+Fri Jul 4 02:35:15 2008 -0600  Ben <ben@Macintosh.local>
+  * added gzip support to Rack::Deflater
+
+Wed Jul 2 00:11:06 2008 +0200  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * Implemented Rack::Deflater
+
+Tue Jul 1 22:37:58 2008 +0200  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * Added support for Accept-Encoding (via Request#accept_encoding and Utils.select_best_encoding)
+
+Tue Jul 1 15:09:16 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Merge branch 'openid2'
+
+Tue Jul 1 15:02:00 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Refactoring of sanity checks on adding extensions for more descriptive exceptions.
+    Additional tests on extension handling.
+
+Tue Jul 1 14:58:27 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Default :return_to is Request#url.
+    Reordering of finish vs check to prevent recursive oid checks.
+    Additional $DEBUG output
+
+Tue Jul 1 14:55:37 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Documentation revisions. 80 cols!
+
+Sun Jun 29 13:37:27 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Additional documentation examples.
+
+Sun Jun 29 13:06:34 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Merge branch 'openid2'
+
+Sun Jun 29 13:05:05 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Revisions to setup checks in order to match test specs.
+    Revisions to corresponding documentation.
+    Addition of #extension_namespaces for conveniance.
+
+Sat Jun 28 17:54:45 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Additional checks and tests for extension handling.
+
+Sat Jun 28 17:19:07 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Expansion and better handling of extensions.
+    Additional documentation and revisions in reference to extensions.
+    General documentation revisions.
+
+Sat Jun 28 14:07:57 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Initial support for OpenID extensions.
+    Extensions require implementation from ::OpenID::Extension
+
+Sat Jun 28 14:37:09 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Reformatting of debug warning
+
+Fri Jun 27 09:44:38 2008 -0700  Dan Kubb <dan.kubb@autopilotmarketing.com>
+  * Make Rack::File use RFC 2616 HTTP Date/Time format for Last-Modified
+
+Tue Jun 24 13:55:25 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge commit 'scytrin/master'
+
+Tue Jun 24 11:57:04 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Only call binmode when possible in the multipart parser
+
+Tue Jun 24 01:58:27 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Merge commit 'chneukirchen/master'
+
+Tue Jun 24 01:52:16 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Merge branch 'openid2'
+
+Tue Jun 24 01:43:03 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Documentation revisions
+
+Mon Jun 23 04:26:38 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * OpenID2 moved to replace OpenID
+
+Fri Jun 20 23:16:21 2008 +0200  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * file.rb - Added MP3 to MIME_TYPES
+
+Mon Jun 23 04:25:10 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Merge branch 'openid2'
+
+Mon Jun 23 01:55:35 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Removed extraneous test file
+    Updated rubygems specification
+
+Mon Jun 23 01:04:10 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Addition of initial tests for OpenID2
+    Additional checks on provided URIs.
+
+Sun Jun 22 08:27:48 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * typo correction
+
+Sun Jun 22 01:09:49 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * More rephrasing.
+
+Sat Jun 21 18:31:09 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Initial import of OpenID tests
+
+Sat Jun 21 18:29:45 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Revisions to check logic and presentation
+
+Sat Jun 21 18:10:27 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Documentation updates and revisions.
+    Addition of additional checks.
+
+Fri Jun 20 13:23:07 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Documentation update.
+    Removal of message appending in a cancel response.
+
+Fri Jun 20 12:56:05 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Documentation updates and improvements.
+    Adjusted naming for a few options.
+    The method #finish will always return a 303 redirect unless an error occurs.
+
+Wed Jun 18 03:57:23 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Inlining the management of exceptional responses.
+    Removal of extension support until assurance of a decent and clean way of support.
+    Revisions to documentation.
+    Rewriting of various expressions for clarity and consistancy.
+    Replaced hard coded symbols with constant reference.
+    Included list of optional arguments for notes on later documentation.
+
+Thu Jun 12 16:53:07 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Removed bare_login functionality, added an optional 500 returning intercept
+
+Mon Jun 2 23:37:45 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Removal of trailing whitespace
+
+Mon Jun 2 21:14:40 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Use $DEBUG for introspective output
+
+Sun May 25 19:26:55 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Make OpenID2 accessible by default
+
+Sun May 25 19:18:44 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Inclusion of ruby-openid 2.x compatible OpenID implementation
+
+Mon Jun 23 03:32:04 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Removal of extraneous debugging output
+
+Sun Jun 15 13:51:31 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Check for block in Builder before instance_eval
+
+Thu Jun 12 17:17:24 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge commit 'scytrin/master'
+
+Fri Jun 6 20:54:30 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Added documentation, checks, and tests for Rack::Utils::Context
+
+Fri Jun 6 17:25:35 2008 -0700  Adam Wiggins <adam@heroku.com>
+  * commonlogger passes through close call (fixes zombie process bug when serving popen responses)
+
+Tue Jun 3 21:55:55 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Reworking session/abstract/id and derived session implementations
+    Formatting for readability
+    Adjusted session-id finding for compatibility
+    Added checks, rescues, and debugging output
+    Adjusted and added tests
+
+Tue Jun 3 20:09:19 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Removal of lingering debug output in directory.rb
+
+Mon Jun 2 00:50:45 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Requiring socket stdlib for UNIXSocket and TCPSocket
+
+Sun Jun 1 06:34:14 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Tests for Rack::Directory, as well as removal of Rack::File dependency
+
+Sun Jun 1 06:07:44 2008 -0700  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Addition of Directory to autoload index
+
+Sat May 31 14:32:34 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge commit 'josh-mirror/master'
+
+Sat May 31 14:26:43 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * More cleanup
+
+Sat May 31 14:21:56 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Mention Git repositories in README
+
+Sat May 31 14:09:31 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Cleanup
+
+Mon May 26 09:12:22 2008 -0500  Joshua Peek <josh@joshpeek.com>
+  * Skip Camping and Memcache tests if the gems are not installed.
+
+Sun May 25 14:32:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Rack.release for the version of the release.
+
+Sat May 24 17:54:49 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge commit 'josh/master'
+
+Sat May 24 15:54:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Allow handlers to register themselves with Rack::Handler.
+
+Sat May 24 09:57:09 2008 -0500  Joshua Peek <josh@joshpeek.com>
+  * Allow handlers to register themselves with Rack::Handler.
+
+Sat May 24 14:23:10 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge commit '37c59dce25df4'
+
+Sat May 24 12:22:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge walf443/rack-mirror
+
+Sat May 24 02:16:39 2008 +0900  Keiji, Yoshimi <walf443@gmail dot com>
+  * It may be better to show HTTP_X_FORWARDED_FOR if it exists.
+    It's useful when using reverse proxy in front of app server using Rack.
+
+Sun May 18 17:06:58 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge commit 'josh/master'
+
+Sun May 18 15:05:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge 'josh/rack-mirror'
+
+Sat May 17 15:39:16 2008 -0500  Joshua Peek <josh@joshpeek.com>
+  * Include EventedMongrel handler with Rack.
+
+Sat May 10 17:16:29 2008 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge commit 'josh/daemonize'
+
+Sat May 10 15:10:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Merge josh/daemonize
+
+Tue May 6 18:14:47 2008 -0500  Joshua Peek <josh@joshpeek.com>
+  * Only write a rack pid if a file is given.
+
+Tue May 6 15:44:15 2008 -0500  Joshua Peek <josh@joshpeek.com>
+  * Added support for daemonizing servers started with rackup.
+
+Fri May 2 21:05:00 2008 +0000  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * utils.rb, spec_rack_utils.rb - Added build_query, the inverse of parse_query
+
+Fri May 2 20:53:00 2008 +0000  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * utils.rb - Cleaned up parse_query
+
+Fri May 2 21:04:00 2008 +0000  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * spec_rack_utils.rb - Added another test for parse_query
+
+Sat Apr 26 21:37:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * session/abstract/id.rb - removal of gratuitous debug output
+
+Fri Apr 25 23:55:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * directory.rb - serves html index for nonfile paths
+    
+      Rack::File similar processing of paths. On directory lookups it will serve
+    a html index of it's contents. Entries begining with '.' are not presented.
+      On lookups that result in a file, it will pass an unmodified env to the
+    provided app. If an app is not provided, a Rack::File with the same root is
+    used.
+
+Fri Apr 18 10:12:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Open multipart tempfiles in binary mode
+
+Thu Apr 10 20:26:00 2008 +0000  ryan <chneukirchen@gmail.com>
+  * handle EOFError exception in Request#params
+
+Sat Mar 29 19:58:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * utils.rb - addition of recontexting from a Context
+
+Sun May 25 14:33:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Convert Rakefile to use Git
+
+Thu Mar 27 11:09:00 2008 +0000  Adam Harper <adam@harper.nu>
+  * Bug fix for Tempfile POST bodies under Ruby 1.8
+    
+    The Tempfile class in Ruby 1.8 doesn't implement the == method correctly.
+    This causes Rack::Requests to re-parse the input (when the input is a
+    Tempfile) each time the POST method is called, this in turn raises an
+    EOFError because the input has already been read.
+    
+    One example of when this happens is when handling large POST requests
+    (e.g. file uploads) under Mongrel.
+    
+    This issue only effects Ruby 1.8 (tested against 1.8.6).  Ruby 1.9 does
+    not suffer from this issue (presumably due to changes in the Delegate
+    implementation.)
+
+Sat Mar 29 04:32:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * memcache.rb - Fixed immortal key bug, updated tests
+    
+    Old multithread behaviour was to merge sessions, which would never delete
+    keys, even if deleted in the current session.
+
+Tue Mar 25 11:15:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * abstract/id.rb - Added check on correctness of response.
+
+Thu Mar 20 16:11:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Run Rack::Session::Memcache tests in fulltest only
+
+Wed Mar 19 11:43:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * memcache.rb - memcached based session management
+
+Thu Mar 20 16:06:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Rack::Reloader is not loaded in rackup development mode anymore
+
+Tue Mar 18 04:04:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * openid.rb - documentation and check on using ruby-openid 1.x.x
+
+Tue Mar 18 10:59:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update History
+
+Tue Mar 18 10:57:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update Rakefile
+
+Tue Mar 18 10:55:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make fulltest chmod the executables
+
+Tue Mar 18 10:54:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Small README tweak
+
+Mon Mar 17 23:28:00 2008 +0000  stephen.bannasch <chneukirchen@gmail.com>
+  * Changes to get lighttpd setup and running when rake fulltest is run; also added some doc to the readme about running tests
+
+Mon Mar 17 16:03:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * urlmap.rb - update test in allowance of non-destructive HeaderHash
+
+Mon Mar 17 15:59:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - cleanup of session merging and threading collision checks
+
+Mon Mar 17 15:51:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * URLMap tweaks and more tests
+
+Mon Mar 17 15:51:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Don't lose empty headers in HeaderHash
+
+Mon Mar 17 15:26:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * urlmap.rb - alteration of path selection routines, with updated tests
+    
+    Previous implementation would append an extra '/' if PATH_NAME would otherwise
+    be empty.
+
+Mon Mar 17 11:19:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - explicit require for thread stdlib
+
+Mon Mar 17 09:12:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb, id.rb - creation of abstract id based session handler
+    
+    Allows simpler implementation of various storage based sessioning.
+    More stringent type checks in id.rb
+
+Sun Mar 16 14:31:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * updated and addition to tests for pool.rb for expiration and thread safety
+    
+    Running the freshness tests sleeps for 4 seconds to allow a session's
+    expiration point to pass.
+
+Sun Mar 16 14:30:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - addition of session freshness check and upkeep routines
+
+Sun Mar 16 13:23:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * utils.rb - Utils::Context - addition of introspection methods
+
+Sun Mar 16 11:55:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - documentation update and collision warnings
+
+Sun Mar 16 09:01:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - documentation revision, addition of @mutex accessor
+
+Sun Mar 16 08:33:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - setup of expiry not using defined?, from apeiros
+
+Sun Mar 16 08:26:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - saner metadata storage
+
+Sun Mar 16 08:23:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - cleanup and THANKS
+
+Sun Mar 16 08:21:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - addition of thread safety
+
+Sun Mar 16 04:59:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - moved cookie building back to #commit_session
+
+Fri Mar 14 23:57:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - faster session id generation from apeiros
+
+Mon Mar 17 10:56:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Require time in rack/file.rb
+    
+    Reported by Stephen Bannasch.
+
+Sat Mar 15 13:51:00 2008 +0000  r <chneukirchen@gmail.com>
+  * Fix that Request assumes form-data even when Content-Type says otherwise
+    
+    Fixes cases where accessing Request#params causes the body to be read and
+    processed as form-data improperly. For example, consider the following
+    request:
+    
+        PUT /foo/bar?baz=bizzle HTTP/1.1
+        Content-Type: text/plain
+    
+        This is not form-data.
+    
+    When Rack::Request gets ahold of the corresponding environment, and the
+    application attempts to access the "baz" query string param, the body is read
+    and interpreted as form-data. If the body is an IOish object, this causes the
+    offset to be forwarded to the end of file.
+    
+    The patch prevents the Request#POST method from going into the body unless the
+    media type is application/x-www-form-urlencoded, multipart/form-data, or not
+    specified.
+    
+    While here, added a few unrelated helper methods to Request that I've found
+    particularly useful in Rack apps: #content_length, #head?, and #content_charset.
+    
+    Tests and doc included for all changes.
+
+Tue Mar 11 12:02:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - cleanup and portability revisions
+
+Tue Mar 11 11:59:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - exported assignment of session id cookie
+
+Tue Mar 11 11:56:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - exported session to pool commit
+
+Tue Mar 11 11:52:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - altered session metadata storage and session commit point
+
+Tue Mar 11 11:29:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - exported generation of a new session id
+
+Tue Mar 11 11:25:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - moved inline hash to DEFAULT_OPTIONS
+
+Tue Mar 11 11:11:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - removal of blocks for #context
+    
+    Before you could pass a block to Pool#context that would be passed the env
+    before performing a call on the passed app. This has been removed in deference
+    to the practice setting up the block as the passed app, which should
+    subsequently call the intended app.
+    Seems more in accordance with Rack's prescribed behaviour.
+
+Tue Mar 11 07:51:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Alteration of Mongrel.run for Mongrel based routing
+    
+    With the passing of the :map option Mongrel.run will handle the passing of a
+    Hash or URLMap rather than a standard rack app. The mapping provided by the
+    passed object will be used to register uris with the mongrel instance.
+    
+    Hashes should only have absolute paths for keys and apps for values.
+    
+    URLMaps will be filtered if the :Host options is specified, or the mapping's
+    host is set.
+
+Tue Mar 11 06:31:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Addition of #add, #<<, and #include? to Cascade, allowing iterative addition of apps
+
+Mon Mar 10 15:18:00 2008 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Changed urlmap.rb's uri check to successive conditionals rather than one big one
+
+Tue Feb 26 12:28:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update README and docs
+
+Sun Feb 24 19:37:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Don't use autoloads in the test suite
+
+Sun Feb 24 18:48:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix test cases that used 201 as a status where Content-Type is not allowed
+
+Sun Feb 24 18:46:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix cookie parsing
+
+Sun Feb 24 17:51:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Let Rack::Builder#use accept blocks
+    
+    Contributed by Corey Jewett.
+
+Mon Feb 18 21:18:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Don't create invalid header lines when only deleting a cookie
+    
+    Reported by Andreas Zehnder
+
+Sun Feb 3 17:14:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update lint to not check for 201 status headers
+
+Sun Feb 3 17:00:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * HTTP status 201 can contain a body
+
+Fri Jan 25 08:36:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add SCGI handler, by Jeremy Evans
+
+Tue Jan 22 04:23:00 2008 +0000  m.fellinger <chneukirchen@gmail.com>
+  * Fix syntax for toggle() in ShowExceptions
+
+Mon Jan 21 02:27:00 2008 +0000  Aman Gupta <aman@ramaze.net>
+  * Conform to RFC 2109 regarding multiple values for same cookie
+
+Thu Jan 10 15:29:00 2008 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Remove Rack::Adapter::Rails autoload
+
+Mon Dec 31 18:34:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Remove uses of base64 for Ruby 1.9 support
+
+Sun Dec 9 16:48:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make Rack::Lint actually check what the spec says.
+
+Sun Nov 18 20:09:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * lib/rack/auth/openid.rb - typo!
+
+Sun Nov 18 20:03:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * lib/rack/auth/openid.rb - updates to reflect rack styling
+
+Sun Nov 18 19:54:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * lib/rack/auth/openid.rb - removal of block functionality
+    
+    The block argumentn functionality was causing a few complications and
+    was removed in favour of storing the openid status object in the
+    environment. A wrapping proc oor rack app can now achieve the same
+    functionality as the block could, in a cleaner manner.
+
+Sun Nov 18 19:51:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Small fix for the new FastCGI options
+
+Sun Nov 18 19:16:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * lib/rack/urlmap.rb - Restyle of host matching from 'and' and 'or' to && and ||
+
+Tue Aug 28 23:02:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Reformat and representation of mapping selection routine.
+
+Sun Nov 18 19:20:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Minor tweaks in blink's code
+
+Sun Nov 18 18:45:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * lib/rack/auth/openid.rb - removal of rubygems require
+
+Sun Nov 18 07:46:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * lib/rack.rb - Addition of Auth::OpenID
+
+Sun Nov 18 07:45:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * lib/rack.rb - Addition of new Session::Pool and Memcache
+
+Sun Nov 18 05:08:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * session/pool.rb - Updated to use Rack::Utils::Context
+
+Sun Nov 18 04:57:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Inclusion of the openid result for the post-run block
+
+Sun Nov 18 04:54:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Addition of post-run block for extensibility
+
+Sun Nov 18 04:53:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Addition of request to provide a default return url
+
+Sun Nov 18 04:50:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Cleanup of code, errant error call
+
+Sun Nov 18 04:45:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Addition of Rack::Utils::Context
+    
+    Allows the use of a rack app in different contexts using a proc.
+
+Sun Nov 18 04:42:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Errors now method calls rather than constants.
+
+Thu Aug 30 13:30:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * addition of js -> text/javascript to file types
+
+Thu Aug 30 13:28:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * addition of Last-Modified http header to Rack::File
+
+Tue Aug 28 23:14:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * Addition of credits, #for to allow app context change, and addition of a #key accessor
+
+Wed Aug 22 04:17:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * lib/rack/handler/fastcgi.rb - :Port and :File options for opening sockets
+
+Fri Aug 17 07:09:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * lib/rack/auth/openid.rb: openid login authenticator
+
+Thu Nov 15 16:21:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix SCRIPT_NAME in nested URLMaps
+
+Thu Nov 15 16:20:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update AUTHORS and thanks
+
+Thu Nov 15 16:11:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix warning
+
+Thu Nov 15 16:10:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make Rack::Builder#to_app nondestructive
+
+Tue Oct 9 14:35:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix Cookie dates accordingly to RFC 2109
+
+Wed Sep 12 09:15:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Mention PUT as allowed request method in the spec
+
+Sat Aug 11 17:28:00 2007 +0000  Scytrin dai Kinthra <scytrin@gmail.com>
+  * pool.rb - local session storage hash pool  w/ tests
+
+Thu Jul 12 09:02:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add LiteSpeed handler
+    
+    Courtesy of Adrian Madrid <aemadrid@gmail.com>
+
+Thu Jun 14 20:34:00 2007 +0000  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * Make Rack::File serve files with URL encoded filenames
+
+Thu May 31 16:36:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make Rack::Response possibly close the body
+    
+    Proposed by Jonathan Buch
+
+Thu May 17 12:06:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Better running of lighttpd for testing
+
+Wed May 16 17:34:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Credit Luc Heinrich
+
+Wed May 16 15:01:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Different approach to Mongrel#run testing
+
+Wed May 16 14:53:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix trailing whitespace.  Sigh.
+
+Wed May 16 14:44:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Update README
+
+Wed May 16 14:43:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Yield the servers optionally
+
+Wed May 16 14:32:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Small docfixes
+
+Tue May 15 23:44:00 2007 +0000  Michael Fellinger <m.fellinger@gmail.com>
+  * replace the 'system' calls in Rakefile with 'sh', making them more transparent and --trace able
+
+Tue May 15 23:42:00 2007 +0000  Michael Fellinger <m.fellinger@gmail.com>
+  * add some features to Request and the corresponding tests for them
+
+Tue May 15 15:43:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make Rack::Handler::*.run yield the server for further configuration
+
+Fri May 11 15:31:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Remove the Rails adapter, it was never useful
+
+Fri May 11 15:12:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Introduce Rack::Response::Helpers and make MockResponse use them, too.
+
+Fri May 11 14:56:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add some more edge-case tests to improve coverage
+
+Sun Apr 29 12:55:00 2007 +0000  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * Add missing autoload for Cascade in rack.rb
+
+Thu Apr 26 14:05:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make ShowStatus more robust
+
+Wed Apr 18 13:15:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Rack::Response#empty?
+
+Tue Apr 3 20:59:00 2007 +0000  Tim Fletcher <twoggle@gmail.com>
+  * Minor tweaks
+
+Tue Apr 3 20:58:00 2007 +0000  Tim Fletcher <twoggle@gmail.com>
+  * Some initial documentation for the main authentication classes
+
+Tue Apr 3 20:56:00 2007 +0000  Tim Fletcher <twoggle@gmail.com>
+  * An example of how to use Rack::Auth::Basic. Protect your lobsters!
+
+Tue Apr 3 20:17:00 2007 +0000  Tim Fletcher <twoggle@gmail.com>
+  * Make Rack::Auth handlers compatible with Rack::ShowStatus
+
+Tue Apr 3 20:09:00 2007 +0000  Tim Fletcher <twoggle@gmail.com>
+  * Ensure Rack::ShowStatus passes on headers
+
+Fri Mar 30 13:12:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Request#fullpath
+
+Thu Mar 29 14:24:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Rack::ShowStatus, a filter to generate common error messages
+
+Thu Mar 29 14:20:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add a list of HTTP status messages
+
+Tue Mar 27 09:06:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Small cleanup
+
+Mon Mar 26 21:27:00 2007 +0000  Tim Fletcher <twoggle@gmail.com>
+  * Adding Rack::Auth::Digest::MD5, and refactoring Auth::Basic accordingly
+
+Sat Mar 24 14:36:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Doc fix, Request should have been Reponse
+    
+    Thanks, apeiros
+
+Mon Mar 12 16:45:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add a test for the broken cookie sessions
+
+Mon Mar 12 16:04:00 2007 +0000  luc <chneukirchen@gmail.com>
+  * Make sure we get a valid empty session hash in all cases.
+
+Sun Mar 11 14:06:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Integrate Rack::Static
+
+Sun Mar 11 14:04:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Ducktype on #to_str for Rack::Response.new
+    
+    proposed by Gary Wright
+
+Sun Mar 11 13:43:00 2007 +0000  luc <chneukirchen@gmail.com>
+  * Added Rack::Static middleware.
+
+Sun Mar 11 13:50:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make Rack::Response#write call #to_s
+    
+    proposed by Gary Wright
+
+Sat Mar 10 14:38:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix Rack::Session::Cookie
+
+Fri Mar 9 23:40:00 2007 +0000  luc <chneukirchen@gmail.com>
+  * Cookie based session management middleware.
+
+Tue Mar 6 21:12:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Load pp when debugging
+
+Tue Mar 6 12:19:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Integrate patches
+
+Sun Mar 4 15:12:00 2007 +0000  Tim Fletcher <twoggle@gmail.com>
+  * Adding Rack::Auth::Basic
+
+Sun Mar 4 02:29:00 2007 +0000  Aredridel <aredridel@nbtsc.org>
+  * Fix Camping redirects into Strings when they're URIs
+
+Sat Mar 3 17:20:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix things that should have been fixed before the release *sigh*
+
+Sat Mar 3 12:40:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix CGI permissions
+
+Sat Mar 3 12:34:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Last-minute details
+
+Sat Mar 3 11:15:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Extend gemspec
+
+Sat Mar 3 10:37:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Small README fixes
+
+Sat Mar 3 10:16:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add README and other documentation
+
+Sat Mar 3 09:58:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add and integrate Rakefile
+
+Sat Mar 3 09:56:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add some missing tests
+
+Fri Mar 2 23:53:00 2007 +0000  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * Tidy up RailsDispatcher::CGIStub
+
+Fri Mar 2 16:55:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Handle SCRIPT_NAME better in *CGI environments
+
+Fri Mar 2 15:10:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Remove lighttpd comment.
+    
+    The bug has been fixed in later versions.
+
+Thu Mar 1 18:53:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add RDocs
+
+Wed Feb 28 22:19:00 2007 +0000  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * Make Adapter::Rails use Cascade
+
+Wed Feb 28 20:06:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix warnings
+
+Wed Feb 28 20:03:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Rack::Cascade, to pass on the first non 404 result
+
+Wed Feb 28 19:12:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Move TestRequest to test/
+
+Wed Feb 28 19:09:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make spec_rack_lint.rb use mocks
+
+Wed Feb 28 18:56:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make spec_rack_camping.rb use mocks
+
+Wed Feb 28 18:55:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make spec_rack_urlmap.rb use mocks
+
+Wed Feb 28 18:30:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make spec_rack_showexceptions.rb use mocks
+
+Wed Feb 28 18:26:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make spec_rack_request.rb use mocks
+
+Wed Feb 28 18:25:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Don't clash constants in specifications
+
+Wed Feb 28 18:21:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * MockRequest can now only create the Rack environment
+
+Wed Feb 28 18:13:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make spec_rack_recursive.rb use mocks
+
+Wed Feb 28 17:50:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add a default SCRIPT_NAME
+
+Wed Feb 28 17:44:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make spec_rack_file.rb use mocks
+
+Wed Feb 28 17:40:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make spec_rack_commonlogger.rb use mocks
+
+Wed Feb 28 17:35:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add support for mocking all request methods
+
+Wed Feb 28 17:29:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add MockRequest/MockResponse for easier testing
+
+Wed Feb 28 13:45:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Remove the port number of HTTP_HOST and SERVER_NAME
+
+Wed Feb 28 13:33:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make multipart reading more robust
+
+Wed Feb 28 12:56:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make Rack::Request read multipart form data
+
+Wed Feb 28 12:56:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Allow rack.input.read(integer), needed for safe multipart parsing
+
+Mon Feb 26 18:45:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add CGI and FastCGI support for rackup
+
+Mon Feb 26 18:42:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make *CGI#run really like the others
+
+Mon Feb 26 18:10:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Adapt Rack::Handler::CGI API
+
+Mon Feb 26 17:59:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add a FastCGI handler
+
+Sun Feb 25 21:14:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make Rack::Response#write return the written string to catch errors with nested writes
+
+Sun Feb 25 15:49:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Rack::Reloader, a code autoreloader
+
+Sun Feb 25 13:46:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Ensure the Response body is writable
+
+Sun Feb 25 13:40:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Improve the Rack::Response constructor
+    
+    based on a patch from mitsuhiko.
+
+Sun Feb 25 12:24:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add the official logo
+
+Sat Feb 24 18:03:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add rackup, an experimental standalone Rack app starter
+
+Sat Feb 24 18:02:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Rack::Builder, a DSL for connecting Rack apps
+
+Sat Feb 24 18:01:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Really fix URLMap
+
+Thu Feb 22 20:35:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Lint fix
+
+Thu Feb 22 20:34:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Route root app correctly in URLMap
+
+Thu Feb 22 11:10:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add tests for Request#query_string
+
+Wed Feb 21 22:25:00 2007 +0000  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * Add getter method for the query string (and use it internally)
+
+Wed Feb 21 17:29:00 2007 +0000  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * Extended CGIStub to handle Rails' session cookie
+
+Wed Feb 21 19:23:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add a first draft of the specification to Rack::Lint
+
+Wed Feb 21 18:49:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Ensure the body is closed
+
+Wed Feb 21 17:46:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add AUTHORS
+
+Wed Feb 21 16:49:00 2007 +0000  Christoffer Sawicki <christoffer.sawicki@gmail.com>
+  * Basic Rails handler for Rack
+
+Wed Feb 21 17:03:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Request#url
+
+Wed Feb 21 16:41:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix extension->MIME mapping
+
+Wed Feb 21 15:13:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Rack::Recursive and ForwardRequest
+
+Wed Feb 21 15:11:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * URLMap should only look at PATH_INFO
+
+Tue Feb 20 18:15:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Call body#close if possible
+
+Mon Feb 19 12:19:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Small exception handler tweak
+
+Mon Feb 19 11:22:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Return empty hash on lack of cookies
+
+Mon Feb 19 11:22:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix host dispatching with explicit ports
+
+Mon Feb 19 10:23:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Cache the parsed things in Rack::Request
+
+Sun Feb 18 23:23:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Rename Request#method to #request_method to not confuse stdlibs
+
+Sun Feb 18 23:02:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Camping adapter autoload
+
+Sun Feb 18 22:52:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Put Rack under the MIT license
+
+Sun Feb 18 18:07:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Rack::CommonLogger, a Common Log Format request logger
+
+Sun Feb 18 17:52:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make Response#status and #body settable
+
+Sun Feb 18 10:50:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * More convenience for Rack::Request
+
+Sat Feb 17 13:49:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Remove trailing whitespace *sigh*
+
+Sat Feb 17 13:46:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Rack::URLMap, a simple router
+
+Sat Feb 17 13:04:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Remove Python leftover
+
+Sat Feb 17 12:57:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add a Camping adapter
+
+Sat Feb 17 12:57:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Don't define path_info twice
+
+Sat Feb 17 12:56:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Rack::ShowExceptions
+
+Sat Feb 17 12:55:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Remove stray paths
+
+Fri Feb 16 16:54:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add lobster version with Request/Response
+
+Fri Feb 16 16:53:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Make Rack::Response#write syncronous
+
+Fri Feb 16 16:42:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add more Rack::Utils specs
+
+Fri Feb 16 16:34:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Rack::Response and Rack::Utils
+
+Fri Feb 16 15:32:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Rack::Request
+
+Fri Feb 16 15:30:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Rack::File, a static file server
+
+Fri Feb 16 14:51:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Move testing helpers to TestRequest
+
+Fri Feb 16 13:40:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add a lobster
+
+Fri Feb 16 13:39:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add rack.rb with autoloads for convenience
+
+Fri Feb 16 13:33:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add quick run methods for WEBrick and Mongrel
+
+Fri Feb 16 13:27:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Fix lint to allow empty SCRIPT_NAME and PATH_INFO
+
+Fri Feb 16 13:01:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Lint to the tests
+
+Fri Feb 16 12:49:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add Rack::Lint
+
+Thu Feb 15 18:05:00 2007 +0000  Christian Neukirchen <chneukirchen@gmail.com>
+  * Initial import of Rack
+
