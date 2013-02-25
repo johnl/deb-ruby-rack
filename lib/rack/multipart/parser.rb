@@ -14,6 +14,9 @@ module Rack
 
         fast_forward_to_first_boundary
 
+        max_key_space = Utils.key_space_limit
+        bytes = 0
+
         loop do
           head, filename, content_type, name, body =
             get_current_head_and_filename_and_content_type_and_name_and_body
@@ -27,6 +30,13 @@ module Rack
           end
 
           filename, data = get_data(filename, body, content_type, name, head)
+
+          if name
+            bytes += name.size
+            if bytes > max_key_space
+              raise RangeError, "exceeded available parameter key space"
+            end
+          end
 
           Utils.normalize_params(@params, name, data) unless data.nil?
 
@@ -68,9 +78,16 @@ module Rack
 
       def fast_forward_to_first_boundary
         loop do
-          read_buffer = @io.gets
-          break if read_buffer == full_boundary
-          raise EOFError, "bad content body" if read_buffer.nil?
+          content = @io.read(BUFSIZE)
+          raise EOFError, "bad content body" unless content
+          @buf << content
+
+          while @buf.gsub!(/\A([^\n]*\n)/, '')
+            read_buffer = $1
+            return if read_buffer == full_boundary
+          end
+
+          raise EOFError, "bad content body" if Utils.bytesize(@buf) >= BUFSIZE
         end
       end
 

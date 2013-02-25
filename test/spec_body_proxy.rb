@@ -35,9 +35,18 @@ describe Rack::BodyProxy do
   should 'not close more than one time' do
     count = 0
     proxy = Rack::BodyProxy.new([]) { count += 1; raise "Block invoked more than 1 time!" if count > 1 }
+    2.times { proxy.close }
+    count.should.equal 1
+  end
+
+  should 'be closed when the callback is triggered' do
+    closed = false
+    proxy = Rack::BodyProxy.new([]) { closed = proxy.closed? }
     proxy.close
-    lambda {
-      proxy.close
-    }.should.raise(IOError)
+    closed.should.equal true
+  end
+
+  should 'provide an #each method' do
+    Rack::BodyProxy.method_defined?(:each).should.equal true
   end
 end

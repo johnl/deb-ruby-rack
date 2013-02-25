@@ -5,10 +5,14 @@ require 'tempfile'
 require 'rack/multipart'
 
 major, minor, patch = RUBY_VERSION.split('.').map { |v| v.to_i }
+ruby_engine = defined?(RUBY_ENGINE) ? RUBY_ENGINE : 'ruby'
 
-if (major == 1 && minor < 9) || (major == 1 && minor == 9 && patch < 2)
-  # pull in backports
-  require 'rack/backports/uri/common'
+if major == 1 && minor < 9
+  require 'rack/backports/uri/common_18'
+elsif major == 1 && minor == 9 && patch == 2 && RUBY_PATCHLEVEL <= 320 && RUBY_ENGINE != 'jruby'
+  require 'rack/backports/uri/common_192'
+elsif major == 1 && minor == 9 && patch == 3 && RUBY_PATCHLEVEL < 125
+  require 'rack/backports/uri/common_193'
 else
   require 'uri/common'
 end
@@ -39,6 +43,14 @@ module Rack
 
     DEFAULT_SEP = /[&;] */n
 
+    class << self
+      attr_accessor :key_space_limit
+    end
+
+    # The default number of bytes to allow parameter keys to take up.
+    # This helps prevent a rogue client from flooding a Request.
+    self.key_space_limit = 65536
+
     # Stolen from Mongrel, with some small modifications:
     # Parses a query string by breaking it up at the '&'
     # and ';' characters.  You can also use this to parse
@@ -47,8 +59,20 @@ module Rack
     def parse_query(qs, d = nil)
       params = {}
 
+      max_key_space = Utils.key_space_limit
+      bytes = 0
+
       (qs || '').split(d ? /[#{d}] */n : DEFAULT_SEP).each do |p|
+        next if p.empty?
         k, v = p.split('=', 2).map { |x| unescape(x) }
+
+        if k
+          bytes += k.size
+          if bytes > max_key_space
+            raise RangeError, "exceeded available parameter key space"
+          end
+        end
+
         if cur = params[k]
           if cur.class == Array
             params[k] << v
@@ -67,8 +91,19 @@ module Rack
     def parse_nested_query(qs, d = nil)
       params = {}
 
+      max_key_space = Utils.key_space_limit
+      bytes = 0
+
       (qs || '').split(d ? /[#{d}] */n : DEFAULT_SEP).each do |p|
         k, v = p.split('=', 2).map { |s| unescape(s) }
+
+        if k
+          bytes += k.size
+          if bytes > max_key_space
+            raise RangeError, "exceeded available parameter key space"
+          end
+        end
+
         normalize_params(params, k, v)
       end
 
@@ -146,7 +181,13 @@ module Rack
       '"' => "&quot;",
       "/" => "&#x2F;"
     }
-    ESCAPE_HTML_PATTERN = Regexp.union(*ESCAPE_HTML.keys)
+    if //.respond_to?(:encoding)
+      ESCAPE_HTML_PATTERN = Regexp.union(*ESCAPE_HTML.keys)
+    else
+      # On 1.8, there is a kcode = 'u' bug that allows for XSS otherwhise
+      # TODO doesn't apply to jruby, so a better condition above might be preferable?
+      ESCAPE_HTML_PATTERN = /#{Regexp.union(*ESCAPE_HTML.keys)}/n
+    end
 
     # Escape ampersands, brackets and quotes to their HTML/XML entities.
     def escape_html(string)
@@ -278,16 +319,16 @@ module Rack
     def byte_ranges(env, size)
       # See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35>
       http_range = env['HTTP_RANGE']
-      return nil unless http_range
+      return nil unless http_range && http_range =~ /bytes=([^;]+)/
       ranges = []
-      http_range.split(/,\s*/).each do |range_spec|
-        matches = range_spec.match(/bytes=(\d*)-(\d*)/)
-        return nil  unless matches
-        r0,r1 = matches[1], matches[2]
+      $1.split(/,\s*/).each do |range_spec|
+        return nil  unless range_spec =~ /(\d*)-(\d*)/
+        r0,r1 = $1, $2
         if r0.empty?
           return nil  if r1.empty?
           # suffix-byte-range-spec, represents trailing suffix of file
-          r0 = [size - r1.to_i, 0].max
+          r0 = size - r1.to_i
+          r0 = 0  if r0 < 0
           r1 = size - 1
         else
           r0 = r0.to_i
@@ -304,6 +345,18 @@ module Rack
       ranges
     end
     module_function :byte_ranges
+
+    # Constant time string comparison.
+    def secure_compare(a, b)
+      return false unless bytesize(a) == bytesize(b)
+
+      l = a.unpack("C*")
+
+      r, i = 0, -1
+      b.each_byte { |v| r |= v ^ l[i+=1] }
+      r == 0
+    end
+    module_function :secure_compare
 
     # Context allows the use of a compatible middleware at different points
     # in a request handling stack. A compatible middleware must define

@@ -1,8 +1,17 @@
 # -*- encoding: utf-8 -*-
 require 'rack/utils'
 require 'rack/mock'
+require 'timeout'
 
 describe Rack::Utils do
+  def kcodeu
+    one8 = RUBY_VERSION.to_f < 1.9
+    default_kcode, $KCODE = $KCODE, 'U' if one8
+    yield
+  ensure
+    $KCODE = default_kcode if one8
+  end
+
   should "escape correctly" do
     Rack::Utils.escape("fo<o>bar").should.equal "fo%3Co%3Ebar"
     Rack::Utils.escape("a space").should.equal "a+space"
@@ -21,38 +30,44 @@ describe Rack::Utils do
 
   if RUBY_VERSION[/^\d+\.\d+/] == '1.8'
     should "escape correctly for multibyte characters if $KCODE is set to 'U'" do
-      default_kcode, $KCODE = $KCODE, 'U'
-
-      matz_name = "\xE3\x81\xBE\xE3\x81\xA4\xE3\x82\x82\xE3\x81\xA8".unpack("a*")[0] # Matsumoto
-      matz_name.force_encoding("UTF-8") if matz_name.respond_to? :force_encoding
-      Rack::Utils.escape(matz_name).should.equal '%E3%81%BE%E3%81%A4%E3%82%82%E3%81%A8'
-      matz_name_sep = "\xE3\x81\xBE\xE3\x81\xA4 \xE3\x82\x82\xE3\x81\xA8".unpack("a*")[0] # Matsu moto
-      matz_name_sep.force_encoding("UTF-8") if matz_name_sep.respond_to? :force_encoding
-      Rack::Utils.escape(matz_name_sep).should.equal '%E3%81%BE%E3%81%A4+%E3%82%82%E3%81%A8'
-
-      $KCODE = default_kcode
+      kcodeu do
+        matz_name = "\xE3\x81\xBE\xE3\x81\xA4\xE3\x82\x82\xE3\x81\xA8".unpack("a*")[0] # Matsumoto
+        matz_name.force_encoding("UTF-8") if matz_name.respond_to? :force_encoding
+        Rack::Utils.escape(matz_name).should.equal '%E3%81%BE%E3%81%A4%E3%82%82%E3%81%A8'
+        matz_name_sep = "\xE3\x81\xBE\xE3\x81\xA4 \xE3\x82\x82\xE3\x81\xA8".unpack("a*")[0] # Matsu moto
+        matz_name_sep.force_encoding("UTF-8") if matz_name_sep.respond_to? :force_encoding
+        Rack::Utils.escape(matz_name_sep).should.equal '%E3%81%BE%E3%81%A4+%E3%82%82%E3%81%A8'
+      end
     end
 
     should "unescape multibyte characters correctly if $KCODE is set to 'U'" do
-      default_kcode, $KCODE = $KCODE, 'U'
-      Rack::Utils.unescape('%E3%81%BE%E3%81%A4+%E3%82%82%E3%81%A8').should.equal(
+      kcodeu do
+        Rack::Utils.unescape('%E3%81%BE%E3%81%A4+%E3%82%82%E3%81%A8').should.equal(
         "\xE3\x81\xBE\xE3\x81\xA4 \xE3\x82\x82\xE3\x81\xA8".unpack("a*")[0])
-      $KCODE = default_kcode
+      end
     end
   end
 
   should "escape objects that responds to to_s" do
-    default_kcode, $KCODE = $KCODE, 'U'
-
-    Rack::Utils.escape(:id).should.equal "id"
-
-    $KCODE = default_kcode
+    kcodeu do
+      Rack::Utils.escape(:id).should.equal "id"
+    end
   end
 
   if "".respond_to?(:encode)
     should "escape non-UTF8 strings" do
       Rack::Utils.escape("ø".encode("ISO-8859-1")).should.equal "%F8"
     end
+  end
+  
+  should "not hang on escaping long strings that end in % (http://redmine.ruby-lang.org/issues/5149)" do
+    lambda {
+      timeout(1) do
+        lambda {
+          URI.decode_www_form_component "A string that causes catastrophic backtracking as it gets longer %"
+        }.should.raise(ArgumentError)
+      end
+    }.should.not.raise(Timeout::Error)
   end
 
   should "escape path spaces with %20" do
@@ -79,6 +94,14 @@ describe Rack::Utils do
     Rack::Utils.parse_query("my+weird+field=q1%212%22%27w%245%267%2Fz8%29%3F").
       should.equal "my weird field" => "q1!2\"'w$5&7/z8)?"
     Rack::Utils.parse_query("foo%3Dbaz=bar").should.equal "foo=baz" => "bar"
+    Rack::Utils.parse_query("=").should.equal "" => ""
+    Rack::Utils.parse_query("=value").should.equal "" => "value"
+    Rack::Utils.parse_query("key=").should.equal "key" => ""
+    Rack::Utils.parse_query("&key&").should.equal "key" => nil
+    Rack::Utils.parse_query(";key;", ";,").should.equal "key" => nil
+    Rack::Utils.parse_query(",key,", ";,").should.equal "key" => nil
+    Rack::Utils.parse_query(";foo=bar,;", ";,").should.equal "foo" => "bar"
+    Rack::Utils.parse_query(",foo=bar;,", ";,").should.equal "foo" => "bar"
   end
 
   should "parse nested query strings correctly" do
@@ -219,7 +242,7 @@ describe Rack::Utils do
       message.should.equal "value must be a Hash"
   end
 
-  should "should escape html entities [&><'\"/]" do
+  should "escape html entities [&><'\"/]" do
     Rack::Utils.escape_html("foo").should.equal "foo"
     Rack::Utils.escape_html("f&o").should.equal "f&amp;o"
     Rack::Utils.escape_html("f<o").should.equal "f&lt;o"
@@ -228,6 +251,27 @@ describe Rack::Utils do
     Rack::Utils.escape_html('f"o').should.equal "f&quot;o"
     Rack::Utils.escape_html("f/o").should.equal "f&#x2F;o"
     Rack::Utils.escape_html("<foo></foo>").should.equal "&lt;foo&gt;&lt;&#x2F;foo&gt;"
+  end
+
+  should "escape html entities even on MRI when it's bugged" do
+    test_escape = lambda do
+      kcodeu do
+        Rack::Utils.escape_html("\300<").should.equal "\300&lt;"
+      end
+    end
+
+    if RUBY_VERSION.to_f < 1.9
+      test_escape.call
+    else
+      test_escape.should.raise(ArgumentError)
+    end
+  end
+
+  if "".respond_to?(:encode)
+    should "escape html entities in unicode strings" do
+      # the following will cause warnings if the regex is poorly encoded:
+      Rack::Utils.escape_html("☃").should.equal "☃"
+    end
   end
 
   should "figure out which encodings are acceptable" do
@@ -255,6 +299,11 @@ describe Rack::Utils do
 
   should "return the bytesize of String" do
     Rack::Utils.bytesize("FOO\xE2\x82\xAC").should.equal 6
+  end
+
+  should "should perform constant time string comparison" do
+    Rack::Utils.secure_compare('a', 'a').should.equal true
+    Rack::Utils.secure_compare('a', 'b').should.equal false
   end
 
   should "return status code for integer" do
@@ -289,6 +338,10 @@ describe Rack::Utils, "byte_range" do
     Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=-100"},500).should.equal [(400..499)]
     Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=0-0"},500).should.equal [(0..0)]
     Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=499-499"},500).should.equal [(499..499)]
+  end
+
+  should "parse several byte ranges" do
+    Rack::Utils.byte_ranges({"HTTP_RANGE" => "bytes=500-600,601-999"},1000).should.equal [(500..600),(601..999)]
   end
 
   should "truncate byte ranges" do

@@ -1,3 +1,345 @@
+Thu Feb 7 19:00:50 2013 -0800  James Tucker <jftucker@gmail.com>
+  * Bump version number
+
+Thu Feb 7 18:58:34 2013 -0800  James Tucker <jftucker@gmail.com>
+  * Update README for todays releases
+
+Thu Feb 7 14:50:53 2013 -0800  James Tucker <jftucker@gmail.com>
+  * Use secure_compare for hmac comparison
+    
+     * Closes CVE-2013-0263
+
+Wed Feb 6 15:31:53 2013 -0800  James Tucker <jftucker@gmail.com>
+  * Add secure_compare to Rack::Utils
+    
+    Conflicts:
+    	test/spec_utils.rb
+
+Sun Jan 13 14:01:09 2013 -0800  James Tucker <jftucker@gmail.com>
+  * Bump version
+
+Sun Jan 13 13:55:50 2013 -0800  James Tucker <jftucker@gmail.com>
+  * Update README for release. Add security section.
+
+Sun Jan 13 13:39:40 2013 -0800  James Tucker <jftucker@gmail.com>
+  * Remove error test, implementation not backported
+    
+     * Closes #493
+
+Sun Jan 13 13:33:08 2013 -0800  James Tucker <jftucker@gmail.com>
+  * Squash warnings in spec_auth
+
+Sun Jan 13 13:10:20 2013 -0800  James Tucker <jftucker@gmail.com>
+  * Reimplement auth scheme fix
+    
+     * Add Rack::Auth.add_scheme to enable folks to fix anything that breaks
+     * Add common auth schemes, MS ones, AWS ones, etc are missing, as unlikely
+     * Checked Rails - they don't use our authorization code
+     * Checked Warden - uses rails
+     * Checked Omniauth - uses rails
+     * Checked doorkeeper - users rails
+     * Checked rack-authentication - does it's own thing
+     * Checked warden-oauth - doesn't do headers
+     * Checked devise - uses rails
+     * Checked oauth2-rack - header creation only
+     * Checked rack-oauth2-server - does it's own thing
+     * Probably missed a bunch, but that'll have to do
+
+Mon Jan 7 10:46:43 2013 -0800  James Tucker <jftucker@gmail.com>
+  * Add release announcements to README
+
+Mon Jan 7 10:40:59 2013 -0800  James Tucker <jftucker@gmail.com>
+  * Bump to 1.3.8
+
+Wed Aug 22 22:48:23 2012 +0000  Eric Wong <normalperson@yhbt.net>
+  * multipart/parser: avoid unbounded #gets method
+    
+    Malicious clients may send excessively long lines
+    to trigger out-of-memory errors in a Rack web server.
+
+Sun Jan 6 17:29:27 2013 -0800  James Tucker <raggi@google.com>
+  * Bump to 1.3.7
+
+Sun Jan 6 15:50:19 2013 -0800  James Tucker <raggi@google.com>
+  * Update README based on master
+
+Fri Nov 9 13:58:56 2012 +0400  Sokolov Yura <funny.falcon@gmail.com>
+  * Fix parsing multiple ranges
+    
+    Fix parsing miltiple ranges in HTTP_RANGE header according to w3 rfc2616 (according to last example in sec14.35.1 http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35.1 ) (according to BNF rules in http://www.w3.org/Protocols/rfc2616/rfc2616-sec2.html#sec2.1 )
+
+Sat Dec 29 13:04:46 2012 -0500  James Tucker <raggi@google.com>
+  * Add a note in KNOWN-ISSUES regarding ECMA escape
+
+Fri Dec 28 17:38:51 2012 -0500  James Tucker <raggi@google.com>
+  * Refactor spec_cascade and spec_head
+    
+     * StringIO is a better choice than a struct here.
+
+Fri Dec 28 17:36:36 2012 -0500  James Tucker <raggi@google.com>
+  * Rack::Response now conforms to body.close SPEC
+    
+     * Previously 204, 205 and 304 bodies were not closed correctly.
+
+Fri Dec 28 17:28:26 2012 -0500  James Tucker <raggi@google.com>
+  * Rack::Head now conforms to body.close SPEC
+    
+    Conflicts:
+    	test/spec_head.rb
+
+Fri Dec 28 17:19:04 2012 -0500  James Tucker <raggi@google.com>
+  * Cascade now conforms to the body.close SPEC
+
+Fri Dec 28 17:02:06 2012 -0500  James Tucker <raggi@google.com>
+  * Clarify the body.close spec section
+    
+     * This item is frequently missed, including in core.
+     * This is not a change in semantic requirement, and does not update the SPEC
+       version.
+
+Sat Nov 3 08:35:04 2012 -0700  James Tucker <raggi@google.com>
+  * Ensure that deflater always closes bodies.
+    
+    Closes #349
+
+Fri Nov 2 19:24:53 2012 -0400  Zachary Scott <zachary@zacharyscott.net>
+  * Rack::BodyProxy#each, fixes rack/rack#434
+
+Fri Nov 2 13:54:39 2012 -0700  James Tucker <raggi@google.com>
+  * Prevent infinite recursions from Response#to_ary
+    
+    Closes #419
+
+Fri Nov 2 13:03:59 2012 -0700  James Tucker <raggi@google.com>
+  * Return a bad request for malformed basic auth
+    
+    Closes #438
+
+Wed Oct 24 23:59:49 2012 -0400  Zachary Scott <zachary@zacharyscott.net>
+  * rescue Errno::ESRCH for windows, fixes #391
+
+Mon Oct 22 16:58:43 2012 +0200  Christian Neukirchen <chneukirchen@gmail.com>
+  * Add redrawn logos by Zachary Scott
+    
+    Date: Mon, 22 Oct 2012 10:29:22 -0400
+    Message-ID: <CAH6G9XNkVkUWh9JPT9HuHzJ4KmRNoPSr8ov3q0rgzH3b=u3cGw@mail.gmail.com>
+    
+    On Mon, Oct 22, 2012 at 10:17 AM, Christian Neukirchen
+    <chneukirchen@gmail.com> wrote:
+    > Is it ok to put the other files as MIT license into contrib/?
+    > (Perhaps add a copyright message to the .svg)
+    
+    Whatever you want, they're all yours.
+    Thanks!
+
+Mon Jul 30 16:36:54 2012 +0300  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * Update years in license
+
+Fri Jul 13 15:51:50 2012 +0900  ITO Nobuaki <daydream.trippers@gmail.com>
+  * Use backport of URI module even on ruby 1.9.2-p320.
+
+Fri Jul 13 15:03:17 2012 +0900  ITO Nobuaki <daydream.trippers@gmail.com>
+  * Added missing dependence on 'timeout' in test/spec_utils.
+
+Thu Jul 12 11:52:57 2012 +0900  ITO Nobuaki <daydream.trippers@gmail.com>
+  * Fix request loop on non-stale nonce with time_limit parameter.
+
+Mon Jun 4 00:28:42 2012 -0700  Conrad Irwin <conrad.irwin@gmail.com>
+  * Set __LINE__ correctly for rackup files.
+    
+    Before this change the line numbers were off by one, which broke
+    debugging tools like Pry in addition to causing a smidgen of user
+    confusion.
+    
+    Reported-At: https://github.com/pry/pry/issues/571
+
+Tue May 22 17:00:02 2012 +0200  Hrvoje Šimić <shime.ferovac@gmail.com>
+  * update the dead link
+    remove the dead link
+    
+    use internet archive for a dead link
+    
+    added working link
+
+Sun May 13 10:51:45 2012 -0700  James Tucker <jftucker@gmail.com>
+  * Improve pidfile reporting and test coverage
+    
+     * Output reduced to a single line
+     * Integration test added that also suppresses and checks output
+
+Sat May 5 12:05:32 2012 -0400  Jean Boussier <jean.boussier@gmail.com>
+  * Check if the PID in pidfile is still running #371
+    
+    Then abort or remove the pidfile
+
+Wed Mar 21 11:31:02 2012 +0100  Jean Boussier <jean.boussier@gmail.com>
+  * Check that the pidfile is not already present before overriding it
+
+Sat May 12 21:21:18 2012 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * point to github page instead of rubyforge
+
+Thu Apr 26 14:59:59 2012 +0530  Anurag Priyam <anurag08priyam@gmail.com>
+  * rackup: include the value of each -I command line option in $LOAD_PATH
+    
+    `rackup -h` says '-I' can be used more than once.  However, instead of adding
+    each value to $LOAD_PATH, rackup would discard the value of all but the last
+    '-I' option.
+    
+    Signed-off-by: Anurag Priyam <anurag08priyam@gmail.com>
+
+Thu Apr 12 15:28:45 2012 +0200  Josef Sin <josef.sin@gmail.com>
+  * Skipping empty params inside query what lead to parsing error.
+    
+    Example of these cookies would be: "foo=bar,;bar=foo" or ",foo=bar;,"
+    
+    Conflicts:
+    	test/spec_utils.rb
+
+Sun Mar 11 12:56:56 2012 +0100  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * don't load broken backports on jruby, either
+
+Sun Mar 11 11:40:36 2012 +0100  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * fix version comparison, again
+
+Sun Mar 11 11:21:28 2012 +0100  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * fix version comparison
+
+Sun Mar 11 11:03:34 2012 +0100  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * regexp issue has been fixed in Ruby 1.9.2-p381
+
+Tue Mar 6 21:20:32 2012 -0600  Ben Hamill <git-commits@benhamill.com>
+  * Use `const_defined?` so that it only checks withing the scope of URI.
+
+Mon Mar 5 23:17:53 2012 +0100  Stefano Cobianchi <stefano.cobianchi@gmail.com>
+  * Don't load the backport for uri/common.rb when running 1.9.3-p125 and beyond
+
+Sat Mar 3 21:36:32 2012 -0600  Ben Hamill <git-commits@benhamill.com>
+  * Uh. Put the conditional on the CORRECT line. :sweat:
+
+Sat Mar 3 21:25:34 2012 -0600  Ben Hamill <git-commits@benhamill.com>
+  * Only remove a constant if it exists.
+
+Wed Jan 25 11:25:17 2012 -0800  Aaron Patterson <aaron.patterson@gmail.com>
+  * Backported fixes for:
+    
+      http://bugs.ruby-lang.org/issues/5925
+    
+    Relevant commit:
+    
+      https://github.com/ruby/ruby/commit/edb7cdf1eabaff78dfa5ffedfbc2e91b29fa9ca1
+
+Sun May 13 15:02:17 2012 -0700  James Tucker <jftucker@gmail.com>
+  * Fix parsing performance for unquoted filenames
+    
+    Special thanks to Paul Rogers & Eric Wong
+    
+    Conflicts:
+    	test/spec_multipart.rb
+
+Sun Mar 18 18:36:31 2012 -0700  James Tucker <jftucker@gmail.com>
+  * Add warning to strongly recommend to people to have secrets protecting their cookies
+
+Tue Dec 27 22:51:49 2011 -0400  James Tucker <jftucker@gmail.com>
+  * Release notes and version bump
+
+Tue Dec 13 10:18:48 2011 -0800  Evan Phoenix <evan@fallingsnow.net>
+  * Limit the size of parameter keys
+    
+    Signed-off-by: James Tucker <jftucker@gmail.com>
+
+Mon Oct 17 22:30:39 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Bump to 1.3.5  (aaah, laptop power running out...)
+
+Mon Oct 17 22:28:34 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Add release note for 1.3.5
+
+Mon Oct 3 23:44:31 2011 -0500  Ben Hamill <git-commits@benhamill.com>
+  * fixes #246. Silence the warning about redefining this constant from the standard library.
+
+Sat Oct 1 13:30:35 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Gahhh TAAABBZZZ
+
+Sat Oct 1 13:28:03 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Bump version number
+
+Sat Oct 1 13:25:12 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Correct 1.3.4 release message
+    
+    Conflicts:
+    
+    	README.rdoc
+
+Sat Oct 1 13:22:52 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Update README for the 1.3.4 release
+
+Fri Sep 16 16:08:22 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Use the modern mongrel that should work on jruby and 1.9
+
+Fri Sep 16 16:05:26 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Adding travis-ci yaml setup... going to need to fix up the environment
+
+Fri Sep 16 16:02:21 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Add a Gemfile, this is purely for travis-ci
+
+Sat Oct 1 08:55:37 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Simplify BodyProxy#close to avoid horrible loop conditions in streaming
+    scenarios, and save users from themselves
+
+Sat Oct 1 11:39:08 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Add some documentation to cover distribution differences in /etc/mime.types.
+    Closes #187.
+
+Thu Sep 29 01:50:10 2011 +0200  Tim Lucas <t.lucas@toolmantim.com>
+  * Added backport of Ruby URI's 1.9.3 DoS fix
+
+Thu Sep 29 01:30:15 2011 +0200  Tim Lucas <t.lucas@toolmantim.com>
+  * Regression test for DoS attack on form/cookie param decoding
+    
+    See http://redmine.ruby-lang.org/issues/5149
+
+Sat Oct 1 01:59:04 2011 -0500  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * fix issue with Thin and Rack::BodyProxy on Ruby 1.9.2
+
+Fri Sep 16 16:30:49 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Bump version!
+
+Fri Sep 16 16:30:34 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Update for release date
+
+Wed Sep 7 10:34:00 2011 -0700  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * update changes for 1.3.3
+
+Wed Aug 31 11:05:40 2011 -0400  Nicholas Mulder <nicholas.mulder@gmail.com>
+  * BugFix in ConditionalGet; don't crash when we get a malformed HTTP_IF_MODIFIED_SINCE timestamp
+
+Sun Aug 21 16:07:51 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Fix bugs with MRI 1.8.x regex engine
+
+Sun Aug 21 16:07:34 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Ignore tarballs from releases
+
+Sun Aug 21 16:06:50 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Make tests easier to run cross-interpreter
+
+Sun Aug 21 16:06:28 2011 -0700  James Tucker <jftucker@gmail.com>
+  * Fix for psych
+
+Thu Sep 1 14:45:46 2011 -0600  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * make tests pass on 1.8 again
+
+Tue Aug 23 18:25:26 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * better error message when unable to parse cookie, see #225
+
+Tue Aug 23 17:35:39 2011 +0200  Konstantin Haase <konstantin.mailinglists@googlemail.com>
+  * refactor Request#cookies, fixes #225
+
+Mon Aug 1 23:12:00 2011 +1000  Luke Jahnke <luke.jahnke@gmail.com>
+  * Fixed an unhandled condition where req.GET or req.POST could be nil if a URI
+    such as a=1&a[]=1 was parsed.
+
+Wed Jul 27 11:40:27 2011 -0300  Santiago Pastorino <santiago@wyeworks.com>
+  * Fix mod_xsendfile url
+
 Sat Jul 16 14:45:19 2011 -0700  James Tucker <jftucker@gmail.com>
   * Bump version
 
